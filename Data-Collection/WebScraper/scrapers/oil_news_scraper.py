@@ -21,6 +21,9 @@ def scrape_oil_news():
     response = requests.get(OIL_NEWS_URL)
     response.raise_for_status()
 
+    # Print the HTML to see what we are working with
+    print(response.text[:1000])  # Print only the first 1000 characters for brevity
+
     # Parse the HTML using BeautifulSoup
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -45,9 +48,7 @@ def scrape_oil_news():
                 'date': date
             })
 
-    # Convert the list into a pandas DataFrame
     df = pd.DataFrame(news_data)
-
     return df
 
 # Function to run the scraper and save data
