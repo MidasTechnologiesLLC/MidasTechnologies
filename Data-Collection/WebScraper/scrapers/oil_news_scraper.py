@@ -26,7 +26,13 @@ def save_to_json(data, file_path):
     existing_data = load_existing_data(file_path)
     existing_links = {article['link'] for article in existing_data}
 
-    new_data = [article for article in data if article['link'] not in existing_links]
+    new_data = []
+    for article in data:
+        if article['link'] in existing_links:
+            print(f"Skipping duplicate article: {article['headline']}")
+            continue
+        new_data.append(article)
+
     combined_data = existing_data + new_data
 
     with open(file_path, 'w', encoding='utf-8') as f:
@@ -34,9 +40,20 @@ def save_to_json(data, file_path):
     print(f"Oil news data saved to {file_path}")
 
 def extract_keywords(text):
-    """Simple function to extract keywords from text."""
-    keywords = re.findall(r'\b\w+\b', text.lower())
-    return list(set(keywords))[:10]  # Return the first 10 unique keywords
+    """Improved placeholder function to extract keywords from text."""
+    words = re.findall(r'\b\w+\b', text.lower())
+    keywords = [word for word in words if len(word) > 3]  # Example filter: words longer than 3 chars
+    return list(set(keywords))[:10]  # Return up to 10 unique keywords
+
+def analyze_sentiment(text):
+    """Placeholder function for sentiment analysis."""
+    # Basic placeholder logic (to be replaced with actual sentiment analysis)
+    if "profit" in text or "rise" in text:
+        return "Positive"
+    elif "loss" in text or "decline" in text:
+        return "Negative"
+    else:
+        return "Neutral"
 
 def scrape_oil_news():
     print("Scraping oil market news using Selenium...")
@@ -50,7 +67,6 @@ def scrape_oil_news():
     max_pages = 10  # Limit to 10 pages
 
     while page_number <= max_pages:
-        # Load the page with pagination
         driver.get(f"{OIL_NEWS_URL}Page-{page_number}.html")
         
         try:
@@ -84,7 +100,7 @@ def scrape_oil_news():
                     'author': author,
                     'excerpt': excerpt,
                     'keywords': extract_keywords(headline + " " + excerpt if excerpt else headline),
-                    'sentiment_analysis': None  # Placeholder for future sentiment analysis
+                    'sentiment_analysis': analyze_sentiment(headline + " " + excerpt if excerpt else headline)
                 })
 
         page_number += 1
