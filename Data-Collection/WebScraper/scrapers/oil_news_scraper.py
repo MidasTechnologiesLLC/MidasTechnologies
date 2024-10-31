@@ -11,6 +11,8 @@ import re
 
 OIL_NEWS_URL = "https://oilprice.com/Latest-Energy-News/World-News/"
 DATA_DIR = os.path.join(os.getcwd(), "data")
+KEYWORD_FILE_PATH = os.path.join(os.getcwd(), "assets", "oil_key_words.txt")
+
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
@@ -39,15 +41,37 @@ def save_to_json(data, file_path):
         json.dump(combined_data, f, ensure_ascii=False, indent=4)
     print(f"Oil news data saved to {file_path}")
 
-def extract_keywords(text):
-    """Improved placeholder function to extract keywords from text."""
+def load_keyword_importance(file_path):
+    """Load keyword importance values from the oil_key_words.txt file."""
+    keyword_importance = {}
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    keyword, importance = parts
+                    keyword_importance[keyword.lower()] = int(importance)
+    else:
+        print(f"Keyword file not found at {file_path}")
+    return keyword_importance
+
+keyword_importance = load_keyword_importance(KEYWORD_FILE_PATH)
+
+def extract_keywords(text, keyword_importance):
+    """Extract important keywords from text based on an external keyword list."""
     words = re.findall(r'\b\w+\b', text.lower())
-    keywords = [word for word in words if len(word) > 3]  # Example filter: words longer than 3 chars
-    return list(set(keywords))[:10]  # Return up to 10 unique keywords
+    keywords = {}
+    
+    for word in words:
+        if len(word) > 3 and word in keyword_importance:
+            keywords[word] = keyword_importance[word]  # Store keyword with its importance
+
+    # Return up to 10 unique keywords with their importance
+    return sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:10]
 
 def analyze_sentiment(text):
-    """Placeholder function for sentiment analysis."""
-    # Basic placeholder logic (to be replaced with actual sentiment analysis)
+    """Basic sentiment analysis placeholder with minimal processing."""
+    # Only check for specific keywords; avoid complex logic to save time
     if "profit" in text or "rise" in text:
         return "Positive"
     elif "loss" in text or "decline" in text:
@@ -67,6 +91,7 @@ def scrape_oil_news():
     max_pages = 10  # Limit to 10 pages
 
     while page_number <= max_pages:
+        print(f"Processing page {page_number}...")
         driver.get(f"{OIL_NEWS_URL}Page-{page_number}.html")
         
         try:
@@ -91,7 +116,8 @@ def scrape_oil_news():
             excerpt = article.find('p', class_='categoryArticle__excerpt').get_text(strip=True) if article.find('p', class_='categoryArticle__excerpt') else None
             author = date.split('|')[-1].strip() if '|' in date else "Unknown Author"
             timestamp = date.split('|')[0].strip() if '|' in date else date
-            
+            extracted_keywords = extract_keywords(headline + " " + excerpt if excerpt else headline, keyword_importance)
+
             if headline and link and date:
                 news_data.append({
                     'headline': headline,
@@ -99,8 +125,9 @@ def scrape_oil_news():
                     'date': timestamp,
                     'author': author,
                     'excerpt': excerpt,
-                    'keywords': extract_keywords(headline + " " + excerpt if excerpt else headline),
-                    'sentiment_analysis': analyze_sentiment(headline + " " + excerpt if excerpt else headline)
+                    'keywords': extracted_keywords,
+                    'sentiment_analysis': None
+                    #'sentiment_analysis': analyze_sentiment(headline + " " + excerpt if excerpt else headline)
                 })
 
         page_number += 1
