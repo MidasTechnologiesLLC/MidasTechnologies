@@ -1,0 +1,31 @@
+name: Python Linting
+
+on:
+  push:
+    branches:
+      - '**'  # Match all branches
+  pull_request:
+    branches:
+      - '**'  # Match all branches
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv  # Create a virtual environment in the project root
+          ./venv/bin/pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+      - name: Run Flake8
+        run: |
+          ./venv/bin/flake8 . --config=.flake8  # Run flake8 using the configuration in .flake8

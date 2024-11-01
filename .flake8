@@ -1,0 +1,11 @@
+[flake8]
+max-line-length = 79  # PEP8 recommends 79, but you can adjust this
+exclude = 
+    venv,  # Ignore your virtual environment
+    .git,  # Ignore Git files
+    __pycache__,  # Ignore Python cache
+
+ignore = 
+    E203,  # Ignore specific errors (customize as needed)
+    W503   # Ignore line break before binary operator
+
