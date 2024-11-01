@@ -82,59 +82,70 @@ def filter_content(content):
     content = re.sub(r'\s+', ' ', content).strip()
     return content
 
-def extract_author_info(driver, article_soup, headline_pages=1):
-    """Extract detailed author information from the 'read more' link if available."""
-    author = "Unknown Author"
+def scrape_author_info(driver, author_url, headline_pages=1):
+    """Scrape author's name, bio, contributor since date, and latest article headlines with excerpts, keywords, and timestamp."""
+    author_name = "Unknown"
     author_bio = ""
     contributor_since = ""
     other_articles = []
 
-    author_tag = article_soup.find('a', text=re.compile(r'More Info|Read More', re.IGNORECASE))
-    if author_tag:
-        retries = 3  # Set retry limit
-        for attempt in range(retries):
-            try:
-                driver.get(author_tag['href'])
-                WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "authorBio"))
-                )
-                bio_soup = BeautifulSoup(driver.page_source, "html.parser")
-                
-                # Extract author's name
-                author_name_tag = bio_soup.find('h1')
-                author = author_name_tag.get_text(strip=True) if author_name_tag else "Unknown Author"
+    try:
+        # Load author page
+        driver.get(author_url)
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.TAG_NAME, "h1"))
+        )
+        page_source = driver.page_source
+        bio_soup = BeautifulSoup(page_source, "html.parser")
 
-                # Extract author's bio description
-                author_bio_tag = bio_soup.find('p')
-                author_bio = author_bio_tag.get_text(strip=True) if author_bio_tag else "No bio available"
+        # Extract author name
+        author_name_tag = bio_soup.find('h1')
+        author_name = author_name_tag.get_text(strip=True) if author_name_tag else "Unknown Author"
 
-                # Extract contributor since date
-                contributor_since_tag = bio_soup.find(text=re.compile(r"Contributor since", re.IGNORECASE))
-                if contributor_since_tag:
-                    contributor_since = contributor_since_tag.parent.get_text(strip=True).replace("Contributor since: ", "")
+        # Extract author bio
+        author_bio_tag = bio_soup.find('div', class_='biography')
+        author_bio = author_bio_tag.get_text(strip=True) if author_bio_tag else "No bio available"
 
-                # Extract headlines of latest articles by the author, limited by `headline_pages`
-                for page in range(1, headline_pages + 1):
-                    driver.get(f"{author_tag['href']}Page-{page}.html")
-                    WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CLASS_NAME, "categoryArticle"))
-                    )
-                    page_soup = BeautifulSoup(driver.page_source, "html.parser")
-                    article_tags = page_soup.find_all('h2', class_='categoryArticle__title')
+        # Extract contributor since date
+        contributor_since_tag = bio_soup.find('p', class_='contributor_since')
+        contributor_since = contributor_since_tag.get_text(strip=True).replace("Contributor since: ", "") if contributor_since_tag else "Unknown Date"
+
+        # Extract latest articles by author with heading, excerpt, keywords, and timestamp
+        for page in range(1, headline_pages + 1):
+            driver.get(f"{author_url}/Page-{page}.html")
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "articles"))
+            )
+            page_soup = BeautifulSoup(driver.page_source, "html.parser")
+            article_tags = page_soup.find_all('li', class_='clear')
+            
+            for article in article_tags:
+                heading_tag = article.find('h3')
+                excerpt_tag = article.find('p', class_='articlecontent')
+                timestamp_tag = article.find('div', class_='meta')
+
+                if heading_tag and excerpt_tag and timestamp_tag:
+                    heading = heading_tag.get_text(strip=True)
+                    excerpt = filter_content(excerpt_tag.get_text(strip=True))  # Use filter_content
+                    timestamp = timestamp_tag.get_text(strip=True).split("|")[0].replace("Published ", "").strip()
+                    keywords = [keyword for keyword, _ in extract_keywords(excerpt, keyword_importance)]
                     
-                    for article in article_tags:
-                        other_articles.append(article.get_text(strip=True))
-                
-                break  # Break loop if successful
+                    other_articles.append({
+                        "heading": heading,
+                        "excerpt": excerpt,
+                        "keywords": keywords,
+                        "published_date": timestamp
+                    })
 
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed for author bio page. Retrying...")
-                time.sleep(2)  # Wait before retrying
-                if attempt == retries - 1:
-                    print(f"Author bio page failed to load or extract after {retries} attempts. Error: {e}")
+    except Exception as e:
+        print(f"Error scraping author info: {e}")
+        author_name = "Error Occurred"
+        author_bio = str(e)
+        contributor_since = "N/A"
+        other_articles = [{"heading": "Error retrieving articles", "excerpt": "", "keywords": [], "published_date": ""}]
 
     return {
-        "name": author,
+        "name": author_name,
         "bio": author_bio,
         "contributor_since": contributor_since,
         "other_articles": other_articles
@@ -192,14 +203,23 @@ def scrape_oil_news():
                         article_soup = BeautifulSoup(driver.page_source, "html.parser")
                         raw_content = " ".join([p.get_text(strip=True) for p in article_soup.find_all('p')])
                         content = filter_content(raw_content)
-                        author, author_bio = extract_author_info(driver, article_soup)
+                        
+                        # Fetch author info using scrape_author_info
+                        author_url = article_soup.find('a', text=re.compile(r'More Info|Read More', re.IGNORECASE))['href']
+                        author_info = scrape_author_info(driver, author_url, headline_pages=1)
+                        
                     except:
                         print(f"Error: Content did not load for article {headline}.")
+                        author_info = {
+                            "name": "Unknown",
+                            "bio": "",
+                            "contributor_since": "",
+                            "other_articles": []
+                        }
                 
                 extracted_keywords = extract_keywords(f"{headline} {content}", keyword_importance)
 
                 if headline and link and date:
-                    author_info = extract_author_info(driver, article_soup, headline_pages=1)
                     news_data.append({
                         'headline': headline,
                         'link': link,
