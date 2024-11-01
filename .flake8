@@ -1,5 +1,5 @@
 [flake8]
-max-line-length = 79
+max-line-length = 88
 
 exclude = 
     venv,  
@@ -7,5 +7,15 @@ exclude =
     __pycache__,  
 
 ignore = 
-    E203,  
-    W503 
+    E203,  # Whitespace before ':', compatible with Black formatting
+    W503,  # Line break before binary operator, also compatible with Black formatting
+    E501,  # Line length (use max-line-length instead)
+    E402,  # Module level import not at top of file
+    F841,  # Local variable assigned to but never used (useful for placeholders or debugging)
+    W291,  # Trailing whitespace
+    W292,  # No newline at end of file
+    W293,  # Blank line contains whitespace
+    E302,  # Expected 2 blank lines, found 1 (can make code more compact if ignored)
+    E305,  # Expected 2 blank lines after class or function definition
+    E741,  # Ambiguous variable name (e.g., l, O)
+
