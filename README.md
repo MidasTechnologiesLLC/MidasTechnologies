@@ -134,13 +134,16 @@ Our current focus is building a modular and scalable system capable of performin
 For more information, please reach out to the Midas Technologies team.
 
 **Primary Contacts**:
-- **Chief Data Officer**: Griffin Witt
-- **Chief Technical Officer**: Collin Schaufele
-- **Chief Operations Officer**: Jacob Mardian
+- **Chief Data Officer**: Griffin 
+- **Chief Technical Officer**: Collin Aka KleinPanic
+- **Chief Operations Officer**: Jacob 
 
 **Note**: This project and all related files are private and for use by Midas Technologies LLC only. Unauthorized distribution or modification is strictly prohibited.
 
+## License
 
-```Author
+For the license file, please navigate to the docs/BusinessDocumentation/LICENSE and read it there. 
+
+``` Author
 KleinPanic
 ```
