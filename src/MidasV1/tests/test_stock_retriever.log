@@ -1,0 +1,435 @@
+2024-12-13 02:01:32,318 - DEBUG - 139881771299920 connState: None -> 0
+2024-12-13 02:01:32,318 - DEBUG - 139881771299920 connState: None -> 0
+2024-12-13 02:01:32,319 - DEBUG - Connecting to 127.0.0.1:4002 w/ id:1
+2024-12-13 02:01:32,319 - DEBUG - 139881771299920 connState: 0 -> 1
+2024-12-13 02:01:32,319 - DEBUG - msg b'\x00\x00\x00\tv100..193'
+2024-12-13 02:01:32,319 - DEBUG - REQUEST b'API\x00\x00\x00\x00\tv100..193'
+2024-12-13 02:01:32,319 - DEBUG - acquiring lock
+2024-12-13 02:01:32,319 - DEBUG - acquired lock
+2024-12-13 02:01:32,319 - DEBUG - releasing lock
+2024-12-13 02:01:32,319 - DEBUG - release lock
+2024-12-13 02:01:32,319 - DEBUG - sendMsg: sent: 17
+2024-12-13 02:01:32,320 - DEBUG - no fields
+2024-12-13 02:01:32,321 - DEBUG - len 30 raw:b'\x00\x00\x00\x1a187\x0020241213 02:01:31 EST\x00'|
+2024-12-13 02:01:32,322 - DEBUG - ANSWER b'\x00\x00\x00\x1a187\x0020241213 02:01:31 EST\x00'
+2024-12-13 02:01:32,322 - DEBUG - read_msg: size: 26
+2024-12-13 02:01:32,322 - DEBUG - size:26 msg:b'187\x0020241213 02:01:31 EST\x00' rest:b''|
+2024-12-13 02:01:32,322 - DEBUG - fields (b'187', b'20241213 02:01:31 EST')
+2024-12-13 02:01:32,322 - DEBUG - ANSWER Version:187 time:b'20241213 02:01:31 EST'
+2024-12-13 02:01:32,322 - DEBUG - 139881771299920 connState: 1 -> 2
+2024-12-13 02:01:32,322 - DEBUG - EReader thread started
+2024-12-13 02:01:32,322 - INFO - sent startApi
+2024-12-13 02:01:32,322 - INFO - REQUEST startApi {}
+2024-12-13 02:01:32,322 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,322 - INFO - SENDING startApi b'\x00\x00\x00\x0871\x002\x001\x00\x00'
+2024-12-13 02:01:32,322 - DEBUG - acquiring lock
+2024-12-13 02:01:32,322 - DEBUG - acquired lock
+2024-12-13 02:01:32,322 - DEBUG - releasing lock
+2024-12-13 02:01:32,322 - DEBUG - release lock
+2024-12-13 02:01:32,322 - DEBUG - sendMsg: sent: 12
+2024-12-13 02:01:32,322 - INFO - ANSWER connectAck {}
+2024-12-13 02:01:32,322 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,323 - DEBUG - len 19 raw:b'\x00\x00\x00\x0f15\x001\x00DUE064818\x00'|
+2024-12-13 02:01:32,323 - DEBUG - reader loop, recvd size 19
+2024-12-13 02:01:32,323 - DEBUG - read_msg: size: 15
+2024-12-13 02:01:32,323 - DEBUG - size:15 msg.size:15 msg:|b''| buf:||
+2024-12-13 02:01:32,323 - DEBUG - fields (b'15', b'1', b'DUE064818')
+2024-12-13 02:01:32,323 - DEBUG - In interpret(), handleInfo: wrap:<function EWrapper.managedAccounts at 0x7f38c36bd3a0> meth:None prms:OrderedDict([('self', <Parameter "self">), ('accountsList', <Parameter "accountsList: str">)])
+2024-12-13 02:01:32,323 - DEBUG - field b'DUE064818' 
+2024-12-13 02:01:32,324 - DEBUG - arg DUE064818 type <class 'str'>
+2024-12-13 02:01:32,324 - DEBUG - calling <bound method EWrapper.managedAccounts of <__main__.TestStockRetriever object at 0x7f38c349f450>> with <__main__.TestStockRetriever object at 0x7f38c349f450> ['DUE064818']
+2024-12-13 02:01:32,324 - INFO - ANSWER managedAccounts {'accountsList': 'DUE064818'}
+2024-12-13 02:01:32,324 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,324 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,324 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,366 - DEBUG - len 227 raw:b'\x00\x00\x00\x069\x001\x001\x00\x00\x00\x0064\x002\x00-1\x002104\x00Market data farm connection is OK:usfarm\x00\x00\x00\x00\x00^4\x002\x00-1\x002107\x00HMDS data farm connection is inactive but should be available upon demand.ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'|
+2024-12-13 02:01:32,366 - DEBUG - reader loop, recvd size 227
+2024-12-13 02:01:32,366 - DEBUG - read_msg: size: 6
+2024-12-13 02:01:32,366 - DEBUG - size:6 msg.size:6 msg:|b'\x00\x00\x0064\x002\x00-1\x002104\x00Market data farm connection is OK:usfarm\x00\x00\x00\x00\x00^4\x002\x00-1\x002107\x00HMDS data farm connection is inactive but should be available upon demand.ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-13 02:01:32,366 - DEBUG - read_msg: size: 54
+2024-12-13 02:01:32,366 - DEBUG - size:54 msg.size:54 msg:|b'\x00\x00\x00^4\x002\x00-1\x002107\x00HMDS data farm connection is inactive but should be available upon demand.ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-13 02:01:32,366 - DEBUG - read_msg: size: 94
+2024-12-13 02:01:32,366 - DEBUG - size:94 msg.size:94 msg:|b'\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-13 02:01:32,366 - DEBUG - read_msg: size: 57
+2024-12-13 02:01:32,367 - DEBUG - size:57 msg.size:57 msg:|b''| buf:||
+2024-12-13 02:01:32,367 - DEBUG - fields (b'9', b'1', b'1')
+2024-12-13 02:01:32,367 - DEBUG - In interpret(), handleInfo: wrap:<function EWrapper.nextValidId at 0x7f38c36bce00> meth:None prms:OrderedDict([('self', <Parameter "self">), ('orderId', <Parameter "orderId: int">)])
+2024-12-13 02:01:32,367 - DEBUG - field b'1' 
+2024-12-13 02:01:32,367 - DEBUG - arg 1 type <class 'int'>
+2024-12-13 02:01:32,367 - DEBUG - calling <bound method TestStockRetriever.nextValidId of <__main__.TestStockRetriever object at 0x7f38c349f450>> with <__main__.TestStockRetriever object at 0x7f38c349f450> [1]
+2024-12-13 02:01:32,367 - INFO - NextValidId received: 1
+2024-12-13 02:01:32,367 - INFO - Requesting market data for symbols...
+2024-12-13 02:01:32,367 - INFO - REQUEST reqMktData {'reqId': 1001, 'contract': 139881771406224: 0,AAPL,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'genericTickList': '', 'snapshot': False, 'regulatorySnapshot': False, 'mktDataOptions': []}
+2024-12-13 02:01:32,367 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,367 - INFO - SENDING reqMktData b'\x00\x00\x0011\x0011\x001001\x000\x00AAPL\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x00\x000\x000\x00\x00'
+2024-12-13 02:01:32,367 - DEBUG - acquiring lock
+2024-12-13 02:01:32,367 - DEBUG - acquired lock
+2024-12-13 02:01:32,367 - DEBUG - releasing lock
+2024-12-13 02:01:32,367 - DEBUG - release lock
+2024-12-13 02:01:32,367 - DEBUG - sendMsg: sent: 53
+2024-12-13 02:01:32,367 - DEBUG - Requested market data for AAPL with ReqId: 1001
+2024-12-13 02:01:32,367 - INFO - REQUEST reqMktData {'reqId': 1002, 'contract': 139881771409296: 0,MSFT,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'genericTickList': '', 'snapshot': False, 'regulatorySnapshot': False, 'mktDataOptions': []}
+2024-12-13 02:01:32,367 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,367 - INFO - SENDING reqMktData b'\x00\x00\x0011\x0011\x001002\x000\x00MSFT\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x00\x000\x000\x00\x00'
+2024-12-13 02:01:32,367 - DEBUG - acquiring lock
+2024-12-13 02:01:32,367 - DEBUG - acquired lock
+2024-12-13 02:01:32,367 - DEBUG - releasing lock
+2024-12-13 02:01:32,367 - DEBUG - release lock
+2024-12-13 02:01:32,367 - DEBUG - sendMsg: sent: 53
+2024-12-13 02:01:32,368 - DEBUG - Requested market data for MSFT with ReqId: 1002
+2024-12-13 02:01:32,368 - INFO - REQUEST reqMktData {'reqId': 1003, 'contract': 139881771409424: 0,GOOGL,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'genericTickList': '', 'snapshot': False, 'regulatorySnapshot': False, 'mktDataOptions': []}
+2024-12-13 02:01:32,368 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,368 - INFO - SENDING reqMktData b'\x00\x00\x0021\x0011\x001003\x000\x00GOOGL\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x00\x000\x000\x00\x00'
+2024-12-13 02:01:32,368 - DEBUG - acquiring lock
+2024-12-13 02:01:32,368 - DEBUG - acquired lock
+2024-12-13 02:01:32,368 - DEBUG - releasing lock
+2024-12-13 02:01:32,368 - DEBUG - release lock
+2024-12-13 02:01:32,368 - DEBUG - sendMsg: sent: 54
+2024-12-13 02:01:32,368 - DEBUG - Requested market data for GOOGL with ReqId: 1003
+2024-12-13 02:01:32,368 - INFO - REQUEST reqMktData {'reqId': 1004, 'contract': 139881771409360: 0,AMZN,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'genericTickList': '', 'snapshot': False, 'regulatorySnapshot': False, 'mktDataOptions': []}
+2024-12-13 02:01:32,368 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,368 - INFO - SENDING reqMktData b'\x00\x00\x0011\x0011\x001004\x000\x00AMZN\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x00\x000\x000\x00\x00'
+2024-12-13 02:01:32,368 - DEBUG - acquiring lock
+2024-12-13 02:01:32,368 - DEBUG - acquired lock
+2024-12-13 02:01:32,368 - DEBUG - releasing lock
+2024-12-13 02:01:32,368 - DEBUG - release lock
+2024-12-13 02:01:32,368 - DEBUG - sendMsg: sent: 53
+2024-12-13 02:01:32,368 - DEBUG - Requested market data for AMZN with ReqId: 1004
+2024-12-13 02:01:32,368 - INFO - REQUEST reqMktData {'reqId': 1005, 'contract': 139881771409552: 0,TSLA,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'genericTickList': '', 'snapshot': False, 'regulatorySnapshot': False, 'mktDataOptions': []}
+2024-12-13 02:01:32,368 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,368 - INFO - SENDING reqMktData b'\x00\x00\x0011\x0011\x001005\x000\x00TSLA\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x00\x000\x000\x00\x00'
+2024-12-13 02:01:32,368 - DEBUG - acquiring lock
+2024-12-13 02:01:32,368 - DEBUG - acquired lock
+2024-12-13 02:01:32,368 - DEBUG - releasing lock
+2024-12-13 02:01:32,368 - DEBUG - release lock
+2024-12-13 02:01:32,368 - DEBUG - sendMsg: sent: 53
+2024-12-13 02:01:32,368 - DEBUG - Requested market data for TSLA with ReqId: 1005
+2024-12-13 02:01:32,368 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,368 - DEBUG - conn:1 queue.sz:3
+2024-12-13 02:01:32,368 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,368 - DEBUG - fields (b'4', b'2', b'-1', b'2104', b'Market data farm connection is OK:usfarm', b'')
+2024-12-13 02:01:32,368 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,368 - DEBUG - decode <class 'int'> b'-1'
+2024-12-13 02:01:32,368 - DEBUG - decode <class 'int'> b'2104'
+2024-12-13 02:01:32,368 - DEBUG - decode <class 'str'> b'Market data farm connection is OK:usfarm'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,369 - ERROR - Error. ReqId: -1, Code: 2104, Msg: Market data farm connection is OK:usfarm, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,369 - DEBUG - conn:1 queue.sz:2
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,369 - DEBUG - fields (b'4', b'2', b'-1', b'2107', b'HMDS data farm connection is inactive but should be available upon demand.ushmds', b'')
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'-1'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'2107'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'str'> b'HMDS data farm connection is inactive but should be available upon demand.ushmds'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,369 - ERROR - Error. ReqId: -1, Code: 2107, Msg: HMDS data farm connection is inactive but should be available upon demand.ushmds, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,369 - DEBUG - conn:1 queue.sz:1
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,369 - DEBUG - fields (b'4', b'2', b'-1', b'2158', b'Sec-def data farm connection is OK:secdefnj', b'')
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'-1'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'int'> b'2158'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'str'> b'Sec-def data farm connection is OK:secdefnj'
+2024-12-13 02:01:32,369 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,369 - ERROR - Error. ReqId: -1, Code: 2158, Msg: Sec-def data farm connection is OK:secdefnj, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,369 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,369 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,433 - DEBUG - len 203 raw:b"\x00\x00\x00\xc74\x002\x001001\x0010089\x00Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AAPL NASDAQ.NMS/TOP/ALL\x00\x00"|
+2024-12-13 02:01:32,433 - DEBUG - reader loop, recvd size 203
+2024-12-13 02:01:32,433 - DEBUG - read_msg: size: 199
+2024-12-13 02:01:32,433 - DEBUG - size:199 msg.size:199 msg:|b''| buf:||
+2024-12-13 02:01:32,434 - DEBUG - fields (b'4', b'2', b'1001', b'10089', b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AAPL NASDAQ.NMS/TOP/ALL", b'')
+2024-12-13 02:01:32,434 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,434 - DEBUG - decode <class 'int'> b'1001'
+2024-12-13 02:01:32,434 - DEBUG - decode <class 'int'> b'10089'
+2024-12-13 02:01:32,434 - DEBUG - decode <class 'str'> b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AAPL NASDAQ.NMS/TOP/ALL"
+2024-12-13 02:01:32,434 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,434 - ERROR - Error. ReqId: 1001, Code: 10089, Msg: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AAPL NASDAQ.NMS/TOP/ALL, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,434 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,434 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,434 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,634 - DEBUG - queue.get: empty
+2024-12-13 02:01:32,634 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,634 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,634 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,685 - DEBUG - len 203 raw:b"\x00\x00\x00\xc74\x002\x001002\x0010089\x00Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.MSFT NASDAQ.NMS/TOP/ALL\x00\x00"|
+2024-12-13 02:01:32,685 - DEBUG - reader loop, recvd size 203
+2024-12-13 02:01:32,685 - DEBUG - read_msg: size: 199
+2024-12-13 02:01:32,685 - DEBUG - size:199 msg.size:199 msg:|b''| buf:||
+2024-12-13 02:01:32,685 - DEBUG - fields (b'4', b'2', b'1002', b'10089', b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.MSFT NASDAQ.NMS/TOP/ALL", b'')
+2024-12-13 02:01:32,685 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,685 - DEBUG - decode <class 'int'> b'1002'
+2024-12-13 02:01:32,685 - DEBUG - decode <class 'int'> b'10089'
+2024-12-13 02:01:32,685 - DEBUG - decode <class 'str'> b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.MSFT NASDAQ.NMS/TOP/ALL"
+2024-12-13 02:01:32,685 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,685 - ERROR - Error. ReqId: 1002, Code: 10089, Msg: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.MSFT NASDAQ.NMS/TOP/ALL, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,685 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,685 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,685 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,710 - DEBUG - len 204 raw:b"\x00\x00\x00\xc84\x002\x001003\x0010089\x00Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.GOOGL NASDAQ.NMS/TOP/ALL\x00\x00"|
+2024-12-13 02:01:32,710 - DEBUG - reader loop, recvd size 204
+2024-12-13 02:01:32,710 - DEBUG - read_msg: size: 200
+2024-12-13 02:01:32,710 - DEBUG - size:200 msg.size:200 msg:|b''| buf:||
+2024-12-13 02:01:32,710 - DEBUG - fields (b'4', b'2', b'1003', b'10089', b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.GOOGL NASDAQ.NMS/TOP/ALL", b'')
+2024-12-13 02:01:32,710 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,710 - DEBUG - decode <class 'int'> b'1003'
+2024-12-13 02:01:32,710 - DEBUG - decode <class 'int'> b'10089'
+2024-12-13 02:01:32,710 - DEBUG - decode <class 'str'> b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.GOOGL NASDAQ.NMS/TOP/ALL"
+2024-12-13 02:01:32,710 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,710 - ERROR - Error. ReqId: 1003, Code: 10089, Msg: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.GOOGL NASDAQ.NMS/TOP/ALL, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,710 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,710 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,710 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,711 - DEBUG - len 203 raw:b"\x00\x00\x00\xc74\x002\x001004\x0010089\x00Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AMZN NASDAQ.NMS/TOP/ALL\x00\x00"|
+2024-12-13 02:01:32,711 - DEBUG - reader loop, recvd size 203
+2024-12-13 02:01:32,711 - DEBUG - read_msg: size: 199
+2024-12-13 02:01:32,711 - DEBUG - size:199 msg.size:199 msg:|b''| buf:||
+2024-12-13 02:01:32,711 - DEBUG - fields (b'4', b'2', b'1004', b'10089', b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AMZN NASDAQ.NMS/TOP/ALL", b'')
+2024-12-13 02:01:32,712 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,712 - DEBUG - decode <class 'int'> b'1004'
+2024-12-13 02:01:32,712 - DEBUG - decode <class 'int'> b'10089'
+2024-12-13 02:01:32,712 - DEBUG - decode <class 'str'> b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AMZN NASDAQ.NMS/TOP/ALL"
+2024-12-13 02:01:32,712 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,712 - ERROR - Error. ReqId: 1004, Code: 10089, Msg: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.AMZN NASDAQ.NMS/TOP/ALL, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,712 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,712 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,712 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,912 - DEBUG - queue.get: empty
+2024-12-13 02:01:32,912 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,912 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,912 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,934 - DEBUG - len 203 raw:b"\x00\x00\x00\xc74\x002\x001005\x0010089\x00Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.TSLA NASDAQ.NMS/TOP/ALL\x00\x00"|
+2024-12-13 02:01:32,934 - DEBUG - reader loop, recvd size 203
+2024-12-13 02:01:32,934 - DEBUG - read_msg: size: 199
+2024-12-13 02:01:32,934 - DEBUG - size:199 msg.size:199 msg:|b''| buf:||
+2024-12-13 02:01:32,934 - DEBUG - fields (b'4', b'2', b'1005', b'10089', b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.TSLA NASDAQ.NMS/TOP/ALL", b'')
+2024-12-13 02:01:32,934 - DEBUG - decode <class 'int'> b'2'
+2024-12-13 02:01:32,934 - DEBUG - decode <class 'int'> b'1005'
+2024-12-13 02:01:32,934 - DEBUG - decode <class 'int'> b'10089'
+2024-12-13 02:01:32,934 - DEBUG - decode <class 'str'> b"Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.TSLA NASDAQ.NMS/TOP/ALL"
+2024-12-13 02:01:32,934 - DEBUG - decode <class 'str'> b''
+2024-12-13 02:01:32,934 - ERROR - Error. ReqId: 1005, Code: 10089, Msg: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.Delayed market data is available.TSLA NASDAQ.NMS/TOP/ALL, Advanced Order Reject JSON: 
+2024-12-13 02:01:32,935 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:32,935 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:32,935 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,135 - DEBUG - queue.get: empty
+2024-12-13 02:01:33,135 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,135 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:33,135 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,335 - DEBUG - queue.get: empty
+2024-12-13 02:01:33,335 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,335 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:33,335 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,536 - DEBUG - queue.get: empty
+2024-12-13 02:01:33,536 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,536 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:33,536 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,736 - DEBUG - queue.get: empty
+2024-12-13 02:01:33,736 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,736 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:33,736 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,935 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba040>)
+2024-12-13 02:01:33,935 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:33,936 - DEBUG - queue.get: empty
+2024-12-13 02:01:33,936 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:33,936 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:33,936 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,137 - DEBUG - queue.get: empty
+2024-12-13 02:01:34,137 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,137 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:34,137 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,337 - DEBUG - queue.get: empty
+2024-12-13 02:01:34,337 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,337 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:34,337 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,537 - DEBUG - queue.get: empty
+2024-12-13 02:01:34,538 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,538 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:34,538 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,738 - DEBUG - queue.get: empty
+2024-12-13 02:01:34,738 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,738 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:34,738 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,937 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34b9ec0>)
+2024-12-13 02:01:34,937 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:34,938 - DEBUG - queue.get: empty
+2024-12-13 02:01:34,938 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:34,938 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:34,938 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,139 - DEBUG - queue.get: empty
+2024-12-13 02:01:35,139 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,139 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:35,139 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,339 - DEBUG - queue.get: empty
+2024-12-13 02:01:35,339 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,339 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:35,339 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,539 - DEBUG - queue.get: empty
+2024-12-13 02:01:35,539 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,539 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:35,539 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,740 - DEBUG - queue.get: empty
+2024-12-13 02:01:35,740 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,740 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:35,740 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,938 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba1c0>)
+2024-12-13 02:01:35,938 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:35,940 - DEBUG - queue.get: empty
+2024-12-13 02:01:35,940 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:35,940 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:35,940 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,141 - DEBUG - queue.get: empty
+2024-12-13 02:01:36,141 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,141 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:36,141 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,341 - DEBUG - queue.get: empty
+2024-12-13 02:01:36,341 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,341 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:36,341 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,541 - DEBUG - queue.get: empty
+2024-12-13 02:01:36,541 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,541 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:36,541 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,742 - DEBUG - queue.get: empty
+2024-12-13 02:01:36,742 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,742 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:36,742 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,939 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba040>)
+2024-12-13 02:01:36,939 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:36,942 - DEBUG - queue.get: empty
+2024-12-13 02:01:36,942 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:36,942 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:36,942 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,143 - DEBUG - queue.get: empty
+2024-12-13 02:01:37,143 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,143 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:37,143 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,343 - DEBUG - queue.get: empty
+2024-12-13 02:01:37,343 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,343 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:37,343 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,543 - DEBUG - queue.get: empty
+2024-12-13 02:01:37,543 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,543 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:37,543 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,744 - DEBUG - queue.get: empty
+2024-12-13 02:01:37,744 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,744 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:37,744 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,941 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34b9ec0>)
+2024-12-13 02:01:37,941 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:37,944 - DEBUG - queue.get: empty
+2024-12-13 02:01:37,944 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:37,944 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:37,944 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,144 - DEBUG - queue.get: empty
+2024-12-13 02:01:38,144 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,144 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:38,145 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,345 - DEBUG - queue.get: empty
+2024-12-13 02:01:38,345 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,345 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:38,345 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,545 - DEBUG - queue.get: empty
+2024-12-13 02:01:38,545 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,545 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:38,545 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,746 - DEBUG - queue.get: empty
+2024-12-13 02:01:38,746 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,746 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:38,746 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,942 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba1c0>)
+2024-12-13 02:01:38,942 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:38,946 - DEBUG - queue.get: empty
+2024-12-13 02:01:38,946 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:38,946 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:38,946 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,146 - DEBUG - queue.get: empty
+2024-12-13 02:01:39,146 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,146 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:39,146 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,346 - DEBUG - queue.get: empty
+2024-12-13 02:01:39,347 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,347 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:39,347 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,547 - DEBUG - queue.get: empty
+2024-12-13 02:01:39,547 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,547 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:39,547 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,747 - DEBUG - queue.get: empty
+2024-12-13 02:01:39,747 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,747 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:39,747 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,942 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba040>)
+2024-12-13 02:01:39,942 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:39,948 - DEBUG - queue.get: empty
+2024-12-13 02:01:39,948 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:39,948 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:39,948 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,148 - DEBUG - queue.get: empty
+2024-12-13 02:01:40,148 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,148 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:40,148 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,348 - DEBUG - queue.get: empty
+2024-12-13 02:01:40,348 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,348 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:40,348 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,549 - DEBUG - queue.get: empty
+2024-12-13 02:01:40,549 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,549 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:40,549 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,749 - DEBUG - queue.get: empty
+2024-12-13 02:01:40,749 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,749 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:40,749 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,943 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34b9ec0>)
+2024-12-13 02:01:40,943 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:40,949 - DEBUG - queue.get: empty
+2024-12-13 02:01:40,949 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:40,949 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:40,949 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,150 - DEBUG - queue.get: empty
+2024-12-13 02:01:41,150 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,150 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:41,150 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,350 - DEBUG - queue.get: empty
+2024-12-13 02:01:41,350 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,350 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:41,350 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,550 - DEBUG - queue.get: empty
+2024-12-13 02:01:41,550 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,550 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:41,550 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,751 - DEBUG - queue.get: empty
+2024-12-13 02:01:41,751 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,751 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:41,751 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,945 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7f38c34ba1c0>)
+2024-12-13 02:01:41,945 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:41,951 - DEBUG - queue.get: empty
+2024-12-13 02:01:41,951 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:41,951 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:41,951 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:42,152 - DEBUG - queue.get: empty
+2024-12-13 02:01:42,152 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:42,152 - DEBUG - conn:1 queue.sz:0
+2024-12-13 02:01:42,152 - DEBUG - 139881771299920 isConn: 2, connConnected: True
+2024-12-13 02:01:42,322 - WARNING - Timeout while waiting for market data.
+2024-12-13 02:01:42,322 - DEBUG - 139881771299920 connState: 2 -> 0
+2024-12-13 02:01:42,322 - INFO - disconnecting
+2024-12-13 02:01:42,322 - DEBUG - disconnecting
+2024-12-13 02:01:42,322 - DEBUG - disconnected
+2024-12-13 02:01:42,322 - INFO - Connection to IB Gateway closed.
+2024-12-13 02:01:42,323 - DEBUG - 139881771299920 connState: None -> 0
+2024-12-13 02:01:42,352 - DEBUG - queue.get: empty
+2024-12-13 02:01:42,352 - DEBUG - 139881771299920 isConn: 0, connConnected: None
+2024-12-13 02:01:42,352 - DEBUG - conn:0 queue.sz:0
+2024-12-13 02:01:42,352 - DEBUG - 139881771299920 isConn: 0, connConnected: None
+2024-12-13 02:01:42,352 - DEBUG - 139881771299920 connState: 0 -> 0
+2024-12-13 02:01:42,946 - DEBUG - socket broken, disconnecting
+2024-12-13 02:01:42,946 - DEBUG - reader loop, recvd size 0
+2024-12-13 02:01:42,946 - DEBUG - EReader thread finished
+2024-12-13 02:01:44,323 - INFO - TestStockRetriever completed.

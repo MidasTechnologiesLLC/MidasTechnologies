@@ -1,0 +1,233 @@
+.TH MIDASV1 1 "December 2024" "MidasV1 Manual" "MidasV1 Manual"
+.SH NAME
+midasv1 \- A modular trading bot for Interactive Brokers
+
+.SH SYNOPSIS
+.B python
+.RS
+.B main.py
+[\fB--no-checks\fP]
+[\fB--skip-checks\fP]
+[\fB--verbose\fP]
+[\fB--version\fP]
+.RE
+
+.SH DESCRIPTION
+MidasV1 is a sophisticated trading bot written in Python, designed to interact seamlessly with the Interactive Brokers (IB) Gateway or the IBJTS API and JTS. Leveraging a modular architecture, MidasV1 performs comprehensive system checks, retrieves and refines stock data, executes trading strategies based on real-time market analysis, and manages risks effectively.
+
+.SH FEATURES
+.IP \fBModular Architecture\fP
+MidasV1 is divided into multiple modules, each responsible for distinct functionalities, ensuring a clear separation of concerns and streamlined operations.
+
+.IP \fBComprehensive System Checks\fP
+Before initiating trading operations, MidasV1 verifies the operating system, checks for necessary dependencies, assesses system resources, and ensures a secure connection with the IB Gateway.
+
+.IP \fBReal-Time Market Data Retrieval\fP
+Utilizes the IB API to scan and refine a list of stocks based on predefined criteria such as trading volume, net change, and volatility.
+
+.IP \fBAutomated Trading Strategies\fP
+Analyzes real-time market data to determine bullish or bearish trends and executes trades accordingly, incorporating risk management protocols.
+
+.IP \fBRisk Management\fP
+Implements multi-stage risk assessments to ensure trades are executed within acceptable risk parameters, including stop-loss mechanisms.
+
+.SH WORKFLOW AND PROGRAM DESIGN
+MidasV1 operates through a series of interconnected modules, each performing specific tasks:
+
+.IP \fBModule 1: Initial Checks\fP
+Includes:
+.IP a. Operating System Check
+Determines the operating system, supporting Linux by default. Unsupported OSes like Windows and MacOS trigger informative warnings and exit gracefully.
+.IP b. Dependency Check
+Reads required dependencies from `requirements.txt` located in the parent directory. Ensures all necessary Python packages are installed, informing the user of any missing dependencies with clear instructions.
+.IP c. Connectivity Check
+Verifies a secure connection with the IB Gateway using configuration parameters from `config/config.config`. Reports connectivity status with colored and formatted messages for enhanced readability.
+
+.IP \fBModule 2: IBJTS List Petitioner\fP
+Includes:
+.IP a. Scanner
+Retrieves a list of stocks that meet predefined criteria such as search volume, net change, and percent change.
+.IP b. Refiner
+Further refines the scanned stock list based on additional criteria like share price, availability of option contracts, and volatility index.
+
+.IP \fBModule 3: Stock Information Retrieval\fP
+Includes:
+.IP a. Load
+Loads the refined stock list from Module 2.
+.IP b. Threaded Information Gathering & Choosing Strategy
+Spawns individual threads to fetch real-time market data for each stock and determines the optimal trading strategy based on collected data.
+.IP c. Strategy Implementation & Market Determination
+Analyzes indicators like RSI, MACD, ADX, and EMA to classify market sentiment as bullish or bearish for each stock.
+
+.IP \fBModule 4: Option Chain Trading & Risk Management\fP
+Includes:
+.IP a. Option Chain Data
+Retrieves and analyzes option chain data for selected bullish and bearish stocks.
+.IP b. Risk Management Stage 1
+Assesses the acceptability of risk based on user account balance and predefined thresholds.
+.IP c. Buying and Selling / Risk Management Stage 2
+Executes trades, sets up stop-loss orders, and continuously monitors market data to implement selling strategies.
+
+.IP \fBGeneral Additions\fP
+- **Command-Line Flags:** Allows users to run the program with or without initial checks, enable verbose output, and display the program version.
+- **Logging & Console Outputs:** Implements both file-based logging and colored console outputs for better traceability and user feedback.
+- **Graceful Shutdowns:** Handles interrupt signals to ensure connections are closed properly.
+- **Extensibility:** Designed to determine the number of threads based on system resources for optimal performance.
+
+.SH FILE STRUCTURE
+The project directory `MidasV1` is organized as follows:
+.IP \fBproject_root/MidasV1/\fP
+.RS
+.IP \fBREADME.md\fP
+Documentation and overview of the project.
+
+.IP \fBrequirements.txt\fP
+Lists all Python dependencies required by MidasV1.
+
+.IP \fBconfig/config.config\fP
+Configuration file containing all necessary parameters and thresholds.
+
+.IP \fBmain.py\fP
+The primary script that orchestrates the application's flow.
+
+.IP \fBmodules/\fP
+Contains all modular components of MidasV1.
+.IP \fBmodules/initial_checks.py\fP
+Performs system and environment checks.
+.IP \fBmodules/stock_list_petitioner.py\fP
+Retrieves and refines stock lists based on criteria.
+
+.IP \fBtests/\fP
+Contains test scripts for various modules.
+.IP \fBtests/test_stock_retriever.py\fP
+Tests stock retrieval and filtering.
+.IP \fBtests/test_connection.py\fP
+Tests connectivity with IB Gateway.
+
+.IP \fBlogs/\fP
+Stores detailed execution logs.
+.IP \fBlogs/MidasV1.log\fP
+
+.IP \fBdata/\fP
+Stores JSON files with raw market data for each stock.
+.RE
+
+.SH INSTALLATION
+.IP \fBPrerequisites\fP
+.B Python 3.6+
+.B Interactive Brokers (IB) Account
+
+.IP \fBSteps\fP
+.RS
+.IP 1. Clone the Repository
+.B
+.RS
+.nf
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+.RE
+.IP 2. Download IB API
+Download and install the latest version of the [Interactive Brokers API](https://www.interactivebrokers.com/en/index.php?f=5041).
+.IP 3. Configure IB Gateway
+Ensure that IB Gateway is running with API settings configured to allow connections from your machine.
+.RE
+
+.SH CONFIGURATION
+All configurable parameters are stored in `config/config.config`. Below is an example configuration:
+.RS
+.IP \fB[Connectivity]\fP
+.B host = 127.0.0.1
+.B port = 4002
+.B client_id = 0
+
+.IP \fB[Logging]\fP
+.B level = INFO
+
+.IP \fB[Module2]\fP
+.B default_search_volume = 1000000
+.B default_net_change = 0.50
+.B default_percent_change = 2.0
+.B default_refinement_share_price = 15.0
+.B default_volatility_threshold = 30.0
+.B conditional_refinement_enabled = True
+.B max_refined_list_size = 100
+.RE
+
+.SH USAGE
+Run the application using the following command:
+.RS
+.IP \fBpython main.py\fP
+[\fB--no-checks\fP]
+[\fB--skip-checks\fP]
+[\fB--verbose\fP]
+[\fB--version\fP]
+.RE
+
+.IP \fBAvailable Flags\fP
+.TP
+\fB--no-checks\fP
+Run the program without prompting for user confirmation after initial checks.
+.TP
+\fB--skip-checks\fP
+Skip specific initial checks (primarily dependency checks).
+.TP
+\fB--verbose\fP
+Enable verbose and colorful output to the console.
+.TP
+\fB--version\fP
+Print the program version and exit.
+.RE
+
+.SH LOGGING
+MidasV1 utilizes both file-based logging and colored console outputs to track its operations.
+.IP \fBLog File\fP
+.B logs/MidasV1.log
+Stores detailed logs including debug information, errors, and informational messages.
+
+.IP \fBConsole Outputs\fP
+Color-coded messages enhance readability:
+.IP \fBGreen\fP
+Indicates successful operations or passing criteria.
+.IP \fBRed\fP
+Highlights errors or critical issues.
+.IP \fBYellow\fP
+Used for warnings and informational messages.
+.IP \fBBlue\fP and \fBMagentafP
+Used for decorative separators and headers.
+.RE
+
+.SH FUTURE ENHANCEMENTS
+MidasV1 is designed with scalability in mind, allowing for future feature additions and optimizations:
+.IP \fBOperating System Support\fP
+Extend support to Windows, MacOS, BSD, illumos, etc., with specific handling mechanisms.
+.IP \fBAdvanced Dependency Management\fP
+Implement dynamic dependency resolution and version management.
+.IP \fBEnhanced Strategy Module\fP
+Develop more sophisticated trading strategies based on additional market indicators.
+.IP \fBRisk Management Enhancements\fP
+Implement multi-stage risk assessments and portfolio diversification strategies.
+.IP \fBPerformance Optimization\fP
+Utilize system resource checks to dynamically allocate threads for optimal performance.
+.IP \fBUser Interface\fP
+Develop a graphical user interface (GUI) for easier interaction and monitoring.
+.IP \fBExtensive Testing\fP
+Expand test coverage to include integration and stress tests, and implement CI pipelines.
+.IP \fBDocumentation & Support\fP
+Enhance documentation with tutorials and usage guides, and provide support mechanisms.
+.RE
+
+.SH DISCLAIMER
+.B MidasV1
+is proprietary software developed for private use. Unauthorized distribution, replication, or modification is strictly prohibited. The author assumes no responsibility for any misuse or damages resulting from the use of this software. Users are advised to thoroughly test the application in a controlled environment (e.g., paper trading) before deploying it in live trading scenarios.
+
+.SH AUTHOR
+.CC
+kleinpainc (kleinpanic@gmail.com)
+.RE
+
+.SH COPYRIGHT
+.CC
+© 2024 kleinpanic. All rights reserved.
+.RE
+
