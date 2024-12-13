@@ -10,104 +10,113 @@ Midas Technologies aims to build and manage a diversified portfolio of algorithm
 
 ## Business Model
 
-Our core product is an algorithmic trading platform that leverages real-time data to predict and execute trades based on crude oil price fluctuations. Our trading system integrates a multifaceted analysis of market trends, sentiment analysis, historical price patterns, and economic indicators to ensure precise market predictions.
+Our core product is a modular algorithmic trading platform. The current focus is **MidasV1**, a trading bot for contracts and options, with functionality spanning real-time data collection, market analysis, and automated execution.
 
-**Current Project: Oil Oracle 1.0**
+### **Current Project: MidasV1**
 
-- **Purpose**: To predict and execute trades on oil prices with consistent accuracy.
-- **Technology Stack**:
-  - **Python** for core algorithm development.
-  - **Machine Learning Models** such as BERT and LSTM for sentiment analysis and volatility prediction.
-  - **Data Scraping** for real-time news and sentiment acquisition.
-  - **Technical Indicators** for validation of trade signals.
-  - **APIs** for live data integration and trade execution.
+#### Purpose
+MidasV1 automates trading decisions by combining advanced market analysis techniques, sentiment scoring, and option chain evaluation to ensure optimal trading performance.
+
+#### Workflow / Program Design
+1. **Module 1: Initial System Checks**
+   - **Operating System Check**: Ensures compatibility with the host system (default: Linux).
+   - **Dependency Check**: Verifies that all required libraries and tools are installed.
+   - **Connectivity Check**: Confirms secure integration with IBJTS or IB Gateway.
+
+2. **Module 2: IBJTS List Petitioner**
+   - Scans and refines a list of stocks meeting initial volume, change, and percent change criteria.
+   - Filters stocks based on share price, options availability, volatility, and configurable thresholds.
+
+3. **Module 3: Stock Information Retrieval**
+   - Gathers historical and intraday trading data (datetime, high, low, close, volume).
+   - Implements a strategy counter to determine the best indicators (e.g., RSI, MACD, ADX) for market analysis.
+
+4. **Module 4: Option Chain Trading and Risk Management**
+   - Evaluates option chain data for selected bullish and bearish stocks.
+   - Executes trades with dynamic stop-losses and real-time risk assessment.
+
+5. **General Features**
+   - Supports configurable flags for verbosity, enabling logs or console output.
+   - Integrates a modular structure to simplify future enhancements.
 
 ## Key Components
 
-### 1. **Sentiment Analysis and News Scraper**
-   - **Objective**: Extract relevant oil-related news and analyze market sentiment.
-   - **Functionality**: Scrapes news at precise times, preprocesses data, performs sentiment analysis, and uses historical backtesting to validate accuracy.
-   - **Sentiment Scoring**: -1 to +1, representing sentiment strength and impact.
+### Sentiment Analysis and News Integration
+- **Objective**: Enhance market predictions with NLP-powered sentiment scoring.
+- **Models Used**: BERT, LSTM.
+- **Sentiment Scoring**: Range of -1 to +1 for precise market insights.
 
-### 2. **Confidence Scoring Module**
-   - **Objective**: Provide confidence scores for sentiment analysis results.
-   - **Methods**: Uses ensemble learning and backtested metrics to assign confidence scores, filtering out low-confidence predictions.
+### Technical Analysis and Strategy Development
+- Combines RSI, MACD, ADX, and EMA indicators for market determination.
+- Provides real-time confidence scoring and strategy refinement.
 
-### 3. **Pre-Market and Intraday Volatility Assessment**
-   - **Objective**: Estimate daily price movement and intraday volatility.
-   - **Tools**: Machine learning models like LSTM and XGBoost, volatility indicators, and pre-market analysis based on news strength.
-
-### 4. **Technical Analysis and Historical Pattern Matching**
-   - **Objective**: Validate sentiment-driven insights with technical analysis and historical patterns.
-   - **Indicators**: Includes Moving Averages, RSI, Bollinger Bands, and support/resistance levels to confirm sentiment-based trade signals.
-
-### 5. **Trade Execution and Monitoring**
-   - **Objective**: Execute trades based on projected price movement and risk management protocols.
-   - **Strategies**: Uses options trading with dynamic stop-losses, profit-taking, and trend reversal mechanisms for optimal performance.
+### Automated Trading Execution
+- Implements configurable risk management protocols.
+- Supports modular evaluation of live data for buy/sell signals.
 
 ## Directory Structure
 
 ```
 MidasTechnologiesLLC/
-├── src/
-│   ├── data-collection/        # Web scraping, data ingestion, and preprocessing
-│   ├── neural-network/          # Machine learning models for sentiment and volatility analysis
-│   ├── sentiment-analysis/      # Sentiment analysis and NLP processing
-│   ├── frontend/                # Visualization and UI components
-│   └── main.py                  # Main entry point for the program
-│
+├── assets/
+│   └── MidasTechnologiesLogo.JPG
+├── data/
+│   └── HistoricalData.json
 ├── docs/
-│   ├── BusinessDocumentation/   # Documents related to business plans, bylaws, and other formal records
-│   ├── PoliciesAndStandards/    # Guidelines for coding, Git usage, file-path standards, etc.
-│   └── ManPages/                # Global code documentation for the overarching program
-│
-├── config/                      # Configuration files and environment settings
-├── data/                        # Static data for the overarching program
-├── tests/                       # Unit and integration tests for code validation
-├── scripts/                     # Utility scripts for setup and deployment
-└── examples/                    # Sample scripts and example usage files
+│   ├── BusinessDocumentation/
+│   ├── PoliciesAndStandards/
+│   ├── ManPages/
+│   └── README.md
+├── logs/
+│   └── MidasV1.log
+├── scripts/
+│   └── README.md (Setup scripts and tools)
+├── src/
+│   ├── griffin-stuff/
+│   ├── MidasV1/
+│   │   ├── config/
+│   │   │   └── config.config
+│   │   ├── logs/
+│   │   │   └── MidasV1.log
+│   │   ├── modules/
+│   │   │   ├── initial_checks.py
+│   │   │   ├── stock_list_petitioner.py
+│   │   │   └── __pycache__/
+│   │   ├── tests/
+│   │   │   ├── test_connection.py
+│   │   │   └── test_stock_retriever.py
+│   │   └── main.py
+│   ├── WebScraper/
+│   │   ├── data/
+│   │   ├── scrapers/
+│   │   └── main.py
+│   └── README.md
+└── README.md
 ```
 
 ## Standards and Best Practices
 
-### 1. **Coding Standards**
+### Coding Standards
+- Adheres to **PEP8** for Python.
+- Modular structure ensures maintainability and scalability.
 
-All code should adhere to **PEP8** standards for Python and follow industry best practices for maintainability and readability. Each root module must contain a `README.md` file with documentation on functionality and usage.
+### Documentation Standards
+- **Business Documentation**: Legal, corporate, and policy-related files.
+- **Man Pages**: Comprehensive technical references for all modules.
 
-- **Python Standards**: Use virtual environments (`venv`), ensure `requirements.txt` is up to date, and avoid committing environment-specific files.
-- **Interfacing with Other Languages**: Maintain consistency when interacting with languages like C, Rust, or Go.
-
-### 2. **Documentation Standards**
-
-Documentation is organized into three main areas within the `docs` folder:
-- **Business Documentation**: Legal, business, and corporate documents.
-- **Policies and Standards**: Coding guidelines, Git practices, file-path conventions, and more.
-- **Man Pages**: Comprehensive documentation of each part of the system.
-
-### 3. **Git Standards**
-
-- **Branching Strategy**: `main` is the production branch, `dev` is for development, and feature-specific branches are created off of `dev`.
-- **Commit Messages**: Follow a structured format and keep messages descriptive and clear.
-- **Pull Requests**: All changes must be submitted through pull requests, with relevant team members assigned as reviewers.
-
-## Communication and Collaboration
-
-To ensure a cohesive development process, Midas Technologies follows these key guidelines:
-
-- **GitHub Issues**: For tracking bugs, features, and tasks.
-- **Weekly Meetings**: Updates on progress, blockers, and upcoming tasks.
-- **Direct Messaging**: For urgent, immediate issues or clarifications.
+### Git Standards
+- **Branching Strategy**: `main` for production, `dev` for development, and feature-specific branches off `dev`.
+- **Commit Messages**: Follow structured and descriptive formats.
+- **Pull Requests**: Require reviewer approval for all major changes.
 
 ## Roadmap
 
-Our current focus is building a modular and scalable system capable of performing complex sentiment analysis and technical validation for trading. **Future goals** include expanding into other commodities and assets, refining machine learning models, and implementing additional risk management strategies.
-
-| Phase                       | Duration   | Goals |
-|-----------------------------|------------|-------|
-| **Phase 1: Initial Build**  | Weeks 1-4  | Develop core modules, news scraper, and basic sentiment analysis |
-| **Phase 2: Backtesting**    | Weeks 5-6  | Historical backtesting for reliability |
-| **Phase 3: Expansion**      | Weeks 7-8  | Introduce multi-asset support and advanced indicators |
-| **Phase 4: Live Trading**   | Ongoing    | Deploy and continuously improve trading algorithm |
+| Phase                       | Duration   | Goals                                    |
+|-----------------------------|------------|------------------------------------------|
+| **Phase 1: Initial Build**  | Weeks 1-4  | Core modules, sentiment analysis, scraper |
+| **Phase 2: Backtesting**    | Weeks 5-6  | Validate reliability and performance    |
+| **Phase 3: Expansion**      | Weeks 7-8  | Support additional assets and strategies |
+| **Phase 4: Live Trading**   | Ongoing    | Deploy trading bot and refine algorithms |
 
 ## Getting Started
 
@@ -135,14 +144,14 @@ For more information, please reach out to the Midas Technologies team.
 
 **Primary Contacts**:
 - **Chief Data Officer**: Griffin 
-- **Chief Technical Officer**: Collin Aka KleinPanic
+- **Chief Technical Officer**: Collin (KleinPanic)
 - **Chief Operations Officer**: Jacob 
 
 **Note**: This project and all related files are private and for use by Midas Technologies LLC only. Unauthorized distribution or modification is strictly prohibited.
 
 ## License
 
-For the license file, please navigate to the docs/BusinessDocumentation/LICENSE and read it there. 
+For the license file, please navigate to the `docs/BusinessDocumentation/LICENSE`.
 
 ``` Author
 KleinPanic
