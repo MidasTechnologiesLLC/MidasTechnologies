@@ -8,7 +8,7 @@ exclude =
     .git
     __pycache__
 
-# Error codes to ignore
+# flake8 error codes to ignore
 # Whitespace before ':', compatible with Black formatting
 # Line break before binary operator, compatible with Black formatting
 # Line length (use max-line-length instead)
@@ -17,11 +17,15 @@ exclude =
 # Trailing whitespace
 # No newline at end of file
 # Blank line contains whitespace
-# Expected 2 blank lines, found 1 (can make code more compact if ignored)
+# Expected 2 blank lines, found 1
 # Expected 2 blank lines after class or function definition
 # Ambiguous variable name (e.g., l, O)
 # Block comment should start with '# '
 # Do not use bare 'except'
+# Module imported but unused
+# Blank line at end of file
+# At least two spaces before inline comment
+# Continuation line under-indented for visual indent
 ignore =
     E203
     W503
@@ -36,3 +40,8 @@ ignore =
     E741
     E265
     E722
+    F401
+    W391
+    E261
+    E128
+
