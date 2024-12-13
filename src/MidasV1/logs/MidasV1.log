@@ -1,0 +1,164 @@
+2024-12-13 01:25:45,907 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 01:25:45,907 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 01:25:45,907 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 01:25:45,907 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 01:25:45,907 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 01:25:45,907 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 891.19 MHz
+CPU Load Average (1m, 5m, 15m): (0.333984375, 0.28125, 0.21630859375)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 3.15 GB (27.7%)
+Available RAM: 11.08 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:25:45,908 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 01:25:45,912 - MidasV1.InitialChecks - INFO - [INFO] Managed accounts: DUE064818
+2024-12-13 01:25:45,912 - MidasV1.InitialChecks - INFO - [INFO] Next valid order ID: 1
+2024-12-13 01:25:45,912 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2104, msg=Market data farm connection is OK:usfarm
+2024-12-13 01:25:45,955 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2107, msg=HMDS data farm connection is inactive but should be available upon demand.ushmds
+2024-12-13 01:25:45,955 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2158, msg=Sec-def data farm connection is OK:secdefnj
+2024-12-13 01:25:46,011 - MidasV1.InitialChecks - INFO - [INFO] Connected successfully!
+2024-12-13 01:25:46,011 - MidasV1.InitialChecks - INFO - Requesting account summary...
+2024-12-13 01:25:46,041 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, BuyingPower = 4014612.28 USD
+2024-12-13 01:25:46,042 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, EquityWithLoanValue = 1003653.07 USD
+2024-12-13 01:25:46,042 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, NetLiquidation = 1004890.64 USD
+2024-12-13 01:25:46,043 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, TotalCashValue = 1003653.07 USD
+2024-12-13 01:25:46,043 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY END] ReqId: 1
+2024-12-13 01:25:51,012 - MidasV1.InitialChecks - INFO - [INFO] Successfully retrieved account summary data.
+2024-12-13 01:25:51,012 - MidasV1.InitialChecks - INFO - IB Gateway is connected and ready for upcoming modules.
+2024-12-13 01:25:51,013 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:25:51,013 - MidasV1.InitialChecks - INFO -     Test Complete
+2024-12-13 01:25:51,013 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:25:51,013 - MidasV1.InitialChecks - INFO - All initial checks passed successfully.
+2024-12-13 01:25:51,013 - MidasV1.StockListPetitioner - INFO - Starting Module 2: IBJTS List Petitioner...
+2024-12-13 01:25:51,013 - MidasV1.StockListPetitioner - INFO - Loaded Scanner Criteria:
+  - Search Volume: 1000000
+  - Net Change: 0.5
+  - Percent Change: 2.0
+2024-12-13 01:25:51,013 - MidasV1.StockListPetitioner - INFO - Initiating scanner subscription with the above criteria...
+2024-12-13 01:25:51,014 - MidasV1.StockListPetitioner - INFO - Scanner subscription requested successfully on attempt 1.
+2024-12-13 01:25:51,014 - MidasV1.StockListPetitioner - INFO - Waiting for scanner data (timeout in 15 seconds)...
+2024-12-13 01:25:51,115 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=162, msg=Historical Market Data Service error message:Scanner type with code ALL is disabled
+2024-12-13 01:26:06,014 - MidasV1.StockListPetitioner - ERROR - Scanner subscription timed out.
+2024-12-13 01:26:06,015 - MidasV1.StockListPetitioner - ERROR - Scanner subscription canceled due to timeout.
+2024-12-13 01:26:06,015 - MidasV1.Main - INFO - Refined Stock List: []
+2024-12-13 01:26:06,015 - MidasV1.Main - INFO - Initial checks and Module 2 completed. Please review the logs and ensure everything is correct.
+2024-12-13 01:26:06,017 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=365, msg=No scanner subscription found for ticker id:1001
+2024-12-13 01:26:08,651 - MidasV1.Main - ERROR - Interrupt received. Shutting down gracefully...
+2024-12-13 01:26:08,651 - MidasV1.InitialChecks - ERROR - [ERROR] Connection to IB Gateway was closed unexpectedly!
+2024-12-13 01:26:08,651 - MidasV1.Main - INFO - Disconnected from IB Gateway.
+2024-12-13 01:40:53,290 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 01:40:53,290 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 01:40:53,290 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 01:40:53,290 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 01:40:53,290 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 01:40:53,290 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 1745.26 MHz
+CPU Load Average (1m, 5m, 15m): (0.775390625, 0.732421875, 0.5390625)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 2.93 GB (26.5%)
+Available RAM: 11.26 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:40:53,291 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 01:40:53,335 - MidasV1.InitialChecks - INFO - [INFO] Managed accounts: DUE064818
+2024-12-13 01:40:53,379 - MidasV1.InitialChecks - INFO - [INFO] Next valid order ID: 1
+2024-12-13 01:40:53,379 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2104, msg=Market data farm connection is OK:usfarm
+2024-12-13 01:40:53,379 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2106, msg=HMDS data farm connection is OK:ushmds
+2024-12-13 01:40:53,379 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2158, msg=Sec-def data farm connection is OK:secdefnj
+2024-12-13 01:40:53,429 - MidasV1.InitialChecks - INFO - [INFO] Connected successfully!
+2024-12-13 01:40:53,430 - MidasV1.InitialChecks - INFO - Requesting account summary...
+2024-12-13 01:40:53,591 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, BuyingPower = 4014612.28 USD
+2024-12-13 01:40:53,592 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, EquityWithLoanValue = 1003653.07 USD
+2024-12-13 01:40:53,592 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, NetLiquidation = 1004890.64 USD
+2024-12-13 01:40:53,593 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, TotalCashValue = 1003653.07 USD
+2024-12-13 01:40:53,594 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY END] ReqId: 1
+2024-12-13 01:40:58,431 - MidasV1.InitialChecks - INFO - [INFO] Successfully retrieved account summary data.
+2024-12-13 01:40:58,432 - MidasV1.InitialChecks - INFO - IB Gateway is connected and ready for upcoming modules.
+2024-12-13 01:40:58,432 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:40:58,432 - MidasV1.InitialChecks - INFO -     Test Complete
+2024-12-13 01:40:58,433 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 01:40:58,433 - MidasV1.InitialChecks - INFO - All initial checks passed successfully.
+2024-12-13 01:40:58,433 - MidasV1.StockListPetitioner - INFO - Starting Module 2: IBJTS List Petitioner...
+2024-12-13 01:40:58,433 - MidasV1.StockListPetitioner - INFO - Loaded Scanner Criteria:
+  - Search Volume: 1000000
+  - Net Change: 0.5
+  - Percent Change: 2.0
+2024-12-13 01:40:58,434 - MidasV1.StockListPetitioner - INFO - Initiating scanner subscription with the above criteria...
+2024-12-13 01:40:58,434 - MidasV1.StockListPetitioner - INFO - Scanner subscription requested successfully on attempt 1.
+2024-12-13 01:40:58,435 - MidasV1.StockListPetitioner - INFO - Waiting for scanner data (timeout in 15 seconds)...
+2024-12-13 01:40:59,213 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=162, msg=Historical Market Data Service error message:Scanner type with code ALL is disabled
+2024-12-13 01:41:13,435 - MidasV1.StockListPetitioner - ERROR - Scanner subscription timed out.
+2024-12-13 01:41:13,435 - MidasV1.StockListPetitioner - ERROR - Scanner subscription canceled due to timeout.
+2024-12-13 01:41:13,436 - MidasV1.Main - INFO - Refined Stock List: []
+2024-12-13 01:41:13,436 - MidasV1.Main - INFO - Initial checks and Module 2 completed. Please review the logs and ensure everything is correct.
+2024-12-13 01:41:13,439 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=365, msg=No scanner subscription found for ticker id:1001
+2024-12-13 01:41:45,958 - MidasV1.Main - ERROR - Interrupt received. Shutting down gracefully...
+2024-12-13 01:41:45,958 - MidasV1.InitialChecks - ERROR - [ERROR] Connection to IB Gateway was closed unexpectedly!
+2024-12-13 01:41:45,958 - MidasV1.Main - INFO - Disconnected from IB Gateway.
+2024-12-13 02:13:25,804 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 02:13:25,804 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 02:13:25,804 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 02:13:25,804 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 02:13:25,804 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 02:13:25,804 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 1030.11 MHz
+CPU Load Average (1m, 5m, 15m): (0.7734375, 0.642578125, 0.6494140625)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 3.11 GB (27.6%)
+Available RAM: 11.09 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 02:13:25,805 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 02:13:25,809 - MidasV1.InitialChecks - INFO - [INFO] Managed accounts: DUE064818
+2024-12-13 02:13:25,851 - MidasV1.InitialChecks - INFO - [INFO] Next valid order ID: 1
+2024-12-13 02:13:25,851 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2104, msg=Market data farm connection is OK:usfarm
+2024-12-13 02:13:25,852 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2107, msg=HMDS data farm connection is inactive but should be available upon demand.ushmds
+2024-12-13 02:13:25,852 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2158, msg=Sec-def data farm connection is OK:secdefnj
+2024-12-13 02:13:25,908 - MidasV1.InitialChecks - INFO - [INFO] Connected successfully!
+2024-12-13 02:13:25,909 - MidasV1.InitialChecks - INFO - Requesting account summary...
+2024-12-13 02:13:25,940 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, BuyingPower = 4014612.28 USD
+2024-12-13 02:13:25,940 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, EquityWithLoanValue = 1003653.07 USD
+2024-12-13 02:13:25,941 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, NetLiquidation = 1004890.64 USD
+2024-12-13 02:13:25,941 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, TotalCashValue = 1003653.07 USD
+2024-12-13 02:13:25,941 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY END] ReqId: 1
+2024-12-13 02:13:30,910 - MidasV1.InitialChecks - INFO - [INFO] Successfully retrieved account summary data.
+2024-12-13 02:13:30,910 - MidasV1.InitialChecks - INFO - IB Gateway is connected and ready for upcoming modules.
+2024-12-13 02:13:30,911 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 02:13:30,911 - MidasV1.InitialChecks - INFO -     Test Complete
+2024-12-13 02:13:30,911 - MidasV1.Main - ERROR - An unexpected error occurred during initial checks or Module 2.
+Traceback (most recent call last):
+  File "/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/MidasV1/main.py", line 194, in main
+    connected_client = initial_checks.run_all_checks(skip_checks=args.skip_checks, callback_handlers=[stock_petitioner])  # Pass as callback handler
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/MidasV1/modules/initial_checks.py", line 357, in run_all_checks
+    connected_client = self.check_connectivity(callback_handlers)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/MidasV1/modules/initial_checks.py", line 285, in check_connectivity
+    app.connect_and_run()
+  File "/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/MidasV1/modules/initial_checks.py", line 280, in connect_and_run
+    print(f"{MAGENTA}{BOLD}    Test Complete{RESET}")
+             ^^^^^^^
+NameError: name 'MAGENTA' is not defined
+2024-12-13 02:13:49,362 - MidasV1.Main - ERROR - Interrupt received. Shutting down gracefully...
