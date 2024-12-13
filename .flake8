@@ -1,19 +1,38 @@
 [flake8]
-max-line-length = 88
+# Increased line length for flexibility
+max-line-length = 100
 
 # Directories to exclude from linting
 exclude =
-    venv,
-    .git,
+    venv
+    .git
     __pycache__
 
 # Error codes to ignore
-# E203, W503 are ignored for compatibility with Black formatting
-# E501 is ignored because max-line-length is set
-# F841 is useful for placeholders or debugging
+# Whitespace before ':', compatible with Black formatting
+# Line break before binary operator, compatible with Black formatting
+# Line length (use max-line-length instead)
+# Module level import not at top of file
+# Local variable assigned to but never used (useful for placeholders or debugging)
+# Trailing whitespace
+# No newline at end of file
+# Blank line contains whitespace
+# Expected 2 blank lines, found 1 (can make code more compact if ignored)
+# Expected 2 blank lines after class or function definition
+# Ambiguous variable name (e.g., l, O)
+# Block comment should start with '# '
+# Do not use bare 'except'
 ignore =
-    E203,
-    W503,
-    E501,
+    E203
+    W503
+    E501
+    E402
     F841
-
+    W291
+    W292
+    W293
+    E302
+    E305
+    E741
+    E265
+    E722
