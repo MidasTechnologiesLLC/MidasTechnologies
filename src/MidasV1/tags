@@ -1,0 +1,140 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/MidasV1/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+Additional Information	README.md	/^## Additional Information$/;"	s	chapter:MidasV1
+Available Flags	README.md	/^### Available Flags$/;"	S	section:MidasV1""Usage
+BLUE	tests/test_connection.py	/^BLUE = "\\033[94m"$/;"	v
+BLUE	tests/test_stock_retriever.py	/^BLUE = "\\033[94m"$/;"	v
+BOLD	tests/test_connection.py	/^BOLD = "\\033[1m"$/;"	v
+COLOR_CODES	main.py	/^    COLOR_CODES = {$/;"	v	class:ColoredFormatter
+ColoredFormatter	main.py	/^class ColoredFormatter(logging.Formatter):$/;"	c
+Configuration	README.md	/^## Configuration$/;"	s	chapter:MidasV1
+Configuration Sections	README.md	/^### Configuration Sections$/;"	S	section:MidasV1""Configuration
+ConnectionTestApp	modules/initial_checks.py	/^        class ConnectionTestApp(TestWrapper, TestClient):$/;"	c	member:InitialChecks.check_connectivity	file:
+ConnectionTestApp	tests/test_connection.py	/^class ConnectionTestApp(TestWrapper, TestClient):$/;"	c
+Disclaimer	README.md	/^## Disclaimer$/;"	s	chapter:MidasV1
+Example Commands	README.md	/^### Example Commands$/;"	S	section:MidasV1""Usage
+File Structure	README.md	/^## File Structure$/;"	s	chapter:MidasV1
+Future Enhancements	README.md	/^## Future Enhancements$/;"	s	chapter:MidasV1
+GREEN	tests/test_connection.py	/^GREEN = "\\033[92m"$/;"	v
+GREEN	tests/test_stock_retriever.py	/^GREEN = "\\033[92m"$/;"	v
+General Additions	README.md	/^### General Additions$/;"	S	section:MidasV1""Workflow & Program Design
+General Technical Overview	README.md	/^## General Technical Overview$/;"	s	chapter:MidasV1
+InitialChecks	modules/initial_checks.py	/^class InitialChecks:$/;"	c
+Installation	README.md	/^## Installation$/;"	s	chapter:MidasV1
+Logging	README.md	/^## Logging$/;"	s	chapter:MidasV1
+MAGENTA	tests/test_connection.py	/^MAGENTA = "\\033[95m"$/;"	v
+MAGENTA	tests/test_stock_retriever.py	/^MAGENTA = "\\033[95m"$/;"	v
+MidasV1	README.md	/^# MidasV1$/;"	c
+Module 1: Initial Checks	README.md	/^### Module 1: Initial Checks$/;"	S	section:MidasV1""Workflow & Program Design
+Module 2: IBJTS List Petitioner	README.md	/^### Module 2: IBJTS List Petitioner$/;"	S	section:MidasV1""Workflow & Program Design
+Module 3: Stock Information Retrieval	README.md	/^### Module 3: Stock Information Retrieval$/;"	S	section:MidasV1""Workflow & Program Design
+Module 4: Option Chain Trading & Risk Management	README.md	/^### Module 4: Option Chain Trading & Risk Management$/;"	S	section:MidasV1""Workflow & Program Design
+Overview	README.md	/^## Overview$/;"	s	chapter:MidasV1
+Prerequisites	README.md	/^### Prerequisites$/;"	S	section:MidasV1""Installation
+RED	tests/test_connection.py	/^RED = "\\033[91m"$/;"	v
+RED	tests/test_stock_retriever.py	/^RED = "\\033[91m"$/;"	v
+RESET	tests/test_connection.py	/^RESET = "\\033[0m"$/;"	v
+RESET	tests/test_stock_retriever.py	/^RESET = "\\033[0m"$/;"	v
+RESET_CODE	main.py	/^    RESET_CODE = "\\033[0m"$/;"	v	class:ColoredFormatter
+Running the Application	README.md	/^### Running the Application$/;"	S	section:MidasV1""Usage
+SEPARATOR	modules/initial_checks.py	/^SEPARATOR = "────────────────────────────/;"	v
+SEPARATOR	tests/test_connection.py	/^SEPARATOR = MAGENTA + "─────────────────────────/;"	v
+Steps	README.md	/^### Steps$/;"	S	section:MidasV1""Installation
+StockListPetitioner	modules/stock_list_petitioner.py	/^class StockListPetitioner:$/;"	c
+Table of Contents	README.md	/^## Table of Contents$/;"	s	chapter:MidasV1
+TestClient	modules/initial_checks.py	/^        class TestClient(EClient):$/;"	c	member:InitialChecks.check_connectivity	file:
+TestClient	tests/test_connection.py	/^class TestClient(EClient):$/;"	c
+TestStockRetriever	tests/test_stock_retriever.py	/^class TestStockRetriever(EWrapper, EClient):$/;"	c
+TestWrapper	modules/initial_checks.py	/^        class TestWrapper(EWrapper):$/;"	c	member:InitialChecks.check_connectivity	file:
+TestWrapper	tests/test_connection.py	/^class TestWrapper(EWrapper):$/;"	c
+Testing Modules	README.md	/^### Testing Modules$/;"	S	section:MidasV1""Usage
+Usage	README.md	/^## Usage$/;"	s	chapter:MidasV1
+Workflow & Program Design	README.md	/^## Workflow & Program Design$/;"	s	chapter:MidasV1
+YELLOW	tests/test_connection.py	/^YELLOW = "\\033[93m"$/;"	v
+YELLOW	tests/test_stock_retriever.py	/^YELLOW = "\\033[93m"$/;"	v
+__init__	modules/initial_checks.py	/^            def __init__(self, host: str, port: int, client_id: int, logger, callback_handlers=[/;"	m	class:InitialChecks.check_connectivity.ConnectionTestApp
+__init__	modules/initial_checks.py	/^            def __init__(self, logger, callback_handlers):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+__init__	modules/initial_checks.py	/^            def __init__(self, wrapper):$/;"	m	class:InitialChecks.check_connectivity.TestClient
+__init__	modules/initial_checks.py	/^    def __init__(self, config, verbose=False):$/;"	m	class:InitialChecks
+__init__	modules/stock_list_petitioner.py	/^    def __init__(self, config):$/;"	m	class:StockListPetitioner
+__init__	tests/test_connection.py	/^    def __init__(self):$/;"	m	class:TestWrapper
+__init__	tests/test_connection.py	/^    def __init__(self, host: str, port: int, client_id: int):$/;"	m	class:ConnectionTestApp
+__init__	tests/test_connection.py	/^    def __init__(self, wrapper):$/;"	m	class:TestClient
+__init__	tests/test_stock_retriever.py	/^    def __init__(self, symbols, criteria):$/;"	m	class:TestStockRetriever
+a. Load	README.md	/^#### a. Load$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 3: Stock Information Retrieval
+a. Operating System Check	README.md	/^#### a. Operating System Check$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 1: Initial Checks
+a. Option Chain Data	README.md	/^#### a. Option Chain Data$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 4: Option Chain Trading & Risk Management
+a. Scanner	README.md	/^#### a. Scanner$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 2: IBJTS List Petitioner
+accountSummary	modules/initial_checks.py	/^            def accountSummary(self, reqId: int, account: str, tag: str, value: str, currency: s/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+accountSummary	tests/test_connection.py	/^    def accountSummary(self, reqId: int, account: str, tag: str, value: str, currency: str):$/;"	m	class:TestWrapper
+accountSummaryEnd	modules/initial_checks.py	/^            def accountSummaryEnd(self, reqId: int):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+accountSummaryEnd	tests/test_connection.py	/^    def accountSummaryEnd(self, reqId: int):$/;"	m	class:TestWrapper
+app	tests/test_connection.py	/^    app = ConnectionTestApp(host, port, client_id)$/;"	v
+b. Dependency Check	README.md	/^#### b. Dependency Check$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 1: Initial Checks
+b. Refiner	README.md	/^#### b. Refiner$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 2: IBJTS List Petitioner
+b. Risk Management Stage 1	README.md	/^#### b. Risk Management Stage 1$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 4: Option Chain Trading & Risk Management
+b. Threaded Information Gathering & Choosing Strategy	README.md	/^#### b. Threaded Information Gathering & Choosing Strategy$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 3: Stock Information Retrieval
+c. Buying and Selling / Risk Management Stage 2	README.md	/^#### c. Buying and Selling \/ Risk Management Stage 2$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 4: Option Chain Trading & Risk Management
+c. Connectivity Check	README.md	/^#### c. Connectivity Check$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 1: Initial Checks
+c. Strategy Implementation & Market Determination	README.md	/^#### c. Strategy Implementation & Market Determination$/;"	t	subsection:MidasV1""Workflow & Program Design""Module 3: Stock Information Retrieval
+cache_refined_list	modules/stock_list_petitioner.py	/^    def cache_refined_list(self, refined_list):$/;"	m	class:StockListPetitioner
+check_connectivity	modules/initial_checks.py	/^    def check_connectivity(self, callback_handlers=[]):$/;"	m	class:InitialChecks
+check_dependencies	modules/initial_checks.py	/^    def check_dependencies(self):$/;"	m	class:InitialChecks
+check_os	modules/initial_checks.py	/^    def check_os(self):$/;"	m	class:InitialChecks
+check_system_resources	modules/initial_checks.py	/^    def check_system_resources(self):$/;"	m	class:InitialChecks
+client_id	tests/test_connection.py	/^    client_id = 0 # Choose a unique client ID$/;"	v
+connect_and_run	modules/initial_checks.py	/^            def connect_and_run(self):$/;"	m	class:InitialChecks.check_connectivity.ConnectionTestApp
+connect_and_run	tests/test_connection.py	/^    def connect_and_run(self):$/;"	m	class:ConnectionTestApp
+connected_client	main.py	/^connected_client = None$/;"	v
+connectionClosed	modules/initial_checks.py	/^            def connectionClosed(self):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+connectionClosed	tests/test_stock_retriever.py	/^    def connectionClosed(self):$/;"	m	class:TestStockRetriever
+contractDetails_override	modules/stock_list_petitioner.py	/^        def contractDetails_override(reqId, contractDetails):$/;"	f	member:StockListPetitioner.has_option_contracts	file:
+create_contract	tests/test_stock_retriever.py	/^    def create_contract(self, symbol):$/;"	m	class:TestStockRetriever
+error	modules/initial_checks.py	/^            def error(self, reqId, errorCode, errorString, advancedOrderRejectJson=""):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+error	tests/test_connection.py	/^    def error(self, reqId, errorCode, errorString, advancedOrderRejectJson=""):$/;"	m	class:TestWrapper
+error	tests/test_stock_retriever.py	/^    def error(self, reqId, errorCode, errorString, advancedOrderRejectJson=""):$/;"	m	class:TestStockRetriever
+format	main.py	/^    def format(self, record):$/;"	m	class:ColoredFormatter
+get_share_price	modules/stock_list_petitioner.py	/^    def get_share_price(self, symbol):$/;"	m	class:StockListPetitioner
+get_volatility_index	modules/stock_list_petitioner.py	/^    def get_volatility_index(self, symbol):$/;"	m	class:StockListPetitioner
+has_option_contracts	modules/stock_list_petitioner.py	/^    def has_option_contracts(self, symbol):$/;"	m	class:StockListPetitioner
+host	tests/test_connection.py	/^    host = "127.0.0.1"$/;"	v
+load_config	main.py	/^def load_config(config_path='config\/config.config'):$/;"	f
+main	main.py	/^def main():$/;"	f
+main	tests/test_stock_retriever.py	/^def main():$/;"	f
+managedAccounts	modules/initial_checks.py	/^            def managedAccounts(self, accountsList: str):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+managedAccounts	tests/test_connection.py	/^    def managedAccounts(self, accountsList: str):$/;"	m	class:TestWrapper
+marketDataType	tests/test_stock_retriever.py	/^    def marketDataType(self, reqId, marketDataType):$/;"	m	class:TestStockRetriever
+nextValidId	modules/initial_checks.py	/^            def nextValidId(self, orderId: int):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+nextValidId	tests/test_connection.py	/^    def nextValidId(self, orderId: int):$/;"	m	class:TestWrapper
+nextValidId	tests/test_stock_retriever.py	/^    def nextValidId(self, orderId):$/;"	m	class:TestStockRetriever
+parse_arguments	main.py	/^def parse_arguments():$/;"	f
+port	tests/test_connection.py	/^    port = 4002   # Paper trading port$/;"	v
+print_refined_list	modules/stock_list_petitioner.py	/^    def print_refined_list(self, refined_list):$/;"	m	class:StockListPetitioner
+refine_stock_list	modules/stock_list_petitioner.py	/^    def refine_stock_list(self):$/;"	m	class:StockListPetitioner
+request_market_data	tests/test_stock_retriever.py	/^    def request_market_data(self):$/;"	m	class:TestStockRetriever
+run_all_checks	modules/initial_checks.py	/^    def run_all_checks(self, skip_checks=False, callback_handlers=[]):$/;"	m	class:InitialChecks
+run_module	modules/stock_list_petitioner.py	/^    def run_module(self):$/;"	m	class:StockListPetitioner
+run_retriever	tests/test_stock_retriever.py	/^    def run_retriever(self):$/;"	m	class:TestStockRetriever
+scannerData	modules/initial_checks.py	/^            def scannerData(self, reqId: int, rank: int, contractDetails: Contract, distance: st/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+scannerData	modules/stock_list_petitioner.py	/^    def scannerData(self, reqId: int, rank: int, contractDetails, distance: str,$/;"	m	class:StockListPetitioner
+scannerDataEnd	modules/initial_checks.py	/^            def scannerDataEnd(self, reqId: int):$/;"	m	class:InitialChecks.check_connectivity.TestWrapper
+scannerDataEnd	modules/stock_list_petitioner.py	/^    def scannerDataEnd(self, reqId: int):$/;"	m	class:StockListPetitioner
+set_client	modules/stock_list_petitioner.py	/^    def set_client(self, connected_client):$/;"	m	class:StockListPetitioner
+setup_logging	main.py	/^def setup_logging(verbose=False, log_level='INFO'):$/;"	f
+signal_handler	main.py	/^def signal_handler(sig, frame):$/;"	f
+signal_handler	tests/test_stock_retriever.py	/^def signal_handler(sig, frame, app):$/;"	f
+stop	tests/test_stock_retriever.py	/^    def stop(self):$/;"	m	class:TestStockRetriever
+tickGeneric	tests/test_stock_retriever.py	/^    def tickGeneric(self, reqId, tickType, value):$/;"	m	class:TestStockRetriever
+tickPrice	tests/test_stock_retriever.py	/^    def tickPrice(self, reqId, tickType, price, attrib):$/;"	m	class:TestStockRetriever
+tickPrice_override	modules/stock_list_petitioner.py	/^        def tickPrice_override(reqId, tickType, price_value, attrib):$/;"	f	member:StockListPetitioner.get_share_price	file:
+tickSize	tests/test_stock_retriever.py	/^    def tickSize(self, reqId, tickType, size):$/;"	m	class:TestStockRetriever
+tickString	tests/test_stock_retriever.py	/^    def tickString(self, reqId, tickType, value):$/;"	m	class:TestStockRetriever
