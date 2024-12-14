@@ -1,0 +1,8 @@
+2024-12-13 22:23:17,293 - INFO - Category: trend, Indicator: SMA, Accuracy: 0.3166
+2024-12-13 22:23:18,087 - INFO - Category: trend, Indicator: EMA, Accuracy: 0.3160
+2024-12-13 22:23:19,409 - INFO - Category: trend, Indicator: ADX, Accuracy: 0.2696
+2024-12-13 22:23:19,797 - INFO - Category: momentum, Indicator: RSI, Accuracy: 0.2495
+2024-12-13 22:23:20,669 - INFO - Category: momentum, Indicator: MACD, Accuracy: 0.3184
+2024-12-13 22:23:20,993 - INFO - Category: volatility, Indicator: BollingerBands, Accuracy: 0.3114
+2024-12-13 22:23:21,786 - INFO - Category: volume, Indicator: OBV, Accuracy: 0.3167
+2024-12-13 22:23:22,678 - INFO - Category: mean_reversion, Indicator: MeanReversionSignal, Accuracy: 0.3330

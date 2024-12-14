@@ -1,0 +1,32 @@
+{
+	  "data": {
+		      "input_csv": "data/SPY_5min_preprocessed.csv",
+		          "date_column": "Date",
+			      "price_column": "Close",
+			          "high_column": "High",
+				      "low_column": "Low",
+				          "volume_column": "Volume"
+					    },
+					      "indicators": {
+						          "trend": ["SMA", "EMA", "ADX"],
+							      "momentum": ["RSI", "MACD"],
+							          "volatility": ["BollingerBands"],
+								      "volume": ["OBV"], 
+								          "mean_reversion": ["MeanReversionSignal"]
+									    },
+									      "parameters": {
+										          "SMA": {"window": 20},
+											      "EMA": {"window": 20},
+											          "ADX": {"window": 14},
+												      "RSI": {"window": 14, "overbought": 70, "oversold": 30},
+												          "MACD": {"fastperiod": 12, "slowperiod": 26, "signalperiod": 9},
+													      "BollingerBands": {"window": 20, "std_dev": 2},
+													          "OBV": {},
+														      "MeanReversionSignal": {"window": 10}
+														        },
+															  "evaluation": {
+																      "prediction_horizon": 1,
+																          "log_file": "logs/results.log"
+																	    }
+}
+
