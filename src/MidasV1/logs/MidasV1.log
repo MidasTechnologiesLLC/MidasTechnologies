@@ -162,3 +162,118 @@ Traceback (most recent call last):
              ^^^^^^^
 NameError: name 'MAGENTA' is not defined
 2024-12-13 02:13:49,362 - MidasV1.Main - ERROR - Interrupt received. Shutting down gracefully...
+2024-12-13 13:45:40,800 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 13:45:40,800 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 13:45:40,800 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 13:45:40,800 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 13:45:40,800 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 13:45:40,800 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 2689.84 MHz
+CPU Load Average (1m, 5m, 15m): (0.08935546875, 0.1201171875, 0.09375)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 2.11 GB (21.4%)
+Available RAM: 12.04 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - ERROR - [ERROR] id=-1, code=502, msg=Couldn't connect to TWS. Confirm that "Enable ActiveX and Socket EClients" 
+is enabled and connection port is the same as "Socket Port" on the 
+TWS "Edit->Global Configuration...->API->Settings" menu. Live Trading ports: 
+TWS: 7496; IB Gateway: 4001. Simulated Trading ports for new installations 
+of version 954.1 or newer:  TWS: 7497; IB Gateway: 4002
+2024-12-13 13:45:40,801 - MidasV1.InitialChecks - ERROR - [ERROR] Connection to IB Gateway was closed unexpectedly!
+2024-12-13 13:45:42,801 - MidasV1.Main - ERROR - Interrupt received. Shutting down gracefully...
+2024-12-13 13:45:42,801 - MidasV1.Main - ERROR - Initial checks failed. Exiting program.
+2024-12-13 13:45:50,765 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 2154.09 MHz
+CPU Load Average (1m, 5m, 15m): (0.0751953125, 0.115234375, 0.091796875)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 2.10 GB (21.4%)
+Available RAM: 12.04 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:45:50,766 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 13:45:50,767 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:45:50,767 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 13:45:50,767 - MidasV1.InitialChecks - ERROR - [ERROR] id=-1, code=502, msg=Couldn't connect to TWS. Confirm that "Enable ActiveX and Socket EClients" 
+is enabled and connection port is the same as "Socket Port" on the 
+TWS "Edit->Global Configuration...->API->Settings" menu. Live Trading ports: 
+TWS: 7496; IB Gateway: 4001. Simulated Trading ports for new installations 
+of version 954.1 or newer:  TWS: 7497; IB Gateway: 4002
+2024-12-13 13:45:50,767 - MidasV1.InitialChecks - ERROR - [ERROR] Connection to IB Gateway was closed unexpectedly!
+2024-12-13 13:45:55,776 - MidasV1.InitialChecks - ERROR - [ERROR] Connection not established within timeout.
+2024-12-13 13:45:55,777 - MidasV1.InitialChecks - WARNING - [WARN] No connection. Check Gateway settings and try again.
+2024-12-13 13:45:55,777 - MidasV1.Main - ERROR - Initial checks failed. Exiting program.
+2024-12-13 13:50:18,585 - MidasV1.Main - INFO - Starting MidasV1 Trading Bot...
+2024-12-13 13:50:18,585 - MidasV1.InitialChecks - INFO - Checking Operating System...
+2024-12-13 13:50:18,585 - MidasV1.InitialChecks - INFO - Operating System Linux is supported.
+2024-12-13 13:50:18,585 - MidasV1.InitialChecks - INFO - Checking Dependencies...
+2024-12-13 13:50:18,585 - MidasV1.InitialChecks - INFO - All dependencies are satisfied.
+2024-12-13 13:50:18,585 - MidasV1.InitialChecks - INFO - Checking System Resources...
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO - 
+[93mCPU Cores: 12
+CPU Clock Speed: 1581.67 MHz
+CPU Load Average (1m, 5m, 15m): (0.76904296875, 0.32080078125, 0.16259765625)
+CPU Threads: 12
+Total RAM: 15.31 GB
+Used RAM: 2.74 GB (25.8%)
+Available RAM: 11.37 GB
+Total Swap: 0.95 GB
+Used Swap: 0.00 GB (0.0%)[0m
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO - Checking Connectivity with IB Gateway...
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO -     IB Gateway Connection Test
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:50:18,586 - MidasV1.InitialChecks - INFO - Attempting to connect to IB Gateway at 127.0.0.1:4002...
+2024-12-13 13:50:18,642 - MidasV1.InitialChecks - INFO - [INFO] Managed accounts: DUE064818
+2024-12-13 13:50:18,684 - MidasV1.InitialChecks - INFO - [INFO] Next valid order ID: 1
+2024-12-13 13:50:18,684 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2104, msg=Market data farm connection is OK:usfarm
+2024-12-13 13:50:18,684 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2106, msg=HMDS data farm connection is OK:ushmds
+2024-12-13 13:50:18,684 - MidasV1.InitialChecks - INFO - [INFO/STATUS] id=-1, code=2158, msg=Sec-def data farm connection is OK:secdefnj
+2024-12-13 13:50:18,728 - MidasV1.InitialChecks - INFO - [INFO] Connected successfully!
+2024-12-13 13:50:18,728 - MidasV1.InitialChecks - INFO - Requesting account summary...
+2024-12-13 13:50:18,771 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, BuyingPower = 4014612.28 USD
+2024-12-13 13:50:18,772 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, EquityWithLoanValue = 1003653.07 USD
+2024-12-13 13:50:18,772 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, NetLiquidation = 1004890.64 USD
+2024-12-13 13:50:18,772 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY] ReqId:1, Account:DUE064818, TotalCashValue = 1003653.07 USD
+2024-12-13 13:50:18,772 - MidasV1.InitialChecks - INFO - [ACCOUNT SUMMARY END] ReqId: 1
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO - [INFO] Successfully retrieved account summary data.
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO - IB Gateway is connected and ready for upcoming modules.
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO -     Test Complete
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO - ────────────────────────────────────────────────────
+2024-12-13 13:50:23,729 - MidasV1.InitialChecks - INFO - All initial checks passed successfully.
+2024-12-13 13:50:23,730 - MidasV1.StockListPetitioner - INFO - Starting Module 2: IBJTS List Petitioner...
+2024-12-13 13:50:23,730 - MidasV1.StockListPetitioner - INFO - Loaded Scanner Criteria:
+  - Search Volume: 1000000
+  - Net Change: 0.5
+  - Percent Change: 2.0
+2024-12-13 13:50:23,730 - MidasV1.StockListPetitioner - INFO - Initiating scanner subscription with the above criteria...
+2024-12-13 13:50:23,730 - MidasV1.StockListPetitioner - INFO - Scanner subscription requested successfully on attempt 1.
+2024-12-13 13:50:23,730 - MidasV1.StockListPetitioner - INFO - Waiting for scanner data (timeout in 15 seconds)...
+2024-12-13 13:50:24,556 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=162, msg=Historical Market Data Service error message:Scanner type with code ALL is disabled
+2024-12-13 13:50:38,730 - MidasV1.StockListPetitioner - ERROR - Scanner subscription timed out.
+2024-12-13 13:50:38,731 - MidasV1.StockListPetitioner - ERROR - Scanner subscription canceled due to timeout.
+2024-12-13 13:50:38,731 - MidasV1.Main - INFO - Refined Stock List: []
+2024-12-13 13:50:38,731 - MidasV1.Main - INFO - Initial checks and Module 2 completed. Please review the logs and ensure everything is correct.
+2024-12-13 13:50:38,732 - MidasV1.InitialChecks - ERROR - [ERROR] id=1001, code=365, msg=No scanner subscription found for ticker id:1001
+2024-12-13 13:50:41,816 - MidasV1.Main - INFO - User chose to exit the program.
+2024-12-13 13:50:41,816 - MidasV1.InitialChecks - ERROR - [ERROR] Connection to IB Gateway was closed unexpectedly!
+2024-12-13 13:50:41,816 - MidasV1.Main - INFO - Disconnected from IB Gateway.
