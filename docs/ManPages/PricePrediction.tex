@@ -1,0 +1,145 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{LSTM Model and Stock Price Prediction}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Stock Price Equation}
+
+The price of a stock \( P(t) \) at discrete time \( t \in \{t_1, t_2, t_3, \ldots\} \) is given by:
+
+\[
+P(t) = P(t-1) + F_{\text{macro}}(t) + F_{\text{micro}}(t) + F_{\text{technical}}(t) + F_{\text{noise}}(t)
+\]
+
+\begin{itemize}
+    \item \( P(t-1) \): Price of the stock at the previous time step.
+    \item \( F_{\text{macro}}(t) \): Macro-level influences.
+    \item \( F_{\text{micro}}(t) \): Micro-level influences.
+    \item \( F_{\text{technical}}(t) \): Technical analysis factors.
+    \item \( F_{\text{noise}}(t) \): Stochastic noise term.
+\end{itemize}
+
+\subsection*{Macro Influences}
+
+\[
+F_{\text{macro}}(t) = \alpha_1 G(t) + \alpha_2 I(t) + \alpha_3 R(t)
+\]
+
+\begin{itemize}
+    \item \( \alpha_i \): Weights determining the strength of each factor.
+    \item \( G(t) \): GDP growth/market sentiment, modeled as:
+    \[
+    G(t) = y \sin\left(\frac{2\pi t}{T_B}\right) + N_2 Z_2(t)
+    \]
+    \item \( I(t) \): Inflation rate, modeled as:
+    \[
+    I(t) = \Theta e^{-\lambda_0 t} + N_2 Z_2(t)
+    \]
+    \item \( R(t) \): Risk-free interest rate:
+    \[
+    R(t) = r_0 + N_3 Z_3(t)
+    \]
+\end{itemize}
+
+\subsection*{Micro Influences}
+
+\[
+F_{\text{micro}}(t) = \beta_1 E(t) + \beta_2 S(t) + \beta_3 C(t)
+\]
+
+\begin{itemize}
+    \item \( E(t) \): Earnings per share, \( E(t) = E_0 e^{\mu t} \left[1 + \sin\left(\frac{\pi t}{T_E}\right)\right] \)
+    \item \( S(t) \): Scale growth rates:
+    \[
+    S(t) = \frac{\text{Max scale level}}{1 + e^{-K_0(t-t_0)}} + N_5 Z_5(t)
+    \]
+    \item \( C(t) \): Competition index:
+    \[
+    C(t) = \frac{1}{t + \text{Season growth cycle}} + N_6 Z_6(t)
+    \]
+\end{itemize}
+
+\subsection*{Technical Factors}
+
+\[
+F_{\text{technical}}(t) = \delta_1 M(t) + \delta_2 V(t)
+\]
+
+\begin{itemize}
+    \item \( M(t) \): Momentum, \( M(t) = P(t+1) - P(t+5) \)
+    \item \( V(t) \): Volatility:
+    \[
+    V(t) = \sqrt{\frac{1}{W} \sum_{i=1}^N [P(t-i) - \overline{P}(t)]^2}
+    \]
+    where \( \overline{P}(t) = \frac{1}{N} \sum_{i=1}^N P(t-i) \).
+\end{itemize}
+
+\subsection*{Noise Term}
+
+\[
+F_{\text{noise}}(t) = \sigma Z(t)
+\]
+
+\begin{itemize}
+    \item \( \sigma Z(t) \): Noise term, where \( Z(t) \sim N(0, 1) \).
+\end{itemize}
+
+\section*{LSTM Architecture}
+
+\begin{enumerate}
+    \item Feature vector \( X(t) \):
+    \[
+    X(t) = \begin{bmatrix}
+    P(t-2) \\
+    P(t-1) \\
+    P(t) \\
+    G(t) \\
+    E(t) \\
+    S(t) \\
+    C(t) \\
+    M(t) \\
+    V(t)
+    \end{bmatrix}
+    \]
+    \item LSTM components:
+    \[
+    f(t) = \sigma(W_f X(t) + U_f h(t-1) + b_f)
+    \]
+    \[
+    i(t) = \sigma(W_i X(t) + U_i h(t-1) + b_i)
+    \]
+    \[
+    \tilde{C}(t) = \tanh(W_c X(t) + U_c h(t-1) + b_c)
+    \]
+    \[
+    C(t) = f(t) \cdot C(t-1) + i(t) \cdot \tilde{C}(t)
+    \]
+    \[
+    o(t) = \sigma(W_o X(t) + U_o h(t-1) + b_o)
+    \]
+    \[
+    h(t) = o(t) \cdot \tanh(C(t))
+    \]
+
+\end{enumerate}
+
+\section*{Loss Function}
+
+\[
+\text{MSE} = \frac{1}{T} \sum_{t=1}^T [P(t) - \hat{P}(t)]^2
+\]
+\[
+\text{MAE} = \frac{1}{T} \sum_{t=1}^T |P(t) - \hat{P}(t)|
+\]
+
+\end{document}
+
