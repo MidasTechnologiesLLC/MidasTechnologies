@@ -10,7 +10,6 @@ from tabulate import tabulate
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import TimeSeriesSplit, GridSearchCV
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -18,30 +17,32 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout, Bidirectional
 from tensorflow.keras.optimizers import Adam, Nadam
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.losses import Huber
+from tensorflow.keras.regularizers import l2
 
 import xgboost as xgb
 import optuna
 from optuna.integration import KerasPruningCallback
 
-# Reinforcement Learning
+# For Reinforcement Learning
 import gym
 from gym import spaces
 from stable_baselines3 import DQN
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 # Suppress TensorFlow warnings
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress INFO/WARNING
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-##############################
-# 1. Data Loading & Indicators
-##############################
+
+###############################
+# 1. Data Loading / Indicators
+###############################
 def load_data(file_path):
     logging.info(f"Loading data from: {file_path}")
     try:
-        data = pd.read_csv(file_path, parse_dates=['time'])
+        df = pd.read_csv(file_path, parse_dates=['time'])
     except FileNotFoundError:
         logging.error(f"File not found: {file_path}")
         sys.exit(1)
@@ -59,82 +60,70 @@ def load_data(file_path):
         'low': 'Low',
         'close': 'Close'
     }
-    data.rename(columns=rename_mapping, inplace=True)
+    df.rename(columns=rename_mapping, inplace=True)
 
-    # Sort by Date
-    data.sort_values('Date', inplace=True)
-    data.reset_index(drop=True, inplace=True)
-    logging.info(f"Data columns after renaming: {data.columns.tolist()}")
+    logging.info(f"Data columns after renaming: {df.columns.tolist()}")
+
+    df.sort_values('Date', inplace=True)
+    df.reset_index(drop=True, inplace=True)
     logging.info("Data loaded and sorted successfully.")
+    return df
 
-    return data
 
 def compute_rsi(series, window=14):
     delta = series.diff()
     gain = delta.where(delta > 0, 0).rolling(window=window).mean()
     loss = -delta.where(delta < 0, 0).rolling(window=window).mean()
-    RS = gain / loss
+    RS = gain / (loss + 1e-9)
     return 100 - (100 / (1 + RS))
+
 
 def compute_macd(series, span_short=12, span_long=26, span_signal=9):
     ema_short = series.ewm(span=span_short, adjust=False).mean()
     ema_long = series.ewm(span=span_long, adjust=False).mean()
     macd_line = ema_short - ema_long
     signal_line = macd_line.ewm(span=span_signal, adjust=False).mean()
-    return macd_line - signal_line  # MACD histogram
+    return macd_line - signal_line  # histogram
 
-def compute_adx(df, window=14):
-    """
-    Example ADX calculation (pseudo-real):
-    You can implement a full ADX formula if you’d like.
-    Here, we do a slightly more robust approach than rolling std.
-    """
-    # True range
-    df['H-L'] = df['High'] - df['Low']
-    df['H-Cp'] = (df['High'] - df['Close'].shift(1)).abs()
-    df['L-Cp'] = (df['Low'] - df['Close'].shift(1)).abs()
-    tr = df[['H-L', 'H-Cp', 'L-Cp']].max(axis=1)
-    tr_rolling = tr.rolling(window=window).mean()
-
-    # Simplistic to replicate ADX-like effect
-    adx_placeholder = tr_rolling / df['Close']
-    df.drop(['H-L','H-Cp','L-Cp'], axis=1, inplace=True)
-    return adx_placeholder
 
 def compute_obv(df):
-    # On-Balance Volume
     signed_volume = (np.sign(df['Close'].diff()) * df['Volume']).fillna(0)
     return signed_volume.cumsum()
 
+
+def compute_adx(df, window=14):
+    """Pseudo-ADX approach using rolling True Range / Close."""
+    df['H-L'] = df['High'] - df['Low']
+    df['H-Cp'] = (df['High'] - df['Close'].shift(1)).abs()
+    df['L-Cp'] = (df['Low'] - df['Close'].shift(1)).abs()
+    tr = df[['H-L','H-Cp','L-Cp']].max(axis=1)
+    tr_rolling = tr.rolling(window=window).mean()
+
+    adx_placeholder = tr_rolling / (df['Close'] + 1e-9)
+    df.drop(['H-L','H-Cp','L-Cp'], axis=1, inplace=True)
+    return adx_placeholder
+
+
 def compute_bollinger_bands(series, window=20, num_std=2):
-    """
-    Bollinger Bands: middle=MA, upper=MA+2*std, lower=MA-2*std
-    Return the band width or separate columns.
-    """
     sma = series.rolling(window=window).mean()
     std = series.rolling(window=window).std()
     upper = sma + num_std * std
     lower = sma - num_std * std
-    bandwidth = (upper - lower) / sma  # optional metric
+    bandwidth = (upper - lower) / (sma + 1e-9)
     return upper, lower, bandwidth
 
+
 def compute_mfi(df, window=14):
-    """
-    Money Flow Index: uses typical price, volume, direction.
-    For demonstration.
-    """
     typical_price = (df['High'] + df['Low'] + df['Close']) / 3
     money_flow = typical_price * df['Volume']
-    # Positive or negative
-    df_shift = typical_price.shift(1)
-    flow_positive = money_flow.where(typical_price > df_shift, 0)
-    flow_negative = money_flow.where(typical_price < df_shift, 0)
-    # Sum over window
-    pos_sum = flow_positive.rolling(window=window).sum()
-    neg_sum = flow_negative.rolling(window=window).sum()
-    # RSI-like formula
-    mfi = 100 - (100 / (1 + pos_sum / (neg_sum + 1e-9)))
+    prev_tp = typical_price.shift(1)
+    flow_pos = money_flow.where(typical_price > prev_tp, 0)
+    flow_neg = money_flow.where(typical_price < prev_tp, 0)
+    pos_sum = flow_pos.rolling(window=window).sum()
+    neg_sum = flow_neg.rolling(window=window).sum()
+    mfi = 100 - (100 / (1 + pos_sum/(neg_sum+1e-9)))
     return mfi
+
 
 def calculate_technical_indicators(df):
     logging.info("Calculating technical indicators...")
@@ -143,100 +132,97 @@ def calculate_technical_indicators(df):
     df['MACD'] = compute_macd(df['Close'])
     df['OBV'] = compute_obv(df)
     df['ADX'] = compute_adx(df)
-    
-    # Bollinger
-    upper_bb, lower_bb, bb_width = compute_bollinger_bands(df['Close'], window=20)
+
+    upper_bb, lower_bb, bb_width = compute_bollinger_bands(df['Close'], window=20, num_std=2)
     df['BB_Upper'] = upper_bb
     df['BB_Lower'] = lower_bb
     df['BB_Width'] = bb_width
 
-    # MFI
-    df['MFI'] = compute_mfi(df)
+    df['MFI'] = compute_mfi(df, window=14)
 
-    # Simple/EMA
     df['SMA_5'] = df['Close'].rolling(window=5).mean()
     df['SMA_10'] = df['Close'].rolling(window=10).mean()
     df['EMA_5'] = df['Close'].ewm(span=5, adjust=False).mean()
     df['EMA_10'] = df['Close'].ewm(span=10, adjust=False).mean()
-    # STD
+
     df['STDDEV_5'] = df['Close'].rolling(window=5).std()
-    
     df.dropna(inplace=True)
     logging.info("Technical indicators calculated successfully.")
     return df
 
-##############################
-# 2. Parse Arguments
-##############################
+
+###############################
+# 2. ARGUMENT PARSING
+###############################
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Train LSTM and DQN models for stock trading.')
-    parser.add_argument('csv_path', type=str, help='Path to the CSV data file.')
+    parser.add_argument('csv_path', type=str, help='Path to the CSV data file (with columns time,open,high,low,close,volume).')
     return parser.parse_args()
 
-##############################
-# 3. Main
-##############################
+
+###############################
+# 3. MAIN
+###############################
 def main():
+    # 1) Parse args
     args = parse_arguments()
     csv_path = args.csv_path
 
-    # 1) Load data
+    # 2) Load data & advanced indicators
     data = load_data(csv_path)
     data = calculate_technical_indicators(data)
 
-    # 2) Build feature set
-    # We deliberately EXCLUDE 'Close' from the features so the model doesn't trivially see it.
-    # Instead, rely on advanced indicators + OHLC + Volume.
+    # EXCLUDE 'Close' from feature inputs
     feature_columns = [
-        'Open', 'High', 'Low', 'Volume',
-        'RSI', 'MACD', 'OBV', 'ADX',
-        'BB_Upper', 'BB_Lower', 'BB_Width',
-        'MFI', 'SMA_5', 'SMA_10', 'EMA_5', 'EMA_10', 'STDDEV_5'
+        'SMA_5', 'SMA_10', 'EMA_5', 'EMA_10', 'STDDEV_5',
+        'RSI', 'MACD', 'ADX', 'OBV', 'Volume', 'Open', 'High', 'Low',
+        'BB_Upper','BB_Lower','BB_Width','MFI'
     ]
-    target_column = 'Close'  # still used for label/evaluation
+    target_column = 'Close'
+    data = data[['Date'] + feature_columns + [target_column]]
+    data.dropna(inplace=True)
 
-    # Keep only these columns + Date + target
-    data = data[['Date'] + feature_columns + [target_column]].dropna()
-
-    # 3) Scale data
-    from sklearn.preprocessing import MinMaxScaler
+    # 3) Scale
     scaler_features = MinMaxScaler()
     scaler_target = MinMaxScaler()
 
-    scaled_features = scaler_features.fit_transform(data[feature_columns])
-    scaled_target = scaler_target.fit_transform(data[[target_column]]).flatten()
+    X_all = data[feature_columns].values
+    y_all = data[[target_column]].values
 
-    # 4) Create sequences for LSTM
+    X_scaled = scaler_features.fit_transform(X_all)
+    y_scaled = scaler_target.fit_transform(y_all).flatten()
+
+    # 4) Create LSTM Sequences
     def create_sequences(features, target, window_size=15):
-        X, y = [], []
+        X_seq, y_seq = [], []
         for i in range(len(features) - window_size):
-            X.append(features[i:i+window_size])
-            y.append(target[i+window_size])
-        return np.array(X), np.array(y)
+            X_seq.append(features[i:i+window_size])
+            y_seq.append(target[i+window_size])
+        return np.array(X_seq), np.array(y_seq)
 
     window_size = 15
-    X, y = create_sequences(scaled_features, scaled_target, window_size)
+    X, y = create_sequences(X_scaled, y_scaled, window_size)
 
     # 5) Train/Val/Test Split
-    train_size = int(len(X) * 0.7)
-    val_size = int(len(X) * 0.15)
+    train_size = int(len(X)*0.7)
+    val_size = int(len(X)*0.15)
     test_size = len(X) - train_size - val_size
 
-    X_train, X_val, X_test = (
-        X[:train_size],
-        X[train_size:train_size+val_size],
-        X[train_size+val_size:]
-    )
-    y_train, y_val, y_test = (
-        y[:train_size],
-        y[train_size:train_size+val_size],
-        y[train_size+val_size:]
-    )
+    X_train = X[:train_size]
+    y_train = y[:train_size]
+    X_val   = X[train_size:train_size+val_size]
+    y_val   = y[train_size:train_size+val_size]
+    X_test  = X[train_size+val_size:]
+    y_test  = y[train_size+val_size:]
 
-    logging.info(f"X_train: {X_train.shape}, X_val: {X_val.shape}, X_test: {X_test.shape}")
-    logging.info(f"y_train: {y_train.shape}, y_val: {y_val.shape}, y_test: {y_test.shape}")
+    logging.info(f"Scaled training features shape: {X_train.shape}")
+    logging.info(f"Scaled validation features shape: {X_val.shape}")
+    logging.info(f"Scaled testing features shape: {X_test.shape}")
+    logging.info(f"Scaled training target shape: {y_train.shape}")
+    logging.info(f"Scaled validation target shape: {y_val.shape}")
+    logging.info(f"Scaled testing target shape: {y_test.shape}")
 
-    # 6) Device Config
+    # 6) GPU/CPU Config
     def configure_device():
         gpus = tf.config.list_physical_devices('GPU')
         if gpus:
@@ -248,224 +234,277 @@ def main():
                 logging.error(e)
         else:
             logging.info("No GPU detected, using CPU.")
+
     configure_device()
 
     # 7) Build LSTM
-    from tensorflow.keras.regularizers import l2
-    def build_lstm(input_shape, units=128, dropout=0.3, lr=1e-3):
+    def build_advanced_lstm(input_shape, hyperparams):
         model = Sequential()
-        # Example: 2 stacked LSTM layers
-        model.add(Bidirectional(LSTM(units, return_sequences=True, kernel_regularizer=l2(1e-4)), input_shape=input_shape))
-        model.add(Dropout(dropout))
-        model.add(Bidirectional(LSTM(units, return_sequences=False, kernel_regularizer=l2(1e-4))))
-        model.add(Dropout(dropout))
+        for i in range(hyperparams['num_lstm_layers']):
+            return_seqs = (i < hyperparams['num_lstm_layers'] - 1)
+            model.add(Bidirectional(
+                LSTM(hyperparams['lstm_units'],
+                     return_sequences=return_seqs,
+                     kernel_regularizer=tf.keras.regularizers.l2(0.001)
+                ), input_shape=input_shape if i==0 else None))
+            model.add(Dropout(hyperparams['dropout_rate']))
+
         model.add(Dense(1, activation='linear'))
 
-        optimizer = Adam(learning_rate=lr)
-        model.compile(loss=Huber(), optimizer=optimizer, metrics=['mae'])
+        # Optimizer
+        if hyperparams['optimizer'] == 'Adam':
+            opt = Adam(learning_rate=hyperparams['learning_rate'], decay=hyperparams['decay'])
+        elif hyperparams['optimizer'] == 'Nadam':
+            opt = Nadam(learning_rate=hyperparams['learning_rate'])
+        else:
+            opt = Adam(learning_rate=hyperparams['learning_rate'])
+
+        model.compile(optimizer=opt, loss=Huber(), metrics=['mae'])
         return model
 
-    # 8) Train LSTM (you can still do Optuna if you like, omitted here for brevity)
-    model_lstm = build_lstm((X_train.shape[1], X_train.shape[2]), units=128, dropout=0.3, lr=1e-3)
+    # 8) Optuna Tuning
+    def objective(trial):
+        num_lstm_layers = trial.suggest_int('num_lstm_layers', 1, 3)
+        lstm_units = trial.suggest_categorical('lstm_units', [32, 64, 96, 128])
+        dropout_rate = trial.suggest_float('dropout_rate', 0.1, 0.5)
+        learning_rate = trial.suggest_loguniform('learning_rate', 1e-5, 1e-2)
+        optimizer_name = trial.suggest_categorical('optimizer', ['Adam', 'Nadam'])
+        decay = trial.suggest_float('decay', 0.0, 1e-4)
 
-    early_stop = EarlyStopping(patience=15, restore_best_weights=True)
-    reduce_lr = ReduceLROnPlateau(factor=0.5, patience=5, min_lr=1e-6)
+        hyperparams = {
+            'num_lstm_layers': num_lstm_layers,
+            'lstm_units': lstm_units,
+            'dropout_rate': dropout_rate,
+            'learning_rate': learning_rate,
+            'optimizer': optimizer_name,
+            'decay': decay
+        }
 
-    model_lstm.fit(
+        model_ = build_advanced_lstm((X_train.shape[1], X_train.shape[2]), hyperparams)
+
+        early_stop = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+        lr_reduce  = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6)
+
+        cb_prune = KerasPruningCallback(trial, 'val_loss')
+
+        history = model_.fit(
+            X_train, y_train,
+            epochs=100,
+            batch_size=16,
+            validation_data=(X_val, y_val),
+            callbacks=[early_stop, lr_reduce, cb_prune],
+            verbose=0
+        )
+        val_mae = min(history.history['val_mae'])
+        return val_mae
+
+    logging.info("Starting hyperparameter optimization with Optuna...")
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=50)  # might take a long time
+
+    best_params = study.best_params
+    logging.info(f"Best Hyperparameters from Optuna: {best_params}")
+
+    # 9) Train Best LSTM
+    best_model = build_advanced_lstm((X_train.shape[1], X_train.shape[2]), best_params)
+    early_stop2 = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
+    lr_reduce2  = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6)
+
+    logging.info("Training the best LSTM model with optimized hyperparameters...")
+    history = best_model.fit(
         X_train, y_train,
+        epochs=300,
+        batch_size=16,
         validation_data=(X_val, y_val),
-        epochs=100,
-        batch_size=32,
-        callbacks=[early_stop, reduce_lr],
+        callbacks=[early_stop2, lr_reduce2],
         verbose=1
     )
 
-    # 9) Evaluate
-    def evaluate_lstm(model, X_test, y_test):
+    # 10) Evaluate
+    def evaluate_model(model, X_test, y_test):
+        logging.info("Evaluating model...")
+        # Predict scaled
         y_pred_scaled = model.predict(X_test).flatten()
-        # If we forcibly clamp predictions to [0,1], do so, else skip:
-        y_pred_scaled = np.clip(y_pred_scaled, 0, 1)
+        y_pred_scaled = np.clip(y_pred_scaled, 0, 1)  # clamp if needed
+        # Inverse
         y_pred = scaler_target.inverse_transform(y_pred_scaled.reshape(-1,1)).flatten()
-        y_true = scaler_target.inverse_transform(y_test.reshape(-1,1)).flatten()
+        y_test_actual = scaler_target.inverse_transform(y_test.reshape(-1,1)).flatten()
 
-        mse = mean_squared_error(y_true, y_pred)
+        mse = mean_squared_error(y_test_actual, y_pred)
         rmse = np.sqrt(mse)
-        mae = mean_absolute_error(y_true, y_pred)
-        r2 = r2_score(y_true, y_pred)
+        mae = mean_absolute_error(y_test_actual, y_pred)
+        r2  = r2_score(y_test_actual, y_pred)
 
-        # Direction
-        direction_true = np.sign(np.diff(y_true))
-        direction_pred = np.sign(np.diff(y_pred))
-        directional_acc = np.mean(direction_true == direction_pred)
+        # Directional accuracy
+        direction_actual = np.sign(np.diff(y_test_actual))
+        direction_pred   = np.sign(np.diff(y_pred))
+        directional_accuracy = np.mean(direction_actual == direction_pred)
 
-        logging.info(f"LSTM Test -> MSE={mse:.4f}, RMSE={rmse:.4f}, MAE={mae:.4f}, R2={r2:.4f}, DirAcc={directional_acc:.4f}")
+        logging.info(f"Test MSE: {mse}")
+        logging.info(f"Test RMSE: {rmse}")
+        logging.info(f"Test MAE: {mae}")
+        logging.info(f"Test R2 Score: {r2}")
+        logging.info(f"Directional Accuracy: {directional_accuracy}")
 
-        # Quick Plot
-        plt.figure(figsize=(12,6))
-        plt.plot(y_true[:100], label='Actual')
-        plt.plot(y_pred[:100], label='Predicted')
-        plt.title("LSTM: Actual vs Predicted (first 100 test points)")
+        # Plot
+        plt.figure(figsize=(14, 7))
+        plt.plot(y_test_actual, label='Actual Price')
+        plt.plot(y_pred, label='Predicted Price')
+        plt.title('Actual vs Predicted Prices')
+        plt.xlabel('Time Step')
+        plt.ylabel('Price')
         plt.legend()
-        plt.savefig("lstm_actual_vs_pred.png")
+        plt.grid(True)
+        plt.savefig('actual_vs_predicted.png')
         plt.close()
+        logging.info("Actual vs Predicted plot saved as 'actual_vs_predicted.png'")
 
-    evaluate_lstm(model_lstm, X_test, y_test)
+        # Tabulate first 40 predictions (like old code)
+        table_data = []
+        for i in range(min(40, len(y_test_actual))):
+            table_data.append([i, round(y_test_actual[i],2), round(y_pred[i],2)])
+        headers = ["Index", "Actual Price", "Predicted Price"]
+        print(tabulate(table_data, headers=headers, tablefmt="pretty"))
 
-    # Save
-    model_lstm.save("improved_lstm_model.keras")
+        return mse, rmse, mae, r2, directional_accuracy
+
+    mse, rmse, mae, r2, directional_accuracy = evaluate_model(best_model, X_test, y_test)
+
+    # 11) Save
+    best_model.save('optimized_lstm_model.h5')
     import joblib
-    joblib.dump(scaler_features, "improved_scaler_features.pkl")
-    joblib.dump(scaler_target, "improved_scaler_target.pkl")
+    joblib.dump(scaler_features, 'scaler_features.save')
+    joblib.dump(scaler_target, 'scaler_target.save')
+    logging.info("Model and scalers saved as 'optimized_lstm_model.h5', 'scaler_features.save', and 'scaler_target.save'.")
 
-    ##############################
-    # 10) Reinforcement Learning
-    ##############################
+    #########################################
+    # 12) Reinforcement Learning Environment
+    #########################################
     class StockTradingEnv(gym.Env):
         """
-        Improved RL Env that:
-         - excludes raw 'Close' from observation
-         - includes transaction cost (optional)
-         - uses step-based PnL as reward
+        A simple stock trading environment for OpenAI Gym
         """
         metadata = {'render.modes': ['human']}
-        def __init__(self, df, initial_balance=10000, transaction_cost=0.001):
-            super().__init__()
 
-            self.df = df.reset_index(drop=True)
+        def __init__(self, df, initial_balance=10000):
+            super().__init__()
+            self.df = df.reset_index()
             self.initial_balance = initial_balance
             self.balance = initial_balance
             self.net_worth = initial_balance
-            self.current_step = 0
             self.max_steps = len(df)
-
-            # Add transaction cost in decimal form (0.001 => 0.1%)
-            self.transaction_cost = transaction_cost
-
+            self.current_step = 0
             self.shares_held = 0
             self.cost_basis = 0
 
-            # Suppose we exclude 'Close' from features to remove direct see of final price
-            self.obs_columns = [
-                'Open', 'High', 'Low', 'Volume',
-                'RSI', 'MACD', 'OBV', 'ADX',
-                'BB_Upper', 'BB_Lower', 'BB_Width',
-                'MFI', 'SMA_5', 'SMA_10', 'EMA_5', 'EMA_10', 'STDDEV_5'
-            ]
+            # We re-use feature_columns from above
+            # (Excluding 'Close' from the observation)
+            # Actions: 0=Sell, 1=Hold, 2=Buy
+            self.action_space = spaces.Discrete(3)
 
-            # We'll normalize features with the same scaler used for LSTM. If you want EXACT same scaling:
-            # you can pass the same 'scaler_features' object into this environment.
-            self.scaler = MinMaxScaler().fit(df[self.obs_columns])
-            # Or load from a pkl if you prefer: joblib.load("improved_scaler_features.pkl")
-
-            self.action_space = spaces.Discrete(3)  # 0=Sell, 1=Hold, 2=Buy
+            # Observations => advanced feature columns + 3 additional (balance, shares, cost_basis)
             self.observation_space = spaces.Box(
-                low=0.0, high=1.0,
-                shape=(len(self.obs_columns) + 3,),  # + balance, shares, cost_basis
+                low=0,
+                high=1,
+                shape=(len(feature_columns) + 3,),
                 dtype=np.float32
             )
 
         def reset(self):
             self.balance = self.initial_balance
             self.net_worth = self.initial_balance
+            self.current_step = 0
             self.shares_held = 0
             self.cost_basis = 0
-            self.current_step = 0
-            return self._get_obs()
+            return self._next_observation()
 
-        def step(self, action):
-            # Current row
-            row = self.df.iloc[self.current_step]
-            current_price = row['Close']
-
-            prev_net_worth = self.net_worth
-
-            if action == 2:  # Buy
-                shares_bought = int(self.balance // current_price)
-                if shares_bought > 0:
-                    cost = shares_bought * current_price
-                    fee = cost * self.transaction_cost
-                    self.balance -= (cost + fee)
-                    # Weighted average cost basis
-                    prev_shares = self.shares_held
-                    self.shares_held += shares_bought
-                    self.cost_basis = (
-                        (self.cost_basis * prev_shares) + (shares_bought * current_price)
-                    ) / self.shares_held
-
-            elif action == 0:  # Sell
-                if self.shares_held > 0:
-                    revenue = self.shares_held * current_price
-                    fee = revenue * self.transaction_cost
-                    self.balance += (revenue - fee)
-                    self.shares_held = 0
-                    self.cost_basis = 0
-
-            # Recompute net worth
-            self.net_worth = self.balance + self.shares_held * current_price
-            self.current_step += 1
-            done = (self.current_step >= self.max_steps - 1)
-
-            # *Step-based* reward => daily PnL
-            reward = self.net_worth - prev_net_worth
-
-            obs = self._get_obs()
-            return obs, reward, done, {}
-
-        def _get_obs(self):
-            row = self.df.iloc[self.current_step][self.obs_columns]
-            # Scale
-            scaled = self.scaler.transform([row])[0]
+        def _next_observation(self):
+            # Use same approach as old code: we take the row from df
+            obs = self.df.loc[self.current_step, feature_columns].values
+            # Simple normalization by max
+            obs = obs / np.max(obs) if np.max(obs)!=0 else obs
 
             additional = np.array([
                 self.balance / self.initial_balance,
                 self.shares_held / 100.0,
-                self.cost_basis / (self.initial_balance+1e-9)
-            ], dtype=np.float32)
+                self.cost_basis / self.initial_balance
+            ])
+            return np.concatenate([obs, additional])
 
-            obs = np.concatenate([scaled, additional]).astype(np.float32)
-            return obs
+        def step(self, action):
+            current_price = self.df.loc[self.current_step, 'Close']
+
+            if action == 2:  # Buy
+                total_possible = self.balance // current_price
+                shares_bought = total_possible
+                if shares_bought > 0:
+                    self.balance -= shares_bought * current_price
+                    self.shares_held += shares_bought
+                    self.cost_basis = (
+                        (self.cost_basis * (self.shares_held - shares_bought)) +
+                        (shares_bought * current_price)
+                    ) / self.shares_held
+
+            elif action == 0:  # Sell
+                if self.shares_held > 0:
+                    self.balance += self.shares_held * current_price
+                    self.shares_held = 0
+                    self.cost_basis = 0
+
+            self.net_worth = self.balance + self.shares_held * current_price
+            self.current_step += 1
+
+            done = (self.current_step >= self.max_steps - 1)
+            reward = self.net_worth - self.initial_balance
+
+            obs = self._next_observation()
+            return obs, reward, done, {}
 
         def render(self, mode='human'):
             profit = self.net_worth - self.initial_balance
-            print(f"Step: {self.current_step}, "
-                  f"Balance: {self.balance:.2f}, "
-                  f"Shares: {self.shares_held}, "
-                  f"NetWorth: {self.net_worth:.2f}, "
-                  f"Profit: {profit:.2f}")
+            print(f"Step: {self.current_step}")
+            print(f"Balance: {self.balance}")
+            print(f"Shares held: {self.shares_held} (Cost Basis: {self.cost_basis})")
+            print(f"Net worth: {self.net_worth}")
+            print(f"Profit: {profit}")
 
-    ##############################
-    # 11) Train DQN
-    ##############################
-    def train_dqn(env):
-        logging.info("Training DQN agent with improved environment...")
-        model = DQN(
-            'MlpPolicy',
-            env,
-            verbose=1,
-            learning_rate=1e-3,
-            buffer_size=50000,
-            learning_starts=1000,
-            batch_size=64,
-            tau=0.99,
-            gamma=0.99,
-            train_freq=4,
-            target_update_interval=1000,
-            exploration_fraction=0.1,
-            exploration_final_eps=0.02,
-            tensorboard_log="./dqn_enhanced_tensorboard/"
-        )
-        model.learn(total_timesteps=50000)
-        model.save("improved_dqn_agent")
-        return model
+    def train_dqn_agent(env):
+        logging.info("Training DQN Agent...")
+        try:
+            model = DQN(
+                'MlpPolicy',
+                env,
+                verbose=1,
+                learning_rate=1e-3,
+                buffer_size=10000,
+                learning_starts=1000,
+                batch_size=64,
+                tau=1.0,
+                gamma=0.99,
+                train_freq=4,
+                target_update_interval=1000,
+                exploration_fraction=0.1,
+                exploration_final_eps=0.02,
+                tensorboard_log="./dqn_stock_tensorboard/"
+            )
+            model.learn(total_timesteps=100000)
+            model.save("dqn_stock_trading")
+            logging.info("DQN Agent trained and saved as 'dqn_stock_trading.zip'.")
+            return model
+        except Exception as e:
+            logging.error(f"Error training DQN Agent: {e}")
+            sys.exit(1)
 
-    # Initialize environment with the same data
-    # *In a real scenario, you might feed a different dataset or do a train/test split
-    # for the RL environment, too.
-    rl_env = StockTradingEnv(data, initial_balance=10000, transaction_cost=0.001)
-    vec_env = DummyVecEnv([lambda: rl_env])
+    # Initialize RL environment
+    logging.info("Initializing and training DQN environment...")
+    trading_env = StockTradingEnv(data)
+    trading_env = DummyVecEnv([lambda: trading_env])
 
-    dqn_model = train_dqn(vec_env)
-    logging.info("Finished DQN training. You can test with a script like 'use_dqn.py' or do an internal test here.")
+    # Train
+    dqn_model = train_dqn_agent(trading_env)
+
+    logging.info("All tasks complete. Exiting.")
+
 
 if __name__ == "__main__":
     main()
