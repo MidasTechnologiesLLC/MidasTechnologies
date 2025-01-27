@@ -1,0 +1,238 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.layers import Input, LSTM, Dense, Dropout, Bidirectional
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+import optuna
+import matplotlib.pyplot as plt
+import logging
+import sys
+import os
+
+# Force TensorFlow to use CPU if no GPU is available
+if not any([os.environ.get('CUDA_VISIBLE_DEVICES'), os.environ.get('NVIDIA_VISIBLE_DEVICES')]):
+    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+# Initialize logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+logger = logging.getLogger()
+
+# Custom functions for technical indicators
+def compute_sma(data, period):
+    return data.rolling(window=period).mean()
+
+def compute_ema(data, period):
+    return data.ewm(span=period, adjust=False).mean()
+
+def compute_rsi(data, period=14):
+    delta = data.diff(1)
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
+
+def compute_macd(data, fast_period=12, slow_period=26, signal_period=9):
+    fast_ema = compute_ema(data, fast_period)
+    slow_ema = compute_ema(data, slow_period)
+    macd = fast_ema - slow_ema
+    signal = compute_ema(macd, signal_period)
+    return macd, signal
+
+def compute_atr(high, low, close, period=14):
+    tr = np.maximum(high - low, np.maximum(abs(high - close.shift(1)), abs(low - close.shift(1))))
+    return tr.rolling(window=period).mean()
+
+def compute_adx(high, low, close, period=14):
+    tr = compute_atr(high, low, close, period)
+    plus_dm = (high - high.shift(1)).where((high - high.shift(1)) > (low.shift(1) - low), 0).fillna(0)
+    minus_dm = (low.shift(1) - low).where((low.shift(1) - low) > (high - high.shift(1)), 0).fillna(0)
+    plus_di = 100 * (plus_dm.rolling(window=period).sum() / tr)
+    minus_di = 100 * (minus_dm.rolling(window=period).sum() / tr)
+    dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
+    return dx.rolling(window=period).mean()
+
+# Load and preprocess data
+def load_and_preprocess_data(file_path):
+    logger.info("Loading data...")
+    try:
+        df = pd.read_csv(file_path)
+        if 'time' not in df.columns:
+            logger.error("The CSV file must contain a 'time' column.")
+            sys.exit(1)
+        df['time'] = pd.to_datetime(df['time'], errors='coerce', utc=True)
+        invalid_time_count = df['time'].isna().sum()
+        if invalid_time_count > 0:
+            logger.warning(f"Dropping {invalid_time_count} rows with invalid datetime values.")
+            df = df.dropna(subset=['time'])
+
+        # Ensure required columns exist
+        required_columns = ['open', 'high', 'low', 'close', 'Volume']
+        for col in required_columns:
+            if col not in df.columns:
+                logger.warning(f"Missing column '{col}' in the data. Filling with default values.")
+                df[col] = 0
+        # Rename Volume column to lowercase for consistency
+        if 'Volume' in df.columns:
+            df.rename(columns={'Volume': 'volume'}, inplace=True)
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        sys.exit(1)
+    except Exception as e:
+        logger.error(f"Error loading file: {e}")
+        sys.exit(1)
+
+    df['day'] = df['time'].dt.date
+
+    # Aggregate 5-minute data into daily data
+    daily_data = df.groupby('day').agg({
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum'
+    }).reset_index()
+
+    # Generate technical indicators
+    logger.info("Calculating technical indicators...")
+    daily_data['SMA_10'] = compute_sma(daily_data['close'], period=10)
+    daily_data['EMA_10'] = compute_ema(daily_data['close'], period=10)
+    daily_data['RSI'] = compute_rsi(daily_data['close'], period=14)
+    daily_data['MACD'], daily_data['MACD_signal'] = compute_macd(daily_data['close'])
+    daily_data['ATR'] = compute_atr(daily_data['high'], daily_data['low'], daily_data['close'], period=14)
+    daily_data['ADX'] = compute_adx(daily_data['high'], daily_data['low'], daily_data['close'], period=14)
+
+    # Drop NaN rows due to indicators
+    daily_data = daily_data.dropna()
+
+    # Scale data
+    logger.info("Scaling data...")
+    scaler = MinMaxScaler()
+    feature_columns = ['open', 'high', 'low', 'volume', 'SMA_10', 'EMA_10', 'RSI', 'MACD', 'MACD_signal', 'ATR', 'ADX']
+    scaled_features = scaler.fit_transform(daily_data[feature_columns])
+
+    return scaled_features, daily_data['close'].values, scaler
+
+# Create sequences for LSTM
+def create_sequences(data, target, window_size):
+    logger.info(f"Creating sequences with window size {window_size}...")
+    X, y = [], []
+    for i in range(len(data) - window_size):
+        X.append(data[i:i + window_size])
+        y.append(target[i + window_size])
+    return np.array(X), np.array(y)
+
+# Define objective function for hyperparameter tuning
+def objective(trial):
+    logger.info("Running Optuna trial...")
+    # Suggest hyperparameters
+    num_lstm_layers = trial.suggest_int("num_lstm_layers", 2, 4)
+    lstm_units = trial.suggest_int("lstm_units", 64, 256, step=64)
+    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.5, step=0.1)
+    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
+
+    # Build model
+    inputs = Input(shape=(X_train.shape[1], X_train.shape[2]))
+    x = inputs
+    for _ in range(num_lstm_layers):
+        x = Bidirectional(LSTM(lstm_units, return_sequences=True, kernel_regularizer="l2"))(x)
+        x = Dropout(dropout_rate)(x)
+    x = LSTM(lstm_units, return_sequences=False, kernel_regularizer="l2")(x)
+    x = Dropout(dropout_rate)(x)
+    outputs = Dense(1, activation="linear")(x)
+
+    model = Model(inputs, outputs)
+    optimizer = Adam(learning_rate=learning_rate)
+    model.compile(optimizer=optimizer, loss="mean_squared_error", metrics=["mae"])
+
+    # Train model
+    early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
+    model.fit(
+        X_train, y_train,
+        validation_data=(X_test, y_test),
+        epochs=50,
+        batch_size=32,
+        callbacks=[early_stopping],
+        verbose=0
+    )
+
+    # Evaluate model
+    loss, mae = model.evaluate(X_test, y_test, verbose=0)
+    return mae
+
+# Run hyperparameter tuning and train final model
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        logger.error("Please provide the CSV file path as an argument.")
+        sys.exit(1)
+
+    file_path = sys.argv[1]  # Get the file path from command-line arguments
+    window_size = 30
+
+    # Load and preprocess data
+    data, target, scaler = load_and_preprocess_data(file_path)
+
+    # Create sequences
+    X, y = create_sequences(data, target, window_size)
+
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=False)
+
+    # Run Optuna
+    study = optuna.create_study(direction="minimize")
+    study.optimize(objective, n_trials=20)
+
+    # Train final model with best hyperparameters
+    best_params = study.best_params
+    logger.info(f"Best Hyperparameters: {best_params}")
+
+    inputs = Input(shape=(X_train.shape[1], X_train.shape[2]))
+    x = inputs
+    for _ in range(best_params["num_lstm_layers"]):
+        x = Bidirectional(LSTM(best_params["lstm_units"], return_sequences=True, kernel_regularizer="l2"))(x)
+        x = Dropout(best_params["dropout_rate"])(x)
+    x = LSTM(best_params["lstm_units"], return_sequences=False, kernel_regularizer="l2")(x)
+    x = Dropout(best_params["dropout_rate"])(x)
+    outputs = Dense(1, activation="linear")(x)
+
+    model = Model(inputs, outputs)
+    optimizer = Adam(learning_rate=best_params["learning_rate"])
+    model.compile(optimizer=optimizer, loss="mean_squared_error", metrics=["mae"])
+
+    # Callbacks
+    early_stopping = EarlyStopping(monitor="val_loss", patience=15, restore_best_weights=True)
+    reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=5, min_lr=1e-5)
+
+    logger.info("Training final model...")
+    history = model.fit(
+        X_train, y_train,
+        validation_data=(X_test, y_test),
+        epochs=300,
+        batch_size=32,
+        callbacks=[early_stopping, reduce_lr]
+    )
+
+    # Save model
+    model.save("optimized_lstm_model.keras")
+    logger.info("Model saved as optimized_lstm_model.keras.")
+
+    # Evaluate model
+    loss, mae = model.evaluate(X_test, y_test)
+    logger.info(f"Final Model Test Loss: {loss}, Test MAE: {mae}")
+
+    # Make predictions and plot
+    y_pred = model.predict(X_test)
+    plt.figure(figsize=(10, 6))
+    plt.plot(y_test, label="Actual Prices")
+    plt.plot(y_pred, label="Predicted Prices")
+    plt.legend()
+    plt.title("Model Prediction vs Actual")
+    plt.xlabel("Time Steps")
+    plt.ylabel("Price")
+    plt.savefig("prediction_vs_actual.png")
+    plt.show()
+
+    logger.info("Predictions complete and saved to plot.")
+
