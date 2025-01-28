@@ -1,0 +1,209 @@
+2024-12-14 23:34:21,194 - DEBUG - 139634810240336 connState: None -> 0
+2024-12-14 23:34:21,194 - DEBUG - 139634810240336 connState: None -> 0
+2024-12-14 23:34:21,194 - DEBUG - Connecting to 127.0.0.1:4002 w/ id:1
+2024-12-14 23:34:21,194 - DEBUG - 139634810240336 connState: 0 -> 1
+2024-12-14 23:34:21,195 - DEBUG - msg b'\x00\x00\x00\tv100..193'
+2024-12-14 23:34:21,195 - DEBUG - REQUEST b'API\x00\x00\x00\x00\tv100..193'
+2024-12-14 23:34:21,195 - DEBUG - acquiring lock
+2024-12-14 23:34:21,195 - DEBUG - acquired lock
+2024-12-14 23:34:21,195 - DEBUG - releasing lock
+2024-12-14 23:34:21,195 - DEBUG - release lock
+2024-12-14 23:34:21,195 - DEBUG - sendMsg: sent: 17
+2024-12-14 23:34:21,196 - DEBUG - no fields
+2024-12-14 23:34:21,238 - DEBUG - len 30 raw:b'\x00\x00\x00\x1a187\x0020241214 23:34:20 EST\x00'|
+2024-12-14 23:34:21,238 - DEBUG - ANSWER b'\x00\x00\x00\x1a187\x0020241214 23:34:20 EST\x00'
+2024-12-14 23:34:21,238 - DEBUG - read_msg: size: 26
+2024-12-14 23:34:21,238 - DEBUG - size:26 msg:b'187\x0020241214 23:34:20 EST\x00' rest:b''|
+2024-12-14 23:34:21,238 - DEBUG - fields (b'187', b'20241214 23:34:20 EST')
+2024-12-14 23:34:21,239 - DEBUG - ANSWER Version:187 time:b'20241214 23:34:20 EST'
+2024-12-14 23:34:21,239 - DEBUG - 139634810240336 connState: 1 -> 2
+2024-12-14 23:34:21,239 - DEBUG - EReader thread started
+2024-12-14 23:34:21,239 - INFO - sent startApi
+2024-12-14 23:34:21,239 - INFO - REQUEST startApi {}
+2024-12-14 23:34:21,239 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,239 - INFO - SENDING startApi b'\x00\x00\x00\x0871\x002\x001\x00\x00'
+2024-12-14 23:34:21,239 - DEBUG - acquiring lock
+2024-12-14 23:34:21,239 - DEBUG - acquired lock
+2024-12-14 23:34:21,239 - DEBUG - releasing lock
+2024-12-14 23:34:21,239 - DEBUG - release lock
+2024-12-14 23:34:21,239 - DEBUG - sendMsg: sent: 12
+2024-12-14 23:34:21,239 - INFO - ANSWER connectAck {}
+2024-12-14 23:34:21,239 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,252 - DEBUG - len 19 raw:b'\x00\x00\x00\x0f15\x001\x00DUE064818\x00'|
+2024-12-14 23:34:21,252 - DEBUG - reader loop, recvd size 19
+2024-12-14 23:34:21,252 - DEBUG - read_msg: size: 15
+2024-12-14 23:34:21,252 - DEBUG - size:15 msg.size:15 msg:|b''| buf:||
+2024-12-14 23:34:21,252 - DEBUG - fields (b'15', b'1', b'DUE064818')
+2024-12-14 23:34:21,252 - DEBUG - In interpret(), handleInfo: wrap:<function EWrapper.managedAccounts at 0x7eff4364d4e0> meth:None prms:OrderedDict([('self', <Parameter "self">), ('accountsList', <Parameter "accountsList: str">)])
+2024-12-14 23:34:21,252 - DEBUG - field b'DUE064818' 
+2024-12-14 23:34:21,252 - DEBUG - arg DUE064818 type <class 'str'>
+2024-12-14 23:34:21,252 - DEBUG - calling <bound method EWrapper.managedAccounts of <__main__.TestStockRetriever object at 0x7eff43433d50>> with <__main__.TestStockRetriever object at 0x7eff43433d50> ['DUE064818']
+2024-12-14 23:34:21,252 - INFO - ANSWER managedAccounts {'accountsList': 'DUE064818'}
+2024-12-14 23:34:21,252 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,252 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,252 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,294 - DEBUG - len 185 raw:b'\x00\x00\x00\x069\x001\x001\x00\x00\x00\x0064\x002\x00-1\x002104\x00Market data farm connection is OK:usfarm\x00\x00\x00\x00\x0044\x002\x00-1\x002106\x00HMDS data farm connection is OK:ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'|
+2024-12-14 23:34:21,294 - DEBUG - reader loop, recvd size 185
+2024-12-14 23:34:21,294 - DEBUG - read_msg: size: 6
+2024-12-14 23:34:21,294 - DEBUG - size:6 msg.size:6 msg:|b'\x00\x00\x0064\x002\x00-1\x002104\x00Market data farm connection is OK:usfarm\x00\x00\x00\x00\x0044\x002\x00-1\x002106\x00HMDS data farm connection is OK:ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-14 23:34:21,294 - DEBUG - read_msg: size: 54
+2024-12-14 23:34:21,294 - DEBUG - size:54 msg.size:54 msg:|b'\x00\x00\x0044\x002\x00-1\x002106\x00HMDS data farm connection is OK:ushmds\x00\x00\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-14 23:34:21,294 - DEBUG - fields (b'9', b'1', b'1')
+2024-12-14 23:34:21,294 - DEBUG - read_msg: size: 52
+2024-12-14 23:34:21,294 - DEBUG - In interpret(), handleInfo: wrap:<function EWrapper.nextValidId at 0x7eff4364cf40> meth:None prms:OrderedDict([('self', <Parameter "self">), ('orderId', <Parameter "orderId: int">)])
+2024-12-14 23:34:21,294 - DEBUG - size:52 msg.size:52 msg:|b'\x00\x00\x0094\x002\x00-1\x002158\x00Sec-def data farm connection is OK:secdefnj\x00\x00'| buf:||
+2024-12-14 23:34:21,294 - DEBUG - field b'1' 
+2024-12-14 23:34:21,294 - DEBUG - read_msg: size: 57
+2024-12-14 23:34:21,295 - DEBUG - arg 1 type <class 'int'>
+2024-12-14 23:34:21,295 - DEBUG - size:57 msg.size:57 msg:|b''| buf:||
+2024-12-14 23:34:21,295 - DEBUG - calling <bound method TestStockRetriever.nextValidId of <__main__.TestStockRetriever object at 0x7eff43433d50>> with <__main__.TestStockRetriever object at 0x7eff43433d50> [1]
+2024-12-14 23:34:21,295 - INFO - NextValidId received: 1
+2024-12-14 23:34:21,295 - INFO - REQUEST reqCurrentTime {}
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - INFO - SENDING reqCurrentTime b'\x00\x00\x00\x0549\x001\x00'
+2024-12-14 23:34:21,295 - DEBUG - acquiring lock
+2024-12-14 23:34:21,295 - DEBUG - acquired lock
+2024-12-14 23:34:21,295 - DEBUG - releasing lock
+2024-12-14 23:34:21,295 - DEBUG - release lock
+2024-12-14 23:34:21,295 - DEBUG - sendMsg: sent: 9
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - conn:1 queue.sz:3
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - fields (b'4', b'2', b'-1', b'2104', b'Market data farm connection is OK:usfarm', b'')
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'-1'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2104'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'str'> b'Market data farm connection is OK:usfarm'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'str'> b''
+2024-12-14 23:34:21,295 - INFO - Info. ReqId: -1, Code: 2104, Msg: Market data farm connection is OK:usfarm
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - conn:1 queue.sz:2
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - fields (b'4', b'2', b'-1', b'2106', b'HMDS data farm connection is OK:ushmds', b'')
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'-1'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2106'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'str'> b'HMDS data farm connection is OK:ushmds'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'str'> b''
+2024-12-14 23:34:21,295 - INFO - Info. ReqId: -1, Code: 2106, Msg: HMDS data farm connection is OK:ushmds
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - conn:1 queue.sz:1
+2024-12-14 23:34:21,295 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,295 - DEBUG - fields (b'4', b'2', b'-1', b'2158', b'Sec-def data farm connection is OK:secdefnj', b'')
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'-1'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'int'> b'2158'
+2024-12-14 23:34:21,295 - DEBUG - decode <class 'str'> b'Sec-def data farm connection is OK:secdefnj'
+2024-12-14 23:34:21,296 - DEBUG - decode <class 'str'> b''
+2024-12-14 23:34:21,296 - INFO - Info. ReqId: -1, Code: 2158, Msg: Sec-def data farm connection is OK:secdefnj
+2024-12-14 23:34:21,296 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,296 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,296 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,296 - DEBUG - len 20 raw:b'\x00\x00\x00\x1049\x001\x001734237260\x00'|
+2024-12-14 23:34:21,297 - DEBUG - reader loop, recvd size 20
+2024-12-14 23:34:21,297 - DEBUG - read_msg: size: 16
+2024-12-14 23:34:21,297 - DEBUG - size:16 msg.size:16 msg:|b''| buf:||
+2024-12-14 23:34:21,297 - DEBUG - fields (b'49', b'1', b'1734237260')
+2024-12-14 23:34:21,297 - DEBUG - In interpret(), handleInfo: wrap:<function EWrapper.currentTime at 0x7eff4364da80> meth:None prms:OrderedDict([('self', <Parameter "self">), ('time', <Parameter "time: int">)])
+2024-12-14 23:34:21,297 - DEBUG - field b'1734237260' 
+2024-12-14 23:34:21,297 - DEBUG - arg 1734237260 type <class 'int'>
+2024-12-14 23:34:21,297 - DEBUG - calling <bound method TestStockRetriever.currentTime of <__main__.TestStockRetriever object at 0x7eff43433d50>> with <__main__.TestStockRetriever object at 0x7eff43433d50> [1734237260]
+2024-12-14 23:34:21,297 - INFO - Current IB Server Time: 1734237260
+2024-12-14 23:34:21,297 - INFO - Requesting historical market data for symbols...
+2024-12-14 23:34:21,297 - INFO - REQUEST reqHistoricalData {'reqId': 1001, 'contract': 139634810350160: 0,AAPL,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'endDateTime': '20241214 23:34:21 UTC', 'durationStr': '1 D', 'barSizeSetting': '1 day', 'whatToShow': 'TRADES', 'useRTH': 1, 'formatDate': 1, 'keepUpToDate': False, 'chartOptions': []}
+2024-12-14 23:34:21,297 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,297 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,297 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,297 - INFO - SENDING reqHistoricalData b'\x00\x00\x00W20\x001001\x000\x00AAPL\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x0020241214 23:34:21 UTC\x001 day\x001 D\x001\x00TRADES\x001\x000\x00\x00'
+2024-12-14 23:34:21,298 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,298 - DEBUG - acquiring lock
+2024-12-14 23:34:21,298 - DEBUG - acquired lock
+2024-12-14 23:34:21,298 - DEBUG - releasing lock
+2024-12-14 23:34:21,298 - DEBUG - release lock
+2024-12-14 23:34:21,298 - DEBUG - sendMsg: sent: 91
+2024-12-14 23:34:21,498 - DEBUG - queue.get: empty
+2024-12-14 23:34:21,498 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,498 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,498 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,698 - DEBUG - queue.get: empty
+2024-12-14 23:34:21,698 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,698 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,698 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,898 - DEBUG - queue.get: empty
+2024-12-14 23:34:21,898 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:21,898 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:21,898 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,099 - DEBUG - queue.get: empty
+2024-12-14 23:34:22,099 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,099 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:22,099 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,298 - DEBUG - socket timeout from recvMsg (<class 'TimeoutError'>, TimeoutError('timed out'), <traceback object at 0x7eff4344ea80>)
+2024-12-14 23:34:22,298 - DEBUG - reader loop, recvd size 0
+2024-12-14 23:34:22,299 - DEBUG - queue.get: empty
+2024-12-14 23:34:22,299 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,299 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:22,299 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,374 - DEBUG - len 132 raw:b'\x00\x00\x00\x8017\x001001\x0020241213 18:34:21 US/Eastern\x0020241214 18:34:21 US/Eastern\x001\x0020241213\x00247.84\x00249.30\x00246.24\x00248.13\x0015962983\x00247.595\x0086663\x00'|
+2024-12-14 23:34:22,374 - DEBUG - reader loop, recvd size 132
+2024-12-14 23:34:22,374 - DEBUG - read_msg: size: 128
+2024-12-14 23:34:22,374 - DEBUG - size:128 msg.size:128 msg:|b''| buf:||
+2024-12-14 23:34:22,374 - DEBUG - fields (b'17', b'1001', b'20241213 18:34:21 US/Eastern', b'20241214 18:34:21 US/Eastern', b'1', b'20241213', b'247.84', b'249.30', b'246.24', b'248.13', b'15962983', b'247.595', b'86663')
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'int'> b'1001'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'str'> b'20241213 18:34:21 US/Eastern'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'str'> b'20241214 18:34:21 US/Eastern'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'int'> b'1'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'str'> b'20241213'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'float'> b'247.84'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'float'> b'249.30'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'float'> b'246.24'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'float'> b'248.13'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'decimal.Decimal'> b'15962983'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'decimal.Decimal'> b'247.595'
+2024-12-14 23:34:22,374 - DEBUG - decode <class 'int'> b'86663'
+2024-12-14 23:34:22,374 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,374 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:22,375 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,399 - INFO - REQUEST reqHistoricalData {'reqId': 1002, 'contract': 139634810350672: 0,AMZN,STK,,,0,,,SMART,,USD,,,False,,,,combo:, 'endDateTime': '20241214 23:34:22 UTC', 'durationStr': '1 D', 'barSizeSetting': '1 day', 'whatToShow': 'TRADES', 'useRTH': 1, 'formatDate': 1, 'keepUpToDate': False, 'chartOptions': []}
+2024-12-14 23:34:22,399 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,400 - INFO - SENDING reqHistoricalData b'\x00\x00\x00W20\x001002\x000\x00AMZN\x00STK\x00\x000.0\x00\x00\x00SMART\x00\x00USD\x00\x00\x000\x0020241214 23:34:22 UTC\x001 day\x001 D\x001\x00TRADES\x001\x000\x00\x00'
+2024-12-14 23:34:22,400 - DEBUG - acquiring lock
+2024-12-14 23:34:22,400 - DEBUG - acquired lock
+2024-12-14 23:34:22,400 - DEBUG - releasing lock
+2024-12-14 23:34:22,400 - DEBUG - release lock
+2024-12-14 23:34:22,400 - DEBUG - sendMsg: sent: 91
+2024-12-14 23:34:22,512 - DEBUG - len 132 raw:b'\x00\x00\x00\x8017\x001002\x0020241213 18:34:22 US/Eastern\x0020241214 18:34:22 US/Eastern\x001\x0020241213\x00228.40\x00230.20\x00225.86\x00227.46\x0015824743\x00227.931\x0071392\x00'|
+2024-12-14 23:34:22,512 - DEBUG - reader loop, recvd size 132
+2024-12-14 23:34:22,512 - DEBUG - read_msg: size: 128
+2024-12-14 23:34:22,512 - DEBUG - size:128 msg.size:128 msg:|b''| buf:||
+2024-12-14 23:34:22,512 - DEBUG - fields (b'17', b'1002', b'20241213 18:34:22 US/Eastern', b'20241214 18:34:22 US/Eastern', b'1', b'20241213', b'228.40', b'230.20', b'225.86', b'227.46', b'15824743', b'227.931', b'71392')
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'int'> b'1002'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'str'> b'20241213 18:34:22 US/Eastern'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'str'> b'20241214 18:34:22 US/Eastern'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'int'> b'1'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'str'> b'20241213'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'float'> b'228.40'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'float'> b'230.20'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'float'> b'225.86'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'float'> b'227.46'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'decimal.Decimal'> b'15824743'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'decimal.Decimal'> b'227.931'
+2024-12-14 23:34:22,512 - DEBUG - decode <class 'int'> b'71392'
+2024-12-14 23:34:22,513 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,513 - DEBUG - conn:1 queue.sz:0
+2024-12-14 23:34:22,513 - DEBUG - 139634810240336 isConn: 2, connConnected: True
+2024-12-14 23:34:22,601 - INFO - All historical market data retrieval completed.
+2024-12-14 23:34:22,601 - DEBUG - 139634810240336 connState: 2 -> 0
+2024-12-14 23:34:22,601 - INFO - disconnecting
+2024-12-14 23:34:22,601 - DEBUG - disconnecting
+2024-12-14 23:34:22,601 - DEBUG - disconnected
+2024-12-14 23:34:22,601 - INFO - Connection to IB Gateway closed.
+2024-12-14 23:34:22,602 - DEBUG - 139634810240336 connState: None -> 0
+2024-12-14 23:34:22,713 - DEBUG - queue.get: empty
+2024-12-14 23:34:22,713 - DEBUG - 139634810240336 isConn: 0, connConnected: None
+2024-12-14 23:34:22,713 - DEBUG - conn:0 queue.sz:0
+2024-12-14 23:34:22,713 - DEBUG - 139634810240336 isConn: 0, connConnected: None
+2024-12-14 23:34:22,714 - DEBUG - 139634810240336 connState: 0 -> 0
+2024-12-14 23:34:23,513 - DEBUG - socket broken, disconnecting
+2024-12-14 23:34:23,514 - DEBUG - reader loop, recvd size 0
+2024-12-14 23:34:23,514 - DEBUG - EReader thread finished
+2024-12-14 23:34:24,602 - INFO - TestStockRetriever completed.

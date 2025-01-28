@@ -1,0 +1,90 @@
+[
+    {
+        "symbol": "AAPL",
+        "date": "20241213",
+        "open": 247.84,
+        "high": 249.3,
+        "low": 246.24,
+        "close": 248.13,
+        "volume": 15962983,
+        "net_change": 0.1699999999999875,
+        "percent_change": 0.06855944507178073
+    },
+    {
+        "symbol": "MSFT",
+        "date": "20241213",
+        "open": 447.81,
+        "high": 451.43,
+        "low": 445.58,
+        "close": 447.27,
+        "volume": 6184118,
+        "net_change": -2.2900000000000205,
+        "percent_change": -0.5093869561348919
+    },
+    {
+        "symbol": "GOOGL",
+        "date": "20241213",
+        "open": 191.01,
+        "high": 192.73,
+        "low": 189.64,
+        "close": 189.82,
+        "volume": 12492953,
+        "net_change": -2.140000000000015,
+        "percent_change": -1.1148155865805454
+    },
+    {
+        "symbol": "TSLA",
+        "date": "20241213",
+        "open": 420.01,
+        "high": 436.3,
+        "low": 415.71,
+        "close": 436.23,
+        "volume": 61360690,
+        "net_change": 18.129999999999995,
+        "percent_change": 4.336283185840706
+    },
+    {
+        "symbol": "AMZN",
+        "date": "20241213",
+        "open": 228.4,
+        "high": 230.2,
+        "low": 225.86,
+        "close": 227.46,
+        "volume": 15824743,
+        "net_change": -1.509999999999991,
+        "percent_change": -0.6594750403983014
+    },
+    {
+        "symbol": "NFLX",
+        "date": "20241213",
+        "open": 916.81,
+        "high": 925.55,
+        "low": 909.61,
+        "close": 918.87,
+        "volume": 907897,
+        "net_change": -6.67999999999995,
+        "percent_change": -0.7217330236075793
+    },
+    {
+        "symbol": "INTC",
+        "date": "20241213",
+        "open": 20.59,
+        "high": 20.8,
+        "low": 20.25,
+        "close": 20.34,
+        "volume": 39134604,
+        "net_change": -0.4400000000000013,
+        "percent_change": -2.1174205967276287
+    },
+    {
+        "symbol": "IBM",
+        "date": "20241213",
+        "open": 232.25,
+        "high": 233.78,
+        "low": 230.26,
+        "close": 230.82,
+        "volume": 1030599,
+        "net_change": -1.4399999999999977,
+        "percent_change": -0.6199948333763876
+    }
+]

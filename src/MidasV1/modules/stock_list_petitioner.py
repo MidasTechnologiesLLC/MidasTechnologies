@@ -1,4 +1,5 @@
 # modules/stock_list_petitioner.py
+
 """
 ========================================================================
 # README
@@ -11,19 +12,7 @@
 # to perform scanner subscriptions, receive market data, and apply filters to
 # generate a refined list of stocks suitable for trading strategies.
 #
-# Features:
-# - Initiates scanner subscriptions to retrieve stock data based on criteria such as
-#   search volume and net change.
-# - Receives and processes scanner data asynchronously using IB API callbacks.
-# - Refines the received stock list by applying additional criteria like share price,
-#   availability of option contracts, and volatility index.
-# - Caches the refined stock list for use by subsequent modules.
-# - Provides detailed logging and colored console outputs for better traceability and user feedback.
-#
 # Usage:
-# This module is instantiated and used by `main.py` after initial checks are passed.
-#
-# Example:
 # from modules.stock_list_petitioner import StockListPetitioner
 # stock_petitioner = StockListPetitioner(config)
 # connected_client = initial_checks.run_all_checks(callback_handlers=[stock_petitioner])
@@ -38,7 +27,7 @@ import threading
 import tempfile
 import json
 import time
-import os  # Added import for os
+import os
 
 from ibapi.contract import Contract
 from ibapi.scanner import ScannerSubscription
@@ -81,7 +70,6 @@ class StockListPetitioner:
         net_change = self.config.getfloat('Module2', 'default_net_change', fallback=0.0)
         percent_change = self.config.getfloat('Module2', 'default_percent_change', fallback=0.0)
 
-        # Display and log criteria
         criteria_message = (
             f"Loaded Scanner Criteria:\n"
             f"  - Search Volume: {search_volume}\n"
@@ -89,21 +77,18 @@ class StockListPetitioner:
             f"  - Percent Change: {percent_change}"
         )
         self.logger.info(criteria_message)
-        print("\033[94m" + criteria_message + "\033[0m")  # Blue text for criteria
+        print("\033[94m" + criteria_message + "\033[0m")
 
         # Define the scanner subscription
         subscription = ScannerSubscription()
         subscription.instrument = "STK"
-        subscription.locationCode = "STK.US.MAJOR"  # Broad location code to include major US stocks
-        subscription.scanCode = "ALL"                # Broader scan code to include all stocks
+        subscription.locationCode = "STK.US.MAJOR"
+        subscription.scanCode = "ALL"
         subscription.aboveVolume = search_volume
-        # subscription.netChange = net_change        # Removed for compatibility with "ALL"
-        # subscription.percentChange = percent_change  # Removed for compatibility with "ALL"
 
-        # Inform user about the API call
         api_call_message = "Initiating scanner subscription with the above criteria..."
         self.logger.info(api_call_message)
-        print("\033[92m" + api_call_message + "\033[0m")  # Green text for API call info
+        print("\033[92m" + api_call_message + "\033[0m")
 
         # Optionally, implement retries
         MAX_RETRIES = 2
@@ -112,80 +97,66 @@ class StockListPetitioner:
                 self.connected_client.reqScannerSubscription(
                     reqId=1001,
                     subscription=subscription,
-                    scannerSubscriptionOptions=[],  # Can be extended based on config
-                    scannerSubscriptionFilterOptions=[]  # Can be extended based on config
+                    scannerSubscriptionOptions=[],
+                    scannerSubscriptionFilterOptions=[]
                 )
                 self.logger.info(f"Scanner subscription requested successfully on attempt {attempt}.")
-                print(f"\033[92mScanner subscription requested successfully on attempt {attempt}.\033[0m")  # Green text
+                print(f"\033[92mScanner subscription requested successfully on attempt {attempt}.\033[0m")
                 break
             except Exception as e:
                 self.logger.error(f"Attempt {attempt}: Error in reqScannerSubscription: {e}")
-                print(f"\033[91mAttempt {attempt}: Error in reqScannerSubscription: {e}\033[0m")  # Red text
+                print(f"\033[91mAttempt {attempt}: Error in reqScannerSubscription: {e}\033[0m")
                 if attempt == MAX_RETRIES:
                     return []
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
 
-        # Wait for scanner data or timeout
-        scanner_timeout = 15  # seconds
+        scanner_timeout = 15
         self.logger.info(f"Waiting for scanner data (timeout in {scanner_timeout} seconds)...")
-        print(f"\033[93mWaiting for scanner data (timeout in {scanner_timeout} seconds)...\033[0m")  # Yellow text
+        print(f"\033[93mWaiting for scanner data (timeout in {scanner_timeout} seconds)...\033[0m")
         scanner_completed = self.scanner_event.wait(timeout=scanner_timeout)
         if not scanner_completed:
             self.logger.error("Scanner subscription timed out.")
             try:
                 self.connected_client.cancelScannerSubscription(1001)
                 self.logger.error("Scanner subscription canceled due to timeout.")
-                print("\033[91mScanner subscription timed out and was canceled.\033[0m")  # Red text
+                print("\033[91mScanner subscription timed out and was canceled.\033[0m")
             except Exception as e:
                 self.logger.error(f"Error canceling scanner subscription: {e}")
-                print(f"\033[91mError canceling scanner subscription: {e}\033[0m")  # Red text
+                print(f"\033[91mError canceling scanner subscription: {e}\033[0m")
             return []
 
         self.logger.info("Scanner data received. Proceeding to refine the stock list.")
-        print("\033[92mScanner data received. Proceeding to refine the stock list.\033[0m")  # Green text
+        print("\033[92mScanner data received. Proceeding to refine the stock list.\033[0m")
 
-        # Log the number of scanner data entries received
         self.logger.debug(f"Total scanner data received: {len(self.scanner_data)}")
-        print(f"\033[94mTotal scanner data received: {len(self.scanner_data)}\033[0m")  # Blue text
+        print(f"\033[94mTotal scanner data received: {len(self.scanner_data)}\033[0m")
 
-        for stock in self.scanner_data:
-            self.logger.debug(f"Stock: {stock['symbol']}, Volume: {stock['distance']}")
-            # Optionally, print detailed scanner data for debugging
-            # print(f"\033[94mStock: {stock['symbol']}, Volume: {stock['distance']}\033[0m")  # Blue text
-
-        # Process and refine the scanner data
         refined_list = self.refine_stock_list()
 
-        # Cache the refined list
         self.cache_refined_list(refined_list)
-
-        # Print the refined list to the user
         self.print_refined_list(refined_list)
 
         if not refined_list:
             self.logger.error("No stocks meet the specified criteria after refinement.")
-            print("\033[91mNo stocks meet the specified criteria after refinement.\033[0m\n")  # Red text
+            print("\033[91mNo stocks meet the specified criteria after refinement.\033[0m\n")
 
         # Disconnect the client to prevent further logging
         try:
             self.connected_client.disconnect()
             self.logger.info("Disconnected from IB Gateway after Module 2.")
-            print("\033[92mDisconnected from IB Gateway after Module 2.\033[0m")  # Green text
+            print("\033[92mDisconnected from IB Gateway after Module 2.\033[0m")
         except Exception as e:
             self.logger.error(f"Error disconnecting from IB Gateway: {e}")
-            print(f"\033[91mError disconnecting from IB Gateway: {e}\033[0m")  # Red text
+            print(f"\033[91mError disconnecting from IB Gateway: {e}\033[0m")
 
         self.logger.info("Module 2: IBJTS List Petitioner completed successfully.")
-        print("\033[92mModule 2: IBJTS List Petitioner completed successfully.\033[0m")  # Green text
+        print("\033[92mModule 2: IBJTS List Petitioner completed successfully.\033[0m")
 
         return refined_list
 
     @iswrapper
     def scannerData(self, reqId: int, rank: int, contractDetails, distance: str,
-                   benchmark: str, projection: str, legsStr: str):
-        """
-        Receives scanner data.
-        """
+                    benchmark: str, projection: str, legsStr: str):
         with self.lock:
             self.scanner_data.append({
                 'rank': rank,
@@ -202,89 +173,76 @@ class StockListPetitioner:
 
     @iswrapper
     def scannerDataEnd(self, reqId: int):
-        """
-        Indicates the end of scanner data.
-        """
         self.logger.info(f"Scanner data end received for reqId: {reqId}")
         with self.lock:
             self.scanner_finished = True
             self.scanner_event.set()
 
     def refine_stock_list(self):
-        """
-        Refines the scanner data based on additional criteria.
-
-        Returns:
-            list: Refined list of stocks.
-        """
         self.logger.info("Refining the stock list based on criteria...")
-        print("\033[93mRefining the stock list based on criteria...\033[0m")  # Yellow text
+        print("\033[93mRefining the stock list based on criteria...\033[0m")
 
         refined_list = []
         for stock in self.scanner_data:
             symbol = stock['symbol']
             self.logger.debug(f"Processing stock: {symbol}")
-            print(f"\033[94mProcessing stock: {symbol}\033[0m")  # Blue text
+            print(f"\033[94mProcessing stock: {symbol}\033[0m")
 
-            # Fetch additional data for each stock
+            # Fetch share price using historical data method
             share_price = self.get_share_price(symbol)
             if share_price is None:
                 self.logger.debug(f"Skipping {symbol}: Unable to retrieve share price.")
-                print(f"\033[91mSkipping {symbol}: Unable to retrieve share price.\033[0m")  # Red text
-                continue  # Skip if unable to fetch share price
+                print(f"\033[91mSkipping {symbol}: Unable to retrieve share price.\033[0m")
+                continue
 
             if share_price > self.config.getfloat('Module2', 'default_refinement_share_price', fallback=15.0):
                 self.logger.debug(f"Excluding {symbol}: Share price ${share_price} exceeds threshold.")
-                print(f"\033[91mExcluding {symbol}: Share price ${share_price} exceeds threshold.\033[0m")  # Red text
-                continue  # Remove stocks above the share price threshold
+                print(f"\033[91mExcluding {symbol}: Share price ${share_price} exceeds threshold.\033[0m")
+                continue
 
             if not self.has_option_contracts(symbol):
                 self.logger.debug(f"Excluding {symbol}: No option contracts available.")
-                print(f"\033[91mExcluding {symbol}: No option contracts available.\033[0m")  # Red text
-                continue  # Remove stocks without option contracts
+                print(f"\033[91mExcluding {symbol}: No option contracts available.\033[0m")
+                continue
 
             volatility_index = self.get_volatility_index(symbol)
             if volatility_index is None:
                 self.logger.debug(f"Skipping {symbol}: Unable to retrieve volatility index.")
-                print(f"\033[91mSkipping {symbol}: Unable to retrieve volatility index.\033[0m")  # Red text
-                continue  # Skip if unable to fetch volatility index
+                print(f"\033[91mSkipping {symbol}: Unable to retrieve volatility index.\033[0m")
+                continue
 
             if volatility_index > self.config.getfloat('Module2', 'default_volatility_threshold', fallback=30.0):
                 self.logger.debug(f"Excluding {symbol}: Volatility index {volatility_index}% exceeds threshold.")
-                print(f"\033[91mExcluding {symbol}: Volatility index {volatility_index}% exceeds threshold.\033[0m")  # Red text
-                continue  # Remove stocks above the volatility threshold
+                print(f"\033[91mExcluding {symbol}: Volatility index {volatility_index}% exceeds threshold.\033[0m")
+                continue
 
-            # Append to refined list if all criteria are met
             refined_list.append({
                 'symbol': symbol,
                 'share_price': share_price,
                 'volatility_index': volatility_index
             })
             self.logger.debug(f"Including {symbol}: Meets all criteria.")
-            print(f"\033[92mIncluding {symbol}: Meets all criteria.\033[0m")  # Green text
+            print(f"\033[92mIncluding {symbol}: Meets all criteria.\033[0m")
 
-        # Conditional refinement based on config
         conditional_refinement = self.config.getboolean('Module2', 'conditional_refinement_enabled', fallback=False)
         if conditional_refinement:
             max_list_size = self.config.getint('Module2', 'max_refined_list_size', fallback=100)
             if len(refined_list) > max_list_size:
                 refined_list = refined_list[:max_list_size]
                 self.logger.info(f"List truncated to {max_list_size} items based on conditional refinement.")
-                print(f"\033[93mList truncated to {max_list_size} items based on conditional refinement.\033[0m")  # Yellow text
+                print(f"\033[93mList truncated to {max_list_size} items based on conditional refinement.\033[0m")
 
         self.logger.info(f"Refined list contains {len(refined_list)} stocks after applying all filters.")
-        print(f"\033[94mRefined list contains {len(refined_list)} stocks after applying all filters.\033[0m")  # Blue text
+        print(f"\033[94mRefined list contains {len(refined_list)} stocks after applying all filters.\033[0m")
         return refined_list
 
     def get_share_price(self, symbol):
         """
-        Retrieves the current share price for a given symbol.
-
-        Args:
-            symbol (str): Stock symbol.
+        Retrieves the current share price for a given symbol by requesting 1 day of historical data
+        and using the close price of the returned bar.
 
         Returns:
-            float: Current share price or None if unavailable.
+            float: Close price of the latest bar or None if unavailable.
         """
         contract = Contract()
         contract.symbol = symbol
@@ -293,57 +251,72 @@ class StockListPetitioner:
         contract.currency = "USD"
 
         price = None
-        price_event = threading.Event()
+        bars = []
+        data_event = threading.Event()
 
-        def tickPrice_override(reqId, tickType, price_value, attrib):
-            nonlocal price
-            if tickType == TickTypeEnum.LAST:
-                price = price_value
-                price_event.set()
+        # Temporary overrides for historical data callbacks
+        original_historicalData = self.connected_client.wrapper.historicalData
+        original_historicalDataEnd = self.connected_client.wrapper.historicalDataEnd
 
-        # Temporarily override the tickPrice callback
-        original_tickPrice = self.connected_client.wrapper.tickPrice
-        self.connected_client.wrapper.tickPrice = tickPrice_override
+        def historicalData_override(reqId, bar):
+            bars.append(bar)
 
-        # Request market data
+        def historicalDataEnd_override(reqId, start, end):
+            if bars:
+                last_bar = bars[-1]
+                # Use the close price of the bar as the share price
+                nonlocal price
+                price = last_bar.close
+            data_event.set()
+
+        # Override the callbacks
+        self.connected_client.wrapper.historicalData = historicalData_override
+        self.connected_client.wrapper.historicalDataEnd = historicalDataEnd_override
+
+        # Request 1 day of historical data
+        endDateTime = time.strftime("%Y%m%d %H:%M:%S", time.localtime(time.time())) + " UTC"
         try:
-            self.connected_client.reqMktData(2001, contract, "", False, False, [])
-            self.logger.debug(f"Requested market data for {symbol}.")
-            print(f"\033[94mRequested market data for {symbol}.\033[0m")  # Blue text
+            self.connected_client.reqHistoricalData(
+                reqId=5001,
+                contract=contract,
+                endDateTime=endDateTime,
+                durationStr="1 D",
+                barSizeSetting="1 day",
+                whatToShow="TRADES",
+                useRTH=1,
+                formatDate=1,
+                keepUpToDate=False,
+                chartOptions=[]
+            )
+            self.logger.debug(f"Requested historical data for {symbol}.")
+            print(f"\033[94mRequested historical data for {symbol}.\033[0m")
         except Exception as e:
-            self.logger.error(f"Error requesting market data for {symbol}: {e}")
-            print(f"\033[91mError requesting market data for {symbol}: {e}\033[0m")  # Red text
-            self.connected_client.wrapper.tickPrice = original_tickPrice
+            self.logger.error(f"Error requesting historical data for {symbol}: {e}")
+            print(f"\033[91mError requesting historical data for {symbol}: {e}\033[0m")
+            # Restore original callbacks
+            self.connected_client.wrapper.historicalData = original_historicalData
+            self.connected_client.wrapper.historicalDataEnd = original_historicalDataEnd
             return None
 
-        # Wait for the price to be received or timeout
-        if not price_event.wait(timeout=5):
-            self.logger.warning(f"Timeout while waiting for share price of {symbol}.")
-            print(f"\033[91mTimeout while waiting for share price of {symbol}.\033[0m")  # Red text
+        # Wait for data or timeout
+        if not data_event.wait(timeout=10):
+            self.logger.warning(f"Timeout waiting for historical data for {symbol}.")
+            print(f"\033[91mTimeout waiting for historical data for {symbol}.\033[0m")
         else:
-            self.logger.debug(f"Share price for {symbol}: ${price}")
-            print(f"\033[92mShare price for {symbol}: ${price}\033[0m")  # Green text
+            if price is not None:
+                self.logger.debug(f"Share price for {symbol}: ${price}")
+                print(f"\033[92mShare price for {symbol}: ${price}\033[0m")
+            else:
+                self.logger.warning(f"No historical data returned for {symbol}.")
+                print(f"\033[91mNo historical data returned for {symbol}.\033[0m")
 
-        # Restore the original tickPrice callback
-        self.connected_client.wrapper.tickPrice = original_tickPrice
+        # Restore the original callbacks
+        self.connected_client.wrapper.historicalData = original_historicalData
+        self.connected_client.wrapper.historicalDataEnd = original_historicalDataEnd
 
-        if price is not None:
-            return price
-        else:
-            self.logger.warning(f"Unable to retrieve share price for {symbol}.")
-            print(f"\033[91mUnable to retrieve share price for {symbol}.\033[0m")  # Red text
-            return None
+        return price
 
     def has_option_contracts(self, symbol):
-        """
-        Checks if option contracts are available for a given symbol.
-
-        Args:
-            symbol (str): Stock symbol.
-
-        Returns:
-            bool: True if options are available, False otherwise.
-        """
         contract = Contract()
         contract.symbol = symbol
         contract.secType = "OPT"
@@ -353,90 +326,63 @@ class StockListPetitioner:
         has_options = False
         option_event = threading.Event()
 
+        original_contractDetails = self.connected_client.wrapper.contractDetails
+
         def contractDetails_override(reqId, contractDetails):
             nonlocal has_options
             if contractDetails.contract.symbol == symbol:
                 has_options = True
                 option_event.set()
 
-        # Temporarily override the contractDetails callback
-        original_contractDetails = self.connected_client.wrapper.contractDetails
         self.connected_client.wrapper.contractDetails = contractDetails_override
 
-        # Request contract details
         try:
             self.connected_client.reqContractDetails(3001, contract)
             self.logger.debug(f"Requested contract details for options of {symbol}.")
-            print(f"\033[94mRequested contract details for options of {symbol}.\033[0m")  # Blue text
+            print(f"\033[94mRequested contract details for options of {symbol}.\033[0m")
         except Exception as e:
             self.logger.error(f"Error requesting contract details for {symbol}: {e}")
-            print(f"\033[91mError requesting contract details for {symbol}: {e}\033[0m")  # Red text
+            print(f"\033[91mError requesting contract details for {symbol}: {e}\033[0m")
             self.connected_client.wrapper.contractDetails = original_contractDetails
             return False
 
-        # Wait for the callback or timeout
         if not option_event.wait(timeout=5):
             self.logger.warning(f"Timeout while checking options for {symbol}.")
-            print(f"\033[91mTimeout while checking options for {symbol}.\033[0m")  # Red text
+            print(f"\033[91mTimeout while checking options for {symbol}.\033[0m")
         else:
             self.logger.debug(f"Options availability for {symbol}: {has_options}")
-            print(f"\033[92mOptions availability for {symbol}: {has_options}\033[0m")  # Green text
+            print(f"\033[92mOptions availability for {symbol}: {has_options}\033[0m")
 
-        # Restore the original contractDetails callback
         self.connected_client.wrapper.contractDetails = original_contractDetails
-
         return has_options
 
     def get_volatility_index(self, symbol):
-        """
-        Retrieves the volatility index for a given symbol.
-        This is a placeholder function. Implement actual volatility retrieval as needed.
-
-        Args:
-            symbol (str): Stock symbol.
-
-        Returns:
-            float: Volatility index or None if unavailable.
-        """
         # Placeholder implementation
-        # Replace this with actual implementation, e.g., using an external API or IB's data
-        mock_volatility = 25.0  # Example value
+        mock_volatility = 25.0
         self.logger.debug(f"Volatility index for {symbol}: {mock_volatility}%")
-        print(f"\033[94mVolatility index for {symbol}: {mock_volatility}%\033[0m")  # Blue text
+        print(f"\033[94mVolatility index for {symbol}: {mock_volatility}%\033[0m")
         return mock_volatility
 
     def cache_refined_list(self, refined_list):
-        """
-        Caches the refined stock list in a temporary file for transfer between modules.
-
-        Args:
-            refined_list (list): Refined list of stocks.
-        """
         try:
             timestamp = int(time.time())
             cache_path = os.path.join(tempfile.gettempdir(), f"refined_stock_list_{timestamp}.json")
             with open(cache_path, 'w') as tmp_file:
                 json.dump(refined_list, tmp_file)
             self.logger.info(f"Refined stock list cached at {cache_path}")
-            print(f"\033[92mRefined stock list cached at {cache_path}\033[0m")  # Green text
+            print(f"\033[92mRefined stock list cached at {cache_path}\033[0m")
         except Exception as e:
             self.logger.error(f"Failed to cache refined stock list: {e}")
-            print(f"\033[91mFailed to cache refined stock list: {e}\033[0m")  # Red text
+            print(f"\033[91mFailed to cache refined stock list: {e}\033[0m")
 
     def print_refined_list(self, refined_list):
-        """
-        Prints the refined stock list to the user.
-
-        Args:
-            refined_list (list): Refined list of stocks.
-        """
         if not refined_list:
             self.logger.error("No stocks meet the specified criteria after refinement.")
-            print("\033[91mNo stocks meet the specified criteria after refinement.\033[0m\n")  # Red text
+            print("\033[91mNo stocks meet the specified criteria after refinement.\033[0m\n")
             return
 
         self.logger.info("Refined Stock List:")
-        print("\n\033[92mRefined Stock List:\033[0m")  # Green text
+        print("\n\033[92mRefined Stock List:\033[0m")
         print("--------------------")
         for stock in refined_list:
             print(f"Symbol: {stock['symbol']}, Share Price: ${stock['share_price']:.2f}, Volatility Index: {stock['volatility_index']}%")

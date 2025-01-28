@@ -1,0 +1,42 @@
+2025-01-28 15:04:48.050130: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-01-28 15:04:48.058161: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1738094688.067826 1860599 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1738094688.070648 1860599 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-01-28 15:04:48.080640: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-01-28 15:04:49,688 - INFO - Loading data from: BAT.csv
+2025-01-28 15:04:49,975 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-28 15:04:49,981 - INFO - Data loaded and sorted successfully.
+2025-01-28 15:04:49,981 - INFO - Calculating technical indicators...
+2025-01-28 15:04:49,994 - INFO - Technical indicators calculated successfully.
+2025-01-28 15:04:50,017 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-28 15:04:50,017 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-28 15:04:50,017 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-28 15:04:50,017 - INFO - Scaled training target shape: (14134,)
+2025-01-28 15:04:50,017 - INFO - Scaled validation target shape: (3028,)
+2025-01-28 15:04:50,017 - INFO - Scaled testing target shape: (3030,)
+2025-01-28 15:04:50.017801: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:152] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+2025-01-28 15:04:50,017 - INFO - No GPU detected, using CPU.
+2025-01-28 15:04:50,017 - INFO - Starting hyperparameter optimization with Optuna...
+[I 2025-01-28 15:04:50,018] A new study created in memory with name: no-name-b4ebac55-d435-4eaf-a6bf-632a052e29eb
+/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/Machine-Learning/LSTM-python/src/main.py:270: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  learning_rate = trial.suggest_loguniform('learning_rate', 1e-5, 1e-2)
+/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/Machine-Learning/LSTM-python/venv/lib/python3.11/site-packages/keras/src/layers/rnn/bidirectional.py:107: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(**kwargs)
+/home/klein/codeWS/Projects/MidasTechnologiesLLC/MidasTechnologies/src/Machine-Learning/LSTM-python/venv/lib/python3.11/site-packages/keras/src/optimizers/base_optimizer.py:86: UserWarning: Argument `decay` is no longer supported and will be ignored.
+  warnings.warn(
+[I 2025-01-28 15:14:53,984] Trial 0 finished with value: 0.006462475284934044 and parameters: {'num_lstm_layers': 2, 'lstm_units': 32, 'dropout_rate': 0.4207541837093781, 'learning_rate': 0.0035177882389933455, 'optimizer': 'Adam', 'decay': 7.794465596020813e-05}. Best is trial 0 with value: 0.006462475284934044.
+[I 2025-01-28 15:30:36,782] Trial 1 finished with value: 0.006599113345146179 and parameters: {'num_lstm_layers': 2, 'lstm_units': 32, 'dropout_rate': 0.3018952650975644, 'learning_rate': 2.7500384069489473e-05, 'optimizer': 'Nadam', 'decay': 7.188196889443198e-05}. Best is trial 0 with value: 0.006462475284934044.
+[I 2025-01-28 15:51:29,746] Trial 2 finished with value: 0.006183582823723555 and parameters: {'num_lstm_layers': 3, 'lstm_units': 64, 'dropout_rate': 0.3093065496095473, 'learning_rate': 2.7448686090012564e-05, 'optimizer': 'Nadam', 'decay': 1.382917071998372e-05}. Best is trial 2 with value: 0.006183582823723555.
+[I 2025-01-28 16:01:15,129] Trial 3 finished with value: 0.0053675794042646885 and parameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.289644010515824, 'learning_rate': 5.358448482267538e-05, 'optimizer': 'Adam', 'decay': 4.564852646673817e-05}. Best is trial 3 with value: 0.0053675794042646885.
+[I 2025-01-28 16:12:32,149] Trial 4 finished with value: 0.006236997898668051 and parameters: {'num_lstm_layers': 2, 'lstm_units': 32, 'dropout_rate': 0.34822747936356724, 'learning_rate': 3.060480821693451e-05, 'optimizer': 'Nadam', 'decay': 6.604386807553027e-05}. Best is trial 3 with value: 0.0053675794042646885.
+[I 2025-01-28 16:13:08,743] Trial 5 pruned. Trial was pruned at epoch 10.
+[I 2025-01-28 16:22:49,279] Trial 6 finished with value: 0.005848034285008907 and parameters: {'num_lstm_layers': 3, 'lstm_units': 32, 'dropout_rate': 0.13411745801634037, 'learning_rate': 0.0014205857011745193, 'optimizer': 'Nadam', 'decay': 8.697406765217153e-06}. Best is trial 3 with value: 0.0053675794042646885.
+[I 2025-01-28 17:04:30,999] Trial 7 finished with value: 0.005048438441008329 and parameters: {'num_lstm_layers': 3, 'lstm_units': 128, 'dropout_rate': 0.19765746618085892, 'learning_rate': 0.002583172008475268, 'optimizer': 'Adam', 'decay': 1.5625335308276034e-06}. Best is trial 7 with value: 0.005048438441008329.
+[I 2025-01-28 17:04:36,216] Trial 8 pruned. Trial was pruned at epoch 0.
+[I 2025-01-28 17:14:07,125] Trial 9 finished with value: 0.006003894377499819 and parameters: {'num_lstm_layers': 2, 'lstm_units': 64, 'dropout_rate': 0.4622925138541135, 'learning_rate': 0.0016056695810371404, 'optimizer': 'Adam', 'decay': 2.0028598250196153e-05}. Best is trial 7 with value: 0.005048438441008329.
+[I 2025-01-28 17:18:43,484] Trial 10 pruned. Trial was pruned at epoch 12.
+[I 2025-01-28 17:28:46,816] Trial 11 finished with value: 0.00495215505361557 and parameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.2219854870705783, 'learning_rate': 0.00039979515095136273, 'optimizer': 'Adam', 'decay': 4.4472223963536136e-05}. Best is trial 11 with value: 0.00495215505361557.
+[I 2025-01-28 17:28:54,475] Trial 12 pruned. Trial was pruned at epoch 0.
+[I 2025-01-28 17:29:14,670] Trial 13 pruned. Trial was pruned at epoch 0.

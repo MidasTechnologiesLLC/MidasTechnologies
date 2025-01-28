@@ -2,12 +2,9 @@ import os
 import sys
 import time
 import json
-import logging
 import configparser
 from datetime import datetime, timedelta
 import csv
-from decimal import Decimal
-import pytz
 import threading
 import yfinance as yf 
 import signal
