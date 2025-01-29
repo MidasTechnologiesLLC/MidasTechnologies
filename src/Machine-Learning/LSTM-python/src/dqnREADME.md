@@ -1,7 +1,3 @@
-Below is a **big-picture explanation** of how the code is structured and *why* you have both **LSTM** (with Optuna hyperparameter tuning) and **DQN** (for reinforcement learning). It also clarifies how each component is supposed to work, what is happening in the environment, and why the agent’s final performance might look confusing if you expect it to strictly follow the LSTM predictions.
-
----
-
 ## 1. **Two Separate Approaches**: **(A) LSTM** vs. **(B) DQN**
 
 - **(A) LSTM (Supervised Learning)**  
