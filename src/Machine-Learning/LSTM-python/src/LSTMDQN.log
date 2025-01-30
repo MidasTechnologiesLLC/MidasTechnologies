@@ -1,0 +1,42 @@
+2025-01-30 00:40:03,878 - INFO - ===== Resource Statistics =====
+2025-01-30 00:40:03,879 - INFO - Physical CPU Cores: 10
+2025-01-30 00:40:03,879 - INFO - Logical CPU Cores: 12
+2025-01-30 00:40:03,879 - INFO - CPU Usage per Core: [5.1, 2.0, 5.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.0, 1.0]%
+2025-01-30 00:40:03,879 - INFO - No GPUs detected.
+2025-01-30 00:40:03,879 - INFO - =================================
+2025-01-30 00:40:03,880 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-30 00:40:03,880 - INFO - Loading data from: BAT.csv
+2025-01-30 00:40:04,173 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-30 00:40:04,179 - INFO - Data loaded and sorted successfully.
+2025-01-30 00:40:04,179 - INFO - Calculating technical indicators...
+2025-01-30 00:40:04,193 - INFO - Technical indicators calculated successfully.
+2025-01-30 00:40:04,197 - INFO - Starting parallel feature engineering with 10 workers...
+2025-01-30 00:40:06,772 - INFO - Parallel feature engineering completed.
+2025-01-30 00:40:06,812 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-30 00:40:06,813 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-30 00:40:06,813 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-30 00:40:06,813 - INFO - Scaled training target shape: (14134,)
+2025-01-30 00:40:06,813 - INFO - Scaled validation target shape: (3028,)
+2025-01-30 00:40:06,813 - INFO - Scaled testing target shape: (3030,)
+2025-01-30 00:40:06,813 - INFO - Starting LSTM hyperparameter optimization with Optuna using 10 parallel trials...
+2025-01-30 00:56:53,436 - INFO - ===== Resource Statistics =====
+2025-01-30 00:56:53,436 - INFO - Physical CPU Cores: 10
+2025-01-30 00:56:53,436 - INFO - Logical CPU Cores: 12
+2025-01-30 00:56:53,437 - INFO - CPU Usage per Core: [1.0, 1.0, 5.1, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-30 00:56:53,437 - INFO - No GPUs detected.
+2025-01-30 00:56:53,437 - INFO - =================================
+2025-01-30 00:56:53,437 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-30 00:56:53,437 - INFO - Loading data from: BAT.csv
+2025-01-30 00:56:53,730 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-30 00:56:53,736 - INFO - Data loaded and sorted successfully.
+2025-01-30 00:56:53,736 - INFO - Calculating technical indicators...
+2025-01-30 00:56:53,753 - INFO - Technical indicators calculated successfully.
+2025-01-30 00:56:53,758 - INFO - Starting parallel feature engineering with 10 workers...
+2025-01-30 00:56:56,241 - INFO - Parallel feature engineering completed.
+2025-01-30 00:56:56,285 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-30 00:56:56,285 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-30 00:56:56,285 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-30 00:56:56,285 - INFO - Scaled training target shape: (14134,)
+2025-01-30 00:56:56,285 - INFO - Scaled validation target shape: (3028,)
+2025-01-30 00:56:56,285 - INFO - Scaled testing target shape: (3030,)
+2025-01-30 00:56:56,285 - INFO - Starting LSTM hyperparameter optimization with Optuna using 10 parallel trials...
