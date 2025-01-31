@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import logging
 from tabulate import tabulate
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 import psutil
@@ -37,16 +39,15 @@ import time
 # Suppress TensorFlow logs beyond errors
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+# =============================================================================
+# GLOBAL LOCK FOR DQN TRAINING (to force one-at-a-time usage of the shared LSTM)
+# =============================================================================
+dqn_lock = threading.Lock()
+
 # ============================
 # Resource Detection Functions
 # ============================
 def get_cpu_info():
-    """
-    Retrieves CPU information including physical and logical cores and current usage per core.
-    
-    Returns:
-        dict: Dictionary containing physical cores, logical cores, and CPU usage per core.
-    """
     cpu_count = psutil.cpu_count(logical=False)  # Physical cores
     cpu_count_logical = psutil.cpu_count(logical=True)  # Logical cores
     cpu_percent = psutil.cpu_percent(interval=1, percpu=True)
@@ -57,12 +58,6 @@ def get_cpu_info():
     }
 
 def get_gpu_info():
-    """
-    Retrieves GPU information including load, memory usage, and temperature.
-    
-    Returns:
-        list: List of dictionaries containing GPU stats.
-    """
     gpus = GPUtil.getGPUs()
     gpu_info = []
     for gpu in gpus:
@@ -78,13 +73,6 @@ def get_gpu_info():
     return gpu_info
 
 def configure_tensorflow(cpu_stats, gpu_stats):
-    """
-    Configures TensorFlow to utilize available CPU and GPU resources efficiently.
-    
-    Args:
-        cpu_stats (dict): Dictionary containing CPU statistics.
-        gpu_stats (list): List of dictionaries containing GPU statistics.
-    """
     logical_cores = cpu_stats['logical_cores']
     os.environ["OMP_NUM_THREADS"] = str(logical_cores)
     os.environ["TF_NUM_INTRAOP_THREADS"] = str(logical_cores)
@@ -108,12 +96,6 @@ def configure_tensorflow(cpu_stats, gpu_stats):
 # Resource Monitoring Function (Optional)
 # ============================
 def monitor_resources(interval=60):
-    """
-    Continuously monitors and logs CPU and GPU usage at specified intervals.
-    
-    Args:
-        interval (int): Time in seconds between each monitoring snapshot.
-    """
     while True:
         cpu = psutil.cpu_percent(interval=1, percpu=True)
         gpu = get_gpu_info()
@@ -153,7 +135,6 @@ def load_data(file_path):
         'close': 'Close'
     }
     df.rename(columns=rename_mapping, inplace=True)
-
     logging.info(f"Data columns after renaming: {df.columns.tolist()}")
     df.sort_values('Date', inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -245,10 +226,11 @@ def parse_arguments():
                         help='Number of episodes to evaluate DQN in the tuning step. Default=1 (entire dataset once).')
     parser.add_argument('--n_trials_lstm', type=int, default=30,
                         help='Number of Optuna trials for LSTM. Default=30.')
+    # The following arguments are no longer used in sequential DQN training:
     parser.add_argument('--n_trials_dqn', type=int, default=20,
-                        help='Number of Optuna trials for DQN. Default=20.')
+                        help='(Unused in sequential DQN training)')
     parser.add_argument('--max_parallel_trials', type=int, default=None,
-                        help='Maximum number of parallel Optuna trials. Defaults to (logical cores - 2).')
+                        help='(Unused in sequential DQN training)')
     parser.add_argument('--preprocess_workers', type=int, default=None,
                         help='Number of worker processes for data preprocessing. Defaults to (logical cores - 2).')
     parser.add_argument('--monitor_resources', action='store_true',
@@ -274,7 +256,6 @@ class ActionLoggingCallback(BaseCallback):
         self.reward_buffer = []
 
     def _on_step(self):
-        # For Stable Baselines3, access actions and rewards via self.locals
         action = self.locals.get('action', None)
         reward = self.locals.get('reward', None)
         if action is not None:
@@ -305,10 +286,8 @@ class ActionLoggingCallback(BaseCallback):
 def parallel_feature_engineering(row):
     """
     Placeholder function for feature engineering. Modify as needed.
-    
     Args:
         row (pd.Series): A row from the DataFrame.
-    
     Returns:
         pd.Series: Processed row.
     """
@@ -318,11 +297,9 @@ def parallel_feature_engineering(row):
 def feature_engineering_parallel(df, num_workers):
     """
     Applies feature engineering in parallel using multiprocessing.
-    
     Args:
         df (pd.DataFrame): DataFrame to process.
         num_workers (int): Number of worker processes.
-    
     Returns:
         pd.DataFrame: Processed DataFrame.
     """
@@ -334,7 +311,208 @@ def feature_engineering_parallel(df, num_workers):
     return df_processed
 
 # ============================
-# Main Function with Enhanced Optimizations
+# LSTM Model Construction & Training (Including Optuna Tuning)
+# ============================
+def build_lstm(input_shape, hyperparams):
+    model = Sequential()
+    num_layers = hyperparams['num_lstm_layers']
+    units      = hyperparams['lstm_units']
+    drop       = hyperparams['dropout_rate']
+    for i in range(num_layers):
+        return_seqs = (i < num_layers - 1)
+        model.add(Bidirectional(
+            LSTM(units, return_sequences=return_seqs, kernel_regularizer=l2(1e-4)),
+            input_shape=input_shape if i == 0 else None
+        ))
+        model.add(Dropout(drop))
+    model.add(Dense(1, activation='linear'))
+
+    opt_name = hyperparams['optimizer']
+    lr       = hyperparams['learning_rate']
+    decay    = hyperparams['decay']
+    if opt_name == 'Adam':
+        opt = Adam(learning_rate=lr, decay=decay)
+    elif opt_name == 'Nadam':
+        opt = Nadam(learning_rate=lr)
+    else:
+        opt = Adam(learning_rate=lr)
+
+    model.compile(loss=Huber(), optimizer=opt, metrics=['mae'])
+    return model
+
+# NOTE: The following lstm_objective is now defined as an inner function in main,
+# so that it can access X_train, y_train, X_val, y_val.
+
+# ============================
+# Custom Gym Environment with LSTM Predictions
+# ============================
+class StockTradingEnvWithLSTM(gym.Env):
+    """
+    A custom OpenAI Gym environment for stock trading that integrates LSTM model predictions.
+    Observation includes technical indicators, account information, and predicted next close price.
+    """
+    metadata = {'render.modes': ['human']}
+
+    def __init__(self, df, feature_columns, lstm_model, scaler_features, scaler_target,
+                 window_size=15, initial_balance=10000, transaction_cost=0.001):
+        super(StockTradingEnvWithLSTM, self).__init__()
+        self.df = df.reset_index(drop=True)
+        self.feature_columns = feature_columns
+        self.lstm_model = lstm_model
+        self.scaler_features = scaler_features
+        self.scaler_target = scaler_target
+        self.window_size = window_size
+
+        self.initial_balance = initial_balance
+        self.balance = initial_balance
+        self.net_worth = initial_balance
+        self.transaction_cost = transaction_cost
+
+        self.max_steps = len(df)
+        self.current_step = 0
+        self.shares_held = 0
+        self.cost_basis = 0
+
+        # Raw array of features
+        self.raw_features = df[feature_columns].values
+
+        # Action space: 0=Sell, 1=Hold, 2=Buy
+        self.action_space = spaces.Discrete(3)
+
+        # Observation space: [technical indicators, balance, shares, cost_basis, predicted_next_close]
+        self.observation_space = spaces.Box(
+            low=0, high=1,
+            shape=(len(feature_columns) + 3 + 1,),
+            dtype=np.float32
+        )
+        # Forced lock for LSTM predictions
+        self.lstm_lock = threading.Lock()
+
+    def reset(self):
+        self.balance = self.initial_balance
+        self.net_worth = self.initial_balance
+        self.current_step = 0
+        self.shares_held = 0
+        self.cost_basis = 0
+        return self._get_obs()
+
+    def _get_obs(self):
+        row = self.raw_features[self.current_step]
+        row_max = np.max(row) if np.max(row) != 0 else 1.0
+        row_norm = row / row_max
+
+        # Account info
+        additional = np.array([
+            self.balance / self.initial_balance,
+            self.shares_held / 100.0,  # Assuming max 100 shares for normalization
+            self.cost_basis / (self.initial_balance + 1e-9)
+        ], dtype=np.float32)
+
+        # LSTM prediction
+        if self.current_step < self.window_size:
+            predicted_close = 0.0
+        else:
+            seq = self.raw_features[self.current_step - self.window_size: self.current_step]
+            seq_scaled = self.scaler_features.transform(seq)
+            seq_scaled = np.expand_dims(seq_scaled, axis=0)  # shape (1, window_size, #features)
+            with self.lstm_lock:
+                pred_scaled = self.lstm_model.predict(seq_scaled, verbose=0).flatten()[0]
+            pred_scaled = np.clip(pred_scaled, 0, 1)
+            unscaled = self.scaler_target.inverse_transform([[pred_scaled]])[0, 0]
+            predicted_close = unscaled / 1000.0  # Adjust normalization as needed
+
+        obs = np.concatenate([row_norm, additional, [predicted_close]]).astype(np.float32)
+        return obs
+
+    def step(self, action):
+        prev_net_worth = self.net_worth
+        current_price = self.df.loc[self.current_step, 'Close']
+
+        if action == 2:  # BUY
+            shares_bought = int(self.balance // current_price)
+            if shares_bought > 0:
+                cost = shares_bought * current_price
+                fee = cost * self.transaction_cost
+                self.balance -= (cost + fee)
+                old_shares = self.shares_held
+                self.shares_held += shares_bought
+                self.cost_basis = ((self.cost_basis * old_shares) + (shares_bought * current_price)) / self.shares_held
+
+        elif action == 0:  # SELL
+            if self.shares_held > 0:
+                revenue = self.shares_held * current_price
+                fee = revenue * self.transaction_cost
+                self.balance += (revenue - fee)
+                self.shares_held = 0
+                self.cost_basis = 0
+
+        self.net_worth = self.balance + self.shares_held * current_price
+        self.current_step += 1
+        done = (self.current_step >= self.max_steps - 1)
+        reward = self.net_worth - self.initial_balance
+        obs = self._get_obs()
+        return obs, reward, done, {}
+
+    def render(self, mode='human'):
+        profit = self.net_worth - self.initial_balance
+        print(f"Step: {self.current_step}, Balance={self.balance:.2f}, Shares={self.shares_held}, NetWorth={self.net_worth:.2f}, Profit={profit:.2f}")
+
+# ============================
+# DQN Training & Evaluation Functions (Sequential Loop)
+# ============================
+def evaluate_dqn_networth(model, env, n_episodes=1):
+    """
+    Evaluates the trained DQN model by simulating trading over a specified number of episodes.
+    Args:
+        model (DQN): Trained DQN model.
+        env (gym.Env): Trading environment instance.
+        n_episodes (int): Number of episodes to run for evaluation.
+    Returns:
+        float: Average final net worth across episodes.
+    """
+    final_net_worths = []
+    for _ in range(n_episodes):
+        obs = env.reset()
+        done = False
+        while not done:
+            action, _ = model.predict(obs, deterministic=True)
+            obs, reward, done, info = env.step(action)
+        final_net_worths.append(env.net_worth)
+    return np.mean(final_net_worths)
+
+def train_and_evaluate_dqn(hyperparams, env_params, total_timesteps, eval_episodes):
+    """
+    Trains a single DQN agent on an environment (using the frozen LSTM) with given hyperparameters,
+    then evaluates its final net worth.
+    Args:
+        hyperparams (dict): Hyperparameters for the DQN model.
+        env_params (dict): Parameters to create the StockTradingEnvWithLSTM.
+        total_timesteps (int): Total timesteps for training.
+        eval_episodes (int): Number of episodes for evaluation.
+    Returns:
+        agent, final_net_worth
+    """
+    env = StockTradingEnvWithLSTM(**env_params)
+    vec_env = DummyVecEnv([lambda: env])
+    with dqn_lock:
+        agent = DQN(
+            'MlpPolicy',
+            vec_env,
+            verbose=0,
+            learning_rate=hyperparams['lr'],
+            gamma=hyperparams['gamma'],
+            exploration_fraction=hyperparams['exploration_fraction'],
+            buffer_size=hyperparams['buffer_size'],
+            batch_size=hyperparams['batch_size'],
+            train_freq=4,
+            target_update_interval=1000
+        )
+        agent.learn(total_timesteps=total_timesteps, callback=ActionLoggingCallback(verbose=0))
+    final_net_worth = evaluate_dqn_networth(agent, env, n_episodes=eval_episodes)
+    return agent, final_net_worth
+
+# ============================
+# MAIN FUNCTION WITH ENHANCED OPTIMIZATIONS
 # ============================
 def main():
     args = parse_arguments()
@@ -343,24 +521,19 @@ def main():
     dqn_total_timesteps = args.dqn_total_timesteps
     dqn_eval_episodes   = args.dqn_eval_episodes
     n_trials_lstm = args.n_trials_lstm
-    n_trials_dqn  = args.n_trials_dqn
-    max_parallel_trials = args.max_parallel_trials
     preprocess_workers = args.preprocess_workers
     enable_resource_monitor = args.monitor_resources
 
-    # =============================
+    # -----------------------------
     # Setup Logging
-    # =============================
+    # -----------------------------
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s',
-                        handlers=[
-                            logging.FileHandler("LSTMDQN.log"),
-                            logging.StreamHandler(sys.stdout)
-                        ])
+                        handlers=[logging.FileHandler("LSTMDQN.log"), logging.StreamHandler(sys.stdout)])
 
-    # =============================
+    # -----------------------------
     # Resource Detection & Logging
-    # =============================
+    # -----------------------------
     cpu_stats = get_cpu_info()
     gpu_stats = get_gpu_info()
 
@@ -368,25 +541,22 @@ def main():
     logging.info(f"Physical CPU Cores: {cpu_stats['physical_cores']}")
     logging.info(f"Logical CPU Cores: {cpu_stats['logical_cores']}")
     logging.info(f"CPU Usage per Core: {cpu_stats['cpu_percent']}%")
-
     if gpu_stats:
         logging.info("GPU Statistics:")
         for gpu in gpu_stats:
-            logging.info(f"GPU {gpu['id']} - {gpu['name']}: Load: {gpu['load']}%, "
-                         f"Memory Used: {gpu['memory_used']}MB / {gpu['memory_total']}MB, "
-                         f"Temperature: {gpu['temperature']}°C")
+            logging.info(f"GPU {gpu['id']} - {gpu['name']}: Load: {gpu['load']}%, Memory Used: {gpu['memory_used']}MB / {gpu['memory_total']}MB, Temperature: {gpu['temperature']}°C")
     else:
         logging.info("No GPUs detected.")
     logging.info("=================================")
 
-    # =============================
+    # -----------------------------
     # Configure TensorFlow
-    # =============================
+    # -----------------------------
     configure_tensorflow(cpu_stats, gpu_stats)
 
-    # =============================
+    # -----------------------------
     # Start Resource Monitoring (Optional)
-    # =============================
+    # -----------------------------
     if enable_resource_monitor:
         logging.info("Starting real-time resource monitoring...")
         resource_monitor_thread = threading.Thread(target=monitor_resources, args=(60,), daemon=True)
@@ -409,11 +579,9 @@ def main():
 
     # 2) Controlled Parallel Data Preprocessing
     if preprocess_workers is None:
-        # Default to logical cores minus 2 to prevent overloading
         preprocess_workers = max(1, cpu_stats['logical_cores'] - 2)
     else:
         preprocess_workers = min(preprocess_workers, cpu_stats['logical_cores'])
-
     df = feature_engineering_parallel(df, num_workers=preprocess_workers)
 
     scaler_features = MinMaxScaler()
@@ -425,7 +593,7 @@ def main():
     X_scaled = scaler_features.fit_transform(X_all)
     y_scaled = scaler_target.fit_transform(y_all).flatten()
 
-    # 3) Create sequences
+    # 3) Create sequences for LSTM
     def create_sequences(features, target, window_size):
         X_seq, y_seq = [], []
         for i in range(len(features) - window_size):
@@ -451,40 +619,12 @@ def main():
     logging.info(f"Scaled validation target shape: {y_val.shape}")
     logging.info(f"Scaled testing target shape: {y_test.shape}")
 
-    # 5) Build and compile LSTM model
-    def build_lstm(input_shape, hyperparams):
-        model = Sequential()
-        num_layers = hyperparams['num_lstm_layers']
-        units      = hyperparams['lstm_units']
-        drop       = hyperparams['dropout_rate']
-        for i in range(num_layers):
-            return_seqs = (i < num_layers - 1)
-            model.add(Bidirectional(
-                LSTM(units, return_sequences=return_seqs, kernel_regularizer=l2(1e-4)),
-                input_shape=input_shape if i == 0 else None
-            ))
-            model.add(Dropout(drop))
-        model.add(Dense(1, activation='linear'))
-
-        opt_name = hyperparams['optimizer']
-        lr       = hyperparams['learning_rate']
-        decay    = hyperparams['decay']
-        if opt_name == 'Adam':
-            opt = Adam(learning_rate=lr, decay=decay)
-        elif opt_name == 'Nadam':
-            opt = Nadam(learning_rate=lr)
-        else:
-            opt = Adam(learning_rate=lr)
-
-        model.compile(loss=Huber(), optimizer=opt, metrics=['mae'])
-        return model
-
-    # 6) Optuna objective for LSTM
+    # 5) Define the LSTM objective function here (so it has access to X_train, y_train, X_val, y_val)
     def lstm_objective(trial):
         num_lstm_layers = trial.suggest_int('num_lstm_layers', 1, 3)
         lstm_units      = trial.suggest_categorical('lstm_units', [32, 64, 96, 128])
         dropout_rate    = trial.suggest_float('dropout_rate', 0.1, 0.5)
-        learning_rate   = trial.suggest_loguniform('learning_rate', 1e-5, 1e-2)
+        learning_rate   = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)
         optimizer_name  = trial.suggest_categorical('optimizer', ['Adam', 'Nadam'])
         decay           = trial.suggest_float('decay', 0.0, 1e-4)
 
@@ -513,24 +653,17 @@ def main():
         val_mae = min(history.history['val_mae'])
         return val_mae
 
-    # 7) Hyperparameter Optimization with Optuna (Parallelized)
-    if max_parallel_trials is None:
-        # Default to logical cores minus 2 to prevent overloading
-        max_parallel_trials = max(1, cpu_stats['logical_cores'] - 2)
-    else:
-        max_parallel_trials = min(max_parallel_trials, cpu_stats['logical_cores'])
-
-    logging.info(f"Starting LSTM hyperparameter optimization with Optuna using {max_parallel_trials} parallel trials...")
+    # 6) Hyperparameter Optimization with Optuna for the LSTM
+    logging.info(f"Starting LSTM hyperparameter optimization with Optuna using {cpu_stats['logical_cores']-2} parallel trials...")
     study_lstm = optuna.create_study(direction='minimize')
-    study_lstm.optimize(lstm_objective, n_trials=n_trials_lstm, n_jobs=max_parallel_trials)
+    study_lstm.optimize(lstm_objective, n_trials=n_trials_lstm, n_jobs=cpu_stats['logical_cores']-2)
     best_lstm_params = study_lstm.best_params
     logging.info(f"Best LSTM Hyperparameters: {best_lstm_params}")
 
-    # 8) Train final LSTM
+    # 7) Train final LSTM with best hyperparameters
     final_lstm = build_lstm((X_train.shape[1], X_train.shape[2]), best_lstm_params)
     early_stop_final = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
     lr_reduce_final  = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6)
-
     logging.info("Training best LSTM model with optimized hyperparameters...")
     hist = final_lstm.fit(
         X_train, y_train,
@@ -541,8 +674,8 @@ def main():
         verbose=1
     )
 
-    # 9) Evaluate LSTM
-    def evaluate_lstm(model, X_test, y_test):
+    # 8) Evaluate LSTM
+    def evaluate_final_lstm(model, X_test, y_test):
         logging.info("Evaluating final LSTM model...")
         y_pred_scaled = model.predict(X_test).flatten()
         y_pred_scaled = np.clip(y_pred_scaled, 0, 1)
@@ -564,7 +697,6 @@ def main():
         logging.info(f"Test R2 Score: {r2_:.4f}")
         logging.info(f"Directional Accuracy: {directional_accuracy:.4f}")
 
-        # Plot Actual vs Predicted
         plt.figure(figsize=(14, 7))
         plt.plot(y_test_actual, label='Actual Price')
         plt.plot(y_pred, label='Predicted Price')
@@ -574,7 +706,6 @@ def main():
         plt.savefig('lstm_actual_vs_pred.png')
         plt.close()
 
-        # Tabulate first 40 results
         table = []
         limit = min(40, len(y_test_actual))
         for i in range(limit):
@@ -584,271 +715,75 @@ def main():
         print(tabulate(table, headers=headers, tablefmt="pretty"))
         return r2_, directional_accuracy
 
-    _r2, _diracc = evaluate_lstm(final_lstm, X_test, y_test)
+    _r2, _diracc = evaluate_final_lstm(final_lstm, X_test, y_test)
 
-    # 10) Save LSTM and Scalers
+    # 9) Save final LSTM model and scalers
     final_lstm.save('best_lstm_model.h5')
     joblib.dump(scaler_features, 'scaler_features.pkl')
     joblib.dump(scaler_target, 'scaler_target.pkl')
     logging.info("Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).")
 
     ############################################################
-    # B) DQN PART: BUILD ENV THAT USES THE LSTM + FORECAST
+    # B) DQN PART: BUILD ENV THAT USES THE FROZEN LSTM + FORECAST
     ############################################################
-    class StockTradingEnvWithLSTM(gym.Env):
-        """
-        A custom OpenAI Gym environment for stock trading that integrates LSTM model predictions.
-        Observation includes technical indicators, account information, and predicted next close price.
-        """
-        metadata = {'render.modes': ['human']}
-
-        def __init__(self, df, feature_columns, lstm_model, scaler_features, scaler_target,
-                     window_size=15, initial_balance=10000, transaction_cost=0.001):
-            super(StockTradingEnvWithLSTM, self).__init__()
-            self.df = df.reset_index(drop=True)
-            self.feature_columns = feature_columns
-            self.lstm_model = lstm_model
-            self.scaler_features = scaler_features
-            self.scaler_target = scaler_target
-            self.window_size = window_size
-
-            self.initial_balance = initial_balance
-            self.balance = initial_balance
-            self.net_worth = initial_balance
-            self.transaction_cost = transaction_cost
-
-            self.max_steps = len(df)
-            self.current_step = 0
-            self.shares_held = 0
-            self.cost_basis = 0
-
-            # Raw array of features
-            self.raw_features = df[feature_columns].values
-
-            # Action space: 0=Sell, 1=Hold, 2=Buy
-            self.action_space = spaces.Discrete(3)
-
-            # Observation space: [technical indicators, balance, shares, cost_basis, predicted_next_close]
-            self.observation_space = spaces.Box(
-                low=0, high=1,
-                shape=(len(feature_columns) + 3 + 1,),
-                dtype=np.float32
-            )
-
-        def reset(self):
-            self.balance = self.initial_balance
-            self.net_worth = self.initial_balance
-            self.current_step = 0
-            self.shares_held = 0
-            self.cost_basis = 0
-            return self._get_obs()
-
-        def _get_obs(self):
-            row = self.raw_features[self.current_step]
-            row_max = np.max(row) if np.max(row) != 0 else 1.0
-            row_norm = row / row_max
-
-            # Account info
-            additional = np.array([
-                self.balance / self.initial_balance,
-                self.shares_held / 100.0,  # Assuming max 100 shares for normalization
-                self.cost_basis / (self.initial_balance + 1e-9)
-            ], dtype=np.float32)
-
-            # LSTM prediction
-            if self.current_step < self.window_size:
-                # Not enough history => no forecast
-                predicted_close = 0.0
-            else:
-                seq = self.raw_features[self.current_step - self.window_size: self.current_step]
-                seq_scaled = self.scaler_features.transform(seq)
-                seq_scaled = np.expand_dims(seq_scaled, axis=0)  # shape (1, window_size, #features)
-                pred_scaled = self.lstm_model.predict(seq_scaled, verbose=0).flatten()[0]
-                pred_scaled = np.clip(pred_scaled, 0, 1)
-                unscaled = self.scaler_target.inverse_transform([[pred_scaled]])[0, 0]
-                # Normalize predicted close price (assuming a typical price range)
-                predicted_close = unscaled / 1000.0
-
-            obs = np.concatenate([row_norm, additional, [predicted_close]]).astype(np.float32)
-            return obs
-
-        def step(self, action):
-            prev_net_worth = self.net_worth
-            current_price = self.df.loc[self.current_step, 'Close']
-
-            if action == 2:  # BUY
-                shares_bought = int(self.balance // current_price)
-                if shares_bought > 0:
-                    cost = shares_bought * current_price
-                    fee = cost * self.transaction_cost
-                    self.balance -= (cost + fee)
-                    old_shares = self.shares_held
-                    self.shares_held += shares_bought
-                    self.cost_basis = (
-                        (self.cost_basis * old_shares) + (shares_bought * current_price)
-                    ) / self.shares_held
-
-            elif action == 0:  # SELL
-                if self.shares_held > 0:
-                    revenue = self.shares_held * current_price
-                    fee = revenue * self.transaction_cost
-                    self.balance += (revenue - fee)
-                    self.shares_held = 0
-                    self.cost_basis = 0
-
-            self.net_worth = self.balance + self.shares_held * current_price
-            self.current_step += 1
-            done = (self.current_step >= self.max_steps - 1)
-
-            reward = self.net_worth - self.initial_balance
-            obs = self._get_obs()
-            return obs, reward, done, {}
-
-        def render(self, mode='human'):
-            profit = self.net_worth - self.initial_balance
-            print(f"Step: {self.current_step}, "
-                  f"Balance={self.balance:.2f}, "
-                  f"Shares={self.shares_held}, "
-                  f"NetWorth={self.net_worth:.2f}, "
-                  f"Profit={profit:.2f}")
+    # (StockTradingEnvWithLSTM is defined above)
 
     ###################################
-    # C) DQN HYPERPARAMETER TUNING WITH LSTM
+    # C) SEQUENTIAL DQN TRAINING WITH LSTM INTEGRATION
     ###################################
-    from stable_baselines3.common.evaluation import evaluate_policy
+    env_params = {
+        'df': df,
+        'feature_columns': feature_columns,
+        'lstm_model': final_lstm,  # Use the frozen, best LSTM model
+        'scaler_features': scaler_features,
+        'scaler_target': scaler_target,
+        'window_size': lstm_window_size,
+        'initial_balance': 10000,
+        'transaction_cost': 0.001
+    }
 
-    def evaluate_dqn_networth(model, env, n_episodes=1):
-        """
-        Evaluates the trained DQN model by simulating trading over a specified number of episodes.
-        
-        Args:
-            model (stable_baselines3.DQN): Trained DQN model.
-            env (gym.Env): Trading environment instance.
-            n_episodes (int): Number of episodes to run for evaluation.
-        
-        Returns:
-            float: Average final net worth across episodes.
-        """
-        final_net_worths = []
-        for _ in range(n_episodes):
-            obs = env.reset()
-            done = False
-            while not done:
-                action, _ = model.predict(obs, deterministic=True)
-                obs, reward, done, info = env.step(action)
-            final_net_worths.append(env.net_worth)
-        return np.mean(final_net_worths)
+    # Base DQN hyperparameters (adjust as needed)
+    base_hyperparams = {
+        'lr': 1e-3,
+        'gamma': 0.95,
+        'exploration_fraction': 0.1,
+        'buffer_size': 10000,
+        'batch_size': 64
+    }
 
-    def dqn_objective(trial):
-        """
-        Objective function for Optuna to optimize DQN hyperparameters.
-        Minimizes the negative of the final net worth achieved by the DQN agent.
-        
-        Args:
-            trial (optuna.trial.Trial): Optuna trial object.
-        
-        Returns:
-            float: Negative of the final net worth.
-        """
-        lr = trial.suggest_loguniform("lr", 1e-5, 1e-2)
-        gamma = trial.suggest_float("gamma", 0.8, 0.9999)
-        exploration_fraction = trial.suggest_float("exploration_fraction", 0.01, 0.3)
-        buffer_size = trial.suggest_categorical("buffer_size", [5000, 10000, 20000])
-        batch_size  = trial.suggest_categorical("batch_size", [32, 64, 128])
+    # Define performance threshold (final net worth must be above this)
+    PERFORMANCE_THRESHOLD = 10500.0
+    current_hyperparams = base_hyperparams.copy()
+    max_attempts = 10
+    best_agent = None
 
-        # Initialize environment
-        env = StockTradingEnvWithLSTM(
-            df=df,
-            feature_columns=feature_columns,
-            lstm_model=final_lstm,   # Use the trained LSTM model
-            scaler_features=scaler_features,
-            scaler_target=scaler_target,
-            window_size=lstm_window_size
-        )
-        vec_env = DummyVecEnv([lambda: env])
+    for attempt in range(max_attempts):
+        logging.info(f"Training DQN agent: Attempt {attempt+1} with hyperparameters: {current_hyperparams}")
+        agent, net_worth = train_and_evaluate_dqn(current_hyperparams, env_params,
+                                                  total_timesteps=dqn_total_timesteps,
+                                                  eval_episodes=dqn_eval_episodes)
+        logging.info(f"Agent achieved final net worth: ${net_worth:.2f}")
+        if net_worth >= PERFORMANCE_THRESHOLD:
+            logging.info("Agent meets performance criteria!")
+            best_agent = agent
+            best_agent.save("best_dqn_model_lstm.zip")
+            break
+        else:
+            logging.info("Performance below threshold. Adjusting hyperparameters and retrying...")
+            current_hyperparams['lr'] *= 0.9  # decrease learning rate by 10%
+            current_hyperparams['exploration_fraction'] = min(current_hyperparams['exploration_fraction'] + 0.02, 0.3)
 
-        # Initialize DQN model
-        dqn_action_logger = ActionLoggingCallback(verbose=0)
-
-        model = DQN(
-            'MlpPolicy',
-            vec_env,
-            verbose=0,
-            learning_rate=lr,
-            gamma=gamma,
-            exploration_fraction=exploration_fraction,
-            buffer_size=buffer_size,
-            batch_size=batch_size,
-            train_freq=4,
-            target_update_interval=1000
-        )
-
-        # Train DQN model
-        model.learn(total_timesteps=dqn_total_timesteps, callback=dqn_action_logger)
-
-        # Evaluate final net worth
-        final_net_worth = evaluate_dqn_networth(model, env, n_episodes=dqn_eval_episodes)
-        # Objective is to maximize net worth, so return negative
-        return -final_net_worth
-
-    # 11) Hyperparameter Optimization with Optuna (Parallelized)
-    if max_parallel_trials is None:
-        # Default to logical cores minus 2 to prevent overloading
-        max_parallel_trials = max(1, cpu_stats['logical_cores'] - 2)
+    if best_agent is None:
+        logging.warning("Failed to train a satisfactory DQN agent after multiple attempts.")
     else:
-        max_parallel_trials = min(max_parallel_trials, cpu_stats['logical_cores'])
-
-    logging.info(f"Starting DQN hyperparameter tuning with Optuna using {max_parallel_trials} parallel trials...")
-    study_dqn = optuna.create_study(direction='minimize')
-    study_dqn.optimize(dqn_objective, n_trials=n_trials_dqn, n_jobs=max_parallel_trials)
-    best_dqn_params = study_dqn.best_params
-    logging.info(f"Best DQN Hyperparameters: {best_dqn_params}")
+        logging.info("Final DQN agent trained and saved.")
 
     ###################################
-    # D) TRAIN FINAL DQN WITH BEST PARAMETERS
-    ###################################
-    logging.info("Training final DQN model with best hyperparameters...")
-    env_final = StockTradingEnvWithLSTM(
-        df=df,
-        feature_columns=feature_columns,
-        lstm_model=final_lstm,
-        scaler_features=scaler_features,
-        scaler_target=scaler_target,
-        window_size=lstm_window_size
-    )
-    vec_env_final = DummyVecEnv([lambda: env_final])
-
-    final_dqn_logger = ActionLoggingCallback(verbose=1)  # Enable detailed logging
-
-    final_model = DQN(
-        'MlpPolicy',
-        vec_env_final,
-        verbose=1,
-        learning_rate=best_dqn_params['lr'],
-        gamma=best_dqn_params['gamma'],
-        exploration_fraction=best_dqn_params['exploration_fraction'],
-        buffer_size=best_dqn_params['buffer_size'],
-        batch_size=best_dqn_params['batch_size'],
-        train_freq=4,
-        target_update_interval=1000
-    )
-    final_model.learn(total_timesteps=dqn_total_timesteps, callback=final_dqn_logger)
-    final_model.save("best_dqn_model_lstm.zip")
-    logging.info("Final DQN model trained and saved as 'best_dqn_model_lstm.zip'.")
-
-    ###################################
-    # E) FINAL INFERENCE & LOG RESULTS
+    # D) FINAL INFERENCE & LOG RESULTS
     ###################################
     logging.info("Running final inference with the trained DQN model...")
 
-    env_test = StockTradingEnvWithLSTM(
-        df=df,
-        feature_columns=feature_columns,
-        lstm_model=final_lstm,
-        scaler_features=scaler_features,
-        scaler_target=scaler_target,
-        window_size=lstm_window_size
-    )
+    env_test = StockTradingEnvWithLSTM(**env_params)
     obs = env_test.reset()
     done = False
     total_reward = 0.0
@@ -857,7 +792,7 @@ def main():
 
     while not done:
         step_count += 1
-        action, _ = final_model.predict(obs, deterministic=True)
+        action, _ = best_agent.predict(obs, deterministic=True)
         obs, reward, done, info = env_test.step(action)
         total_reward += reward
         step_data.append({
@@ -902,31 +837,24 @@ def main():
     logging.info("Final inference completed. Results logged and displayed.")
 
     ###################################
-    # F) OPTIONAL: RETRY LOOP IF NET WORTH < THRESHOLD
+    # E) OPTIONAL: RETRY LOOP IF NET WORTH < THRESHOLD
     ###################################
-    NET_WORTH_THRESHOLD = 10500.0  # example threshold
+    if final_net_worth < PERFORMANCE_THRESHOLD:
+        logging.warning(f"Final net worth (${final_net_worth:.2f}) is below ${PERFORMANCE_THRESHOLD:.2f}. Retraining the same DQN model to learn from mistakes...")
 
-    if final_net_worth < NET_WORTH_THRESHOLD:
-        logging.warning(f"Final net worth (${final_net_worth:.2f}) is below ${NET_WORTH_THRESHOLD:.2f}. Retraining the same DQN model to learn from mistakes...")
-
-        # We continue training the SAME final_model without resetting its replay buffer.
-        # By setting `reset_num_timesteps=False`, we keep the replay buffer and learned weights.
         additional_timesteps = 50000
         logging.info(f"Retraining the existing DQN model for an additional {additional_timesteps} timesteps (keeping old experiences).")
-
-        # If you want to see action distributions again, you can keep the same callback or define a new one:
-        final_model.learn(
+        best_agent.learn(
             total_timesteps=additional_timesteps, 
             reset_num_timesteps=False,       # Keep replay buffer + internal step counter
-            callback=final_dqn_logger        # Optional: to log actions again
+            callback=ActionLoggingCallback(verbose=1)
         )
 
-        # Evaluate again
         obs = env_test.reset()
         done = False
         second_total_reward = 0.0
         while not done:
-            action, _ = final_model.predict(obs, deterministic=True)
+            action, _ = best_agent.predict(obs, deterministic=True)
             obs, reward, done, info = env_test.step(action)
             second_total_reward += reward
 
@@ -934,9 +862,9 @@ def main():
         second_profit = second_net_worth - env_test.initial_balance
         logging.info(f"After additional training, new final net worth=${second_net_worth:.2f}, profit=${second_profit:.2f}")
 
-        if second_net_worth < NET_WORTH_THRESHOLD:
+        if second_net_worth < PERFORMANCE_THRESHOLD:
             logging.warning("Even after continued training, net worth is still below threshold. Consider a deeper hyperparameter search or analyzing the environment settings.")
 
-
-main()
+if __name__ == "__main__":
+    main()
 
