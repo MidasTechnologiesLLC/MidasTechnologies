@@ -449,7 +449,7 @@ class StockTradingEnvWithLSTM(gym.Env):
         self.net_worth = self.balance + self.shares_held * current_price
         self.current_step += 1
         done = (self.current_step >= self.max_steps - 1)
-        reward = self.net_worth - prev_net_worth
+        reward = self.net_worth - self.initial_balance
         obs = self._get_obs()
         return obs, reward, done, {}
 
