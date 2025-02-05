@@ -40,3 +40,255 @@
 2025-01-30 00:56:56,285 - INFO - Scaled validation target shape: (3028,)
 2025-01-30 00:56:56,285 - INFO - Scaled testing target shape: (3030,)
 2025-01-30 00:56:56,285 - INFO - Starting LSTM hyperparameter optimization with Optuna using 10 parallel trials...
+2025-01-30 05:59:42,913 - INFO - ===== Resource Statistics =====
+2025-01-30 05:59:42,913 - INFO - Physical CPU Cores: 28
+2025-01-30 05:59:42,913 - INFO - Logical CPU Cores: 56
+2025-01-30 05:59:42,913 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-30 05:59:42,913 - INFO - No GPUs detected.
+2025-01-30 05:59:42,913 - INFO - =================================
+2025-01-30 05:59:42,917 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-30 05:59:42,917 - INFO - Loading data from: BAT.csv
+2025-01-30 05:59:44,354 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-30 05:59:44,373 - INFO - Data loaded and sorted successfully.
+2025-01-30 05:59:44,373 - INFO - Calculating technical indicators...
+2025-01-30 05:59:44,437 - INFO - Technical indicators calculated successfully.
+2025-01-30 05:59:44,447 - INFO - Starting parallel feature engineering with 54 workers...
+2025-01-30 05:59:53,981 - INFO - Parallel feature engineering completed.
+2025-01-30 05:59:54,103 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-30 05:59:54,103 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-30 05:59:54,103 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-30 05:59:54,103 - INFO - Scaled training target shape: (14134,)
+2025-01-30 05:59:54,103 - INFO - Scaled validation target shape: (3028,)
+2025-01-30 05:59:54,103 - INFO - Scaled testing target shape: (3030,)
+2025-01-30 05:59:54,103 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-01-30 07:24:16,261 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.2601904776023419, 'learning_rate': 0.0029898637649075103, 'optimizer': 'Nadam', 'decay': 6.765206579726146e-06}
+2025-01-30 07:24:16,587 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-01-30 07:54:53,021 - INFO - Evaluating final LSTM model...
+2025-01-30 07:54:54,677 - INFO - Test MSE: 0.0892
+2025-01-30 07:54:54,678 - INFO - Test RMSE: 0.2986
+2025-01-30 07:54:54,678 - INFO - Test MAE: 0.1908
+2025-01-30 07:54:54,678 - INFO - Test R2 Score: 0.9926
+2025-01-30 07:54:54,678 - INFO - Directional Accuracy: 0.4675
+2025-01-30 07:55:15,118 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-01-30 07:55:15,226 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-01-30 07:55:15,226 - INFO - Starting DQN hyperparameter tuning with Optuna using 54 parallel trials...
+2025-01-31 00:33:51,246 - INFO - ===== Resource Statistics =====
+2025-01-31 00:33:51,246 - INFO - Physical CPU Cores: 28
+2025-01-31 00:33:51,246 - INFO - Logical CPU Cores: 56
+2025-01-31 00:33:51,246 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-31 00:33:51,246 - INFO - No GPUs detected.
+2025-01-31 00:33:51,247 - INFO - =================================
+2025-01-31 00:33:51,247 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-31 00:33:51,247 - INFO - Loading data from: BAT.csv
+2025-01-31 00:33:52,623 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-31 00:33:52,640 - INFO - Data loaded and sorted successfully.
+2025-01-31 00:33:52,640 - INFO - Calculating technical indicators...
+2025-01-31 00:33:52,680 - INFO - Technical indicators calculated successfully.
+2025-01-31 00:33:52,690 - INFO - Starting parallel feature engineering with 54 workers...
+2025-01-31 00:34:02,440 - INFO - Parallel feature engineering completed.
+2025-01-31 00:34:02,527 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-31 00:34:02,527 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-31 00:34:02,527 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-31 00:34:02,527 - INFO - Scaled training target shape: (14134,)
+2025-01-31 00:34:02,527 - INFO - Scaled validation target shape: (3028,)
+2025-01-31 00:34:02,527 - INFO - Scaled testing target shape: (3030,)
+2025-01-31 00:34:02,527 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-01-31 02:07:22,583 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.18042015532719258, 'learning_rate': 0.008263668593877975, 'optimizer': 'Nadam', 'decay': 7.065697336348234e-05}
+2025-01-31 02:07:22,887 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-01-31 02:29:45,755 - INFO - Evaluating final LSTM model...
+2025-01-31 02:29:47,478 - INFO - Test MSE: 0.0765
+2025-01-31 02:29:47,479 - INFO - Test RMSE: 0.2765
+2025-01-31 02:29:47,479 - INFO - Test MAE: 0.1770
+2025-01-31 02:29:47,479 - INFO - Test R2 Score: 0.9937
+2025-01-31 02:29:47,479 - INFO - Directional Accuracy: 0.4823
+2025-01-31 02:30:07,570 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-01-31 02:30:07,639 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-01-31 02:30:07,640 - INFO - Starting DQN hyperparameter tuning with Optuna using 54 parallel trials...
+2025-01-31 02:49:01,996 - INFO - ===== Resource Statistics =====
+2025-01-31 02:49:01,996 - INFO - Physical CPU Cores: 28
+2025-01-31 02:49:01,996 - INFO - Logical CPU Cores: 56
+2025-01-31 02:49:01,996 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-31 02:49:01,996 - INFO - No GPUs detected.
+2025-01-31 02:49:01,996 - INFO - =================================
+2025-01-31 02:49:01,997 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-31 02:49:01,997 - INFO - Loading data from: BAT.csv
+2025-01-31 02:49:03,423 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-31 02:49:03,440 - INFO - Data loaded and sorted successfully.
+2025-01-31 02:49:03,440 - INFO - Calculating technical indicators...
+2025-01-31 02:49:03,479 - INFO - Technical indicators calculated successfully.
+2025-01-31 02:49:03,489 - INFO - Starting parallel feature engineering with 54 workers...
+2025-01-31 02:49:12,566 - INFO - Parallel feature engineering completed.
+2025-01-31 02:49:12,661 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-31 02:49:12,661 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-31 02:49:12,661 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-31 02:49:12,661 - INFO - Scaled training target shape: (14134,)
+2025-01-31 02:49:12,661 - INFO - Scaled validation target shape: (3028,)
+2025-01-31 02:49:12,661 - INFO - Scaled testing target shape: (3030,)
+2025-01-31 02:49:12,662 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-01-31 04:26:41,571 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.22440715941937378, 'learning_rate': 0.003707877783335322, 'optimizer': 'Adam', 'decay': 8.301665110041122e-05}
+2025-01-31 04:26:41,960 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-01-31 04:51:19,731 - INFO - Evaluating final LSTM model...
+2025-01-31 04:51:21,389 - INFO - Test MSE: 0.0877
+2025-01-31 04:51:21,389 - INFO - Test RMSE: 0.2962
+2025-01-31 04:51:21,390 - INFO - Test MAE: 0.1893
+2025-01-31 04:51:21,390 - INFO - Test R2 Score: 0.9927
+2025-01-31 04:51:21,390 - INFO - Directional Accuracy: 0.4764
+2025-01-31 04:51:21,734 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-01-31 04:51:21,768 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-01-31 04:51:21,768 - INFO - Starting DQN hyperparameter tuning with Optuna using 54 parallel trials...
+2025-01-31 22:41:43,005 - INFO - ===== Resource Statistics =====
+2025-01-31 22:41:43,005 - INFO - Physical CPU Cores: 28
+2025-01-31 22:41:43,005 - INFO - Logical CPU Cores: 56
+2025-01-31 22:41:43,005 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-31 22:41:43,005 - INFO - No GPUs detected.
+2025-01-31 22:41:43,005 - INFO - =================================
+2025-01-31 22:41:43,006 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-31 22:41:43,006 - INFO - Loading data from: BAT.csv
+2025-01-31 22:41:44,326 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-31 22:41:44,339 - INFO - Data loaded and sorted successfully.
+2025-01-31 22:41:44,339 - INFO - Calculating technical indicators...
+2025-01-31 22:41:44,370 - INFO - Technical indicators calculated successfully.
+2025-01-31 22:41:44,379 - INFO - Starting parallel feature engineering with 54 workers...
+2025-01-31 22:41:53,902 - INFO - Parallel feature engineering completed.
+2025-01-31 22:41:54,028 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-31 22:41:54,028 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-31 22:41:54,028 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-31 22:41:54,028 - INFO - Scaled training target shape: (14134,)
+2025-01-31 22:41:54,028 - INFO - Scaled validation target shape: (3028,)
+2025-01-31 22:41:54,029 - INFO - Scaled testing target shape: (3030,)
+2025-01-31 22:41:54,029 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-01-31 22:50:02,369 - INFO - ===== Resource Statistics =====
+2025-01-31 22:50:02,369 - INFO - Physical CPU Cores: 28
+2025-01-31 22:50:02,369 - INFO - Logical CPU Cores: 56
+2025-01-31 22:50:02,369 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-01-31 22:50:02,369 - INFO - No GPUs detected.
+2025-01-31 22:50:02,369 - INFO - =================================
+2025-01-31 22:50:02,370 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-01-31 22:50:02,370 - INFO - Loading data from: BAT.csv
+2025-01-31 22:50:03,713 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-01-31 22:50:03,730 - INFO - Data loaded and sorted successfully.
+2025-01-31 22:50:03,730 - INFO - Calculating technical indicators...
+2025-01-31 22:50:03,769 - INFO - Technical indicators calculated successfully.
+2025-01-31 22:50:03,779 - INFO - Starting parallel feature engineering with 54 workers...
+2025-01-31 22:50:13,311 - INFO - Parallel feature engineering completed.
+2025-01-31 22:50:13,420 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-01-31 22:50:13,421 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-01-31 22:50:13,421 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-01-31 22:50:13,421 - INFO - Scaled training target shape: (14134,)
+2025-01-31 22:50:13,421 - INFO - Scaled validation target shape: (3028,)
+2025-01-31 22:50:13,421 - INFO - Scaled testing target shape: (3030,)
+2025-01-31 22:50:13,421 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-02-01 00:14:29,571 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 32, 'dropout_rate': 0.22253761543698394, 'learning_rate': 0.008212670428960327, 'optimizer': 'Adam', 'decay': 7.743037774398402e-05}
+2025-02-01 00:14:29,996 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-02-01 00:30:08,485 - INFO - Evaluating final LSTM model...
+2025-02-01 00:30:09,683 - INFO - Test MSE: 0.1002
+2025-02-01 00:30:09,683 - INFO - Test RMSE: 0.3165
+2025-02-01 00:30:09,683 - INFO - Test MAE: 0.2066
+2025-02-01 00:30:09,683 - INFO - Test R2 Score: 0.9917
+2025-02-01 00:30:09,683 - INFO - Directional Accuracy: 0.4784
+2025-02-01 00:30:09,986 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-02-01 00:30:10,009 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-02-01 00:30:10,009 - INFO - Training DQN agent: Attempt 1 with hyperparameters: {'lr': 0.001, 'gamma': 0.95, 'exploration_fraction': 0.1, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 01:19:25,680 - INFO - ===== Resource Statistics =====
+2025-02-01 01:19:25,680 - INFO - Physical CPU Cores: 28
+2025-02-01 01:19:25,680 - INFO - Logical CPU Cores: 56
+2025-02-01 01:19:25,681 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-02-01 01:19:25,681 - INFO - No GPUs detected.
+2025-02-01 01:19:25,681 - INFO - =================================
+2025-02-01 01:19:25,681 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-02-01 01:19:25,681 - INFO - Loading data from: BAT.csv
+2025-02-01 01:19:26,678 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-02-01 01:19:26,695 - INFO - Data loaded and sorted successfully.
+2025-02-01 01:19:26,695 - INFO - Calculating technical indicators...
+2025-02-01 01:19:26,732 - INFO - Technical indicators calculated successfully.
+2025-02-01 01:19:26,742 - INFO - Starting parallel feature engineering with 54 workers...
+2025-02-01 01:19:35,239 - INFO - Parallel feature engineering completed.
+2025-02-01 01:19:35,331 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-02-01 01:19:35,331 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-02-01 01:19:35,331 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-02-01 01:19:35,331 - INFO - Scaled training target shape: (14134,)
+2025-02-01 01:19:35,332 - INFO - Scaled validation target shape: (3028,)
+2025-02-01 01:19:35,332 - INFO - Scaled testing target shape: (3030,)
+2025-02-01 01:19:35,332 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-02-01 02:37:58,098 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 64, 'dropout_rate': 0.1281900339578652, 'learning_rate': 0.008792091963204256, 'optimizer': 'Nadam', 'decay': 3.5015323637201504e-06}
+2025-02-01 02:37:58,462 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-02-01 02:54:38,646 - INFO - Evaluating final LSTM model...
+2025-02-01 02:54:39,805 - INFO - Test MSE: 0.0718
+2025-02-01 02:54:39,805 - INFO - Test RMSE: 0.2680
+2025-02-01 02:54:39,805 - INFO - Test MAE: 0.1710
+2025-02-01 02:54:39,805 - INFO - Test R2 Score: 0.9941
+2025-02-01 02:54:39,805 - INFO - Directional Accuracy: 0.4810
+2025-02-01 02:54:40,118 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-02-01 02:54:40,145 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-02-01 02:54:40,145 - INFO - Training DQN agent: Attempt 1 with hyperparameters: {'lr': 0.001, 'gamma': 0.95, 'exploration_fraction': 0.1, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 04:26:48,913 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 04:26:48,913 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 04:26:48,913 - INFO - Training DQN agent: Attempt 2 with hyperparameters: {'lr': 0.0009000000000000001, 'gamma': 0.95, 'exploration_fraction': 0.12000000000000001, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 06:01:15,175 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 06:01:15,176 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 06:01:15,176 - INFO - Training DQN agent: Attempt 3 with hyperparameters: {'lr': 0.0008100000000000001, 'gamma': 0.95, 'exploration_fraction': 0.14, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 07:35:48,244 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 07:35:48,244 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 07:35:48,244 - INFO - Training DQN agent: Attempt 4 with hyperparameters: {'lr': 0.000729, 'gamma': 0.95, 'exploration_fraction': 0.16, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 09:10:48,457 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 09:10:48,458 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 09:10:48,458 - INFO - Training DQN agent: Attempt 5 with hyperparameters: {'lr': 0.0006561000000000001, 'gamma': 0.95, 'exploration_fraction': 0.18, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 10:45:37,862 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 10:45:37,862 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 10:45:37,862 - INFO - Training DQN agent: Attempt 6 with hyperparameters: {'lr': 0.00059049, 'gamma': 0.95, 'exploration_fraction': 0.19999999999999998, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 12:20:51,667 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 12:20:51,668 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 12:20:51,668 - INFO - Training DQN agent: Attempt 7 with hyperparameters: {'lr': 0.000531441, 'gamma': 0.95, 'exploration_fraction': 0.21999999999999997, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 13:55:52,555 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 13:55:52,556 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 13:55:52,556 - INFO - Training DQN agent: Attempt 8 with hyperparameters: {'lr': 0.0004782969, 'gamma': 0.95, 'exploration_fraction': 0.23999999999999996, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 15:31:11,610 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 15:31:11,611 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 15:31:11,611 - INFO - Training DQN agent: Attempt 9 with hyperparameters: {'lr': 0.00043046721, 'gamma': 0.95, 'exploration_fraction': 0.25999999999999995, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 17:06:19,852 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 17:06:19,853 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 17:06:19,853 - INFO - Training DQN agent: Attempt 10 with hyperparameters: {'lr': 0.000387420489, 'gamma': 0.95, 'exploration_fraction': 0.27999999999999997, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 18:41:36,874 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 18:41:36,874 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 18:41:36,875 - WARNING - Failed to train a satisfactory DQN agent after multiple attempts.
+2025-02-01 18:41:36,875 - INFO - Running final inference with the trained DQN model...
+2025-02-01 20:30:14,186 - INFO - ===== Resource Statistics =====
+2025-02-01 20:30:14,186 - INFO - Physical CPU Cores: 28
+2025-02-01 20:30:14,186 - INFO - Logical CPU Cores: 56
+2025-02-01 20:30:14,187 - INFO - CPU Usage per Core: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]%
+2025-02-01 20:30:14,187 - INFO - No GPUs detected.
+2025-02-01 20:30:14,187 - INFO - =================================
+2025-02-01 20:30:14,187 - INFO - Configured TensorFlow to use CPU with optimized thread settings.
+2025-02-01 20:30:14,187 - INFO - Loading data from: BAT.csv
+2025-02-01 20:30:15,845 - INFO - Data columns after renaming: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+2025-02-01 20:30:15,862 - INFO - Data loaded and sorted successfully.
+2025-02-01 20:30:15,862 - INFO - Calculating technical indicators...
+2025-02-01 20:30:15,901 - INFO - Technical indicators calculated successfully.
+2025-02-01 20:30:15,912 - INFO - Starting parallel feature engineering with 54 workers...
+2025-02-01 20:30:25,135 - INFO - Parallel feature engineering completed.
+2025-02-01 20:30:25,228 - INFO - Scaled training features shape: (14134, 15, 17)
+2025-02-01 20:30:25,228 - INFO - Scaled validation features shape: (3028, 15, 17)
+2025-02-01 20:30:25,228 - INFO - Scaled testing features shape: (3030, 15, 17)
+2025-02-01 20:30:25,228 - INFO - Scaled training target shape: (14134,)
+2025-02-01 20:30:25,228 - INFO - Scaled validation target shape: (3028,)
+2025-02-01 20:30:25,228 - INFO - Scaled testing target shape: (3030,)
+2025-02-01 20:30:25,228 - INFO - Starting LSTM hyperparameter optimization with Optuna using 54 parallel trials...
+2025-02-01 21:56:20,956 - INFO - Best LSTM Hyperparameters: {'num_lstm_layers': 1, 'lstm_units': 128, 'dropout_rate': 0.18495715637312699, 'learning_rate': 0.0033267819284254043, 'optimizer': 'Nadam', 'decay': 8.705868913987463e-05}
+2025-02-01 21:56:21,377 - INFO - Training best LSTM model with optimized hyperparameters...
+2025-02-01 22:27:53,128 - INFO - Evaluating final LSTM model...
+2025-02-01 22:27:55,211 - INFO - Test MSE: 0.0798
+2025-02-01 22:27:55,211 - INFO - Test RMSE: 0.2824
+2025-02-01 22:27:55,211 - INFO - Test MAE: 0.1797
+2025-02-01 22:27:55,211 - INFO - Test R2 Score: 0.9934
+2025-02-01 22:27:55,211 - INFO - Directional Accuracy: 0.4721
+2025-02-01 22:27:55,573 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-02-01 22:27:55,606 - INFO - Saved best LSTM model and scaler objects (best_lstm_model.h5, scaler_features.pkl, scaler_target.pkl).
+2025-02-01 22:27:55,606 - INFO - Training DQN agent: Attempt 1 with hyperparameters: {'lr': 0.001, 'gamma': 0.95, 'exploration_fraction': 0.1, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-01 23:59:48,100 - INFO - Agent achieved final net worth: $10000.00
+2025-02-01 23:59:48,100 - INFO - Performance below threshold. Adjusting hyperparameters and retrying...
+2025-02-01 23:59:48,100 - INFO - Training DQN agent: Attempt 2 with hyperparameters: {'lr': 0.0009000000000000001, 'gamma': 0.95, 'exploration_fraction': 0.12000000000000001, 'buffer_size': 10000, 'batch_size': 64}
+2025-02-02 01:34:10,564 - INFO - Agent achieved final net worth: $10999.26
+2025-02-02 01:34:10,564 - INFO - Agent meets performance criteria!
+2025-02-02 01:34:10,572 - INFO - Final DQN agent trained and saved.
+2025-02-02 01:34:10,572 - INFO - Running final inference with the trained DQN model...
+2025-02-02 02:00:51,337 - INFO - Final inference completed. Results logged and displayed.
