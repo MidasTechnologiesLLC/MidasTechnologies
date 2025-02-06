@@ -242,7 +242,7 @@ def main():
         vec_env = DummyVecEnv([lambda: raw_env])
 
         # 4) Load your DQN model
-        model = DQN.load("dqn_stock_trading.zip", env=vec_env)
+        model = DQN.load("best_dqn_model_lstm.zip", env=vec_env)
 
         # 5) Run inference
         obs = vec_env.reset()
