@@ -1,0 +1,428 @@
+**Detailed Project Requirements: Adapting the DQN System for Options Trading**
+
+**Date:** 2/12/2025  
+**Prepared by:** Jacob Mardian
+
+**1\. Overview**
+
+Our current system uses an LSTM to train a Deep Q-Network (DQN) that trades shares based on 5‑minute price data. Because transaction costs make frequent share trades inefficient, we want to switch to options trading. Options allow us to gain similar market exposure with lower capital usage and, if managed properly, lower transaction costs.
+
+**Primary Goals:**
+
+- **Reduce transaction costs** by trading options rather than shares.
+- **Enhance the state representation** with options-specific data so that the DQN can make better decisions.
+- **Redefine the action space and reward function** to reflect the dynamics of options pricing.
+- **Lay a clear foundation for future enhancements,** such as incorporating a Hidden Markov Model (HMM).
+
+**2\. Options Basics and Mathematical Translation**
+
+Before diving into the coding changes, it is essential to understand the key financial and mathematical concepts involved in options trading. Below are the basic variables and formulas we will use.
+
+**2.1. Key Option Variables**
+
+For any option (a contract giving the right, but not the obligation, to buy or sell an asset at a predetermined price), we need the following variables:
+
+- **S (Underlying Price):** The current price of the underlying asset.
+- **K (Strike Price):** The predetermined price at which the option can be exercised.
+- **T (Time to Expiration):** The time remaining until the option expires (expressed in years).  
+    _Formula:_ T=Expiration Date−Current Date365T = \\frac{\\text{Expiration Date} - \\text{Current Date}}{365}T=365Expiration Date−Current Date​
+- **r (Risk-Free Rate):** A constant representing the risk-free interest rate (e.g., yield on Treasury bonds).
+- **σ (Sigma, Implied Volatility):** The market’s expectation of the underlying asset’s volatility. This is usually provided by a data vendor.
+- **Bid and Ask Prices:** The best available prices for buying (ask) and selling (bid) the option.
+
+**2.2. Moneyness**
+
+_Moneyness_ tells us how “in” or “out of the money” an option is. A common way to express moneyness is using the ratio of the underlying price to the strike price.
+
+- **Moneyness Ratio:** Moneyness=SKor alternativelyS−KK\\text{Moneyness} = \\frac{S}{K} \\quad \\text{or alternatively} \\quad \\frac{S - K}{K}Moneyness=KS​or alternativelyKS−K​
+  - **Interpretation:**
+    - Close to 1: The option is “at the money.”
+    - Greater than 1 (for calls) or less than 1 (for puts): The option is “in the money.”
+
+**2.3. Time to Expiration**
+
+This feature is computed as:
+
+T=Expiration Date (in days)−Current Date (in days)365T = \\frac{\\text{Expiration Date (in days)} - \\text{Current Date (in days)}}{365}T=365Expiration Date (in days)−Current Date (in days)​
+
+_For example:_ If the option expires in 90 days, then
+
+T≈90365≈0.2466 yearsT \\approx \\frac{90}{365} \\approx 0.2466 \\text{ years}T≈36590​≈0.2466 years
+
+**2.4. Option Pricing (Black-Scholes Model)**
+
+Although we might not directly use the full Black-Scholes price in our state vector, knowing its structure helps us derive other features. The Black-Scholes formula for a call option is:
+
+C=S⋅N(d1)−K⋅e−rT⋅N(d2)C = S \\cdot N(d_1) - K \\cdot e^{-rT} \\cdot N(d_2)C=S⋅N(d1​)−K⋅e−rT⋅N(d2​)
+
+where
+
+d1=ln⁡(SK)+(r+σ22)TσT,d2=d1−σTd_1 = \\frac{\\ln\\left(\\frac{S}{K}\\right) + \\left(r + \\frac{\\sigma^2}{2}\\right)T}{\\sigma\\sqrt{T}}, \\quad d_2 = d_1 - \\sigma\\sqrt{T}d1​=σT​ln(KS​)+(r+2σ2​)T​,d2​=d1​−σT​
+
+and N(x)N(x)N(x) is the cumulative distribution function (CDF) of the standard normal distribution.
+
+_For a put option:_
+
+P=K⋅e−rT⋅N(−d2)−S⋅N(−d1)P = K \\cdot e^{-rT} \\cdot N(-d_2) - S \\cdot N(-d_1)P=K⋅e−rT⋅N(−d2​)−S⋅N(−d1​)
+
+**2.5. The Greeks**
+
+The Greeks are derivatives of the option price with respect to its inputs. They quantify sensitivity and risk. We plan to include at least **Delta** and **Theta** in our feature set.
+
+- **Delta (Δ):** Measures the sensitivity of the option price to a change in the underlying asset price.
+  - **For a call option:** Δcall=N(d1)\\Delta_{\\text{call}} = N(d_1)Δcall​=N(d1​)
+  - **For a put option:** Δput=N(d1)−1\\Delta_{\\text{put}} = N(d_1) - 1Δput​=N(d1​)−1
+- **Theta (Θ):** Measures the rate of decline in the value of an option due to time passing (time decay).
+  - **For a call option:** Θcall=−S⋅N′(d1)σ2T−rKe−rTN(d2)\\Theta_{\\text{call}} = -\\frac{S \\cdot N'(d_1)\\sigma}{2\\sqrt{T}} - rK e^{-rT}N(d_2)Θcall​=−2T​S⋅N′(d1​)σ​−rKe−rTN(d2​) Here, N′(d1)N'(d_1)N′(d1​) is the probability density function (PDF) of the standard normal distribution, and Theta is typically expressed per day. To convert to a daily value, divide by 365.
+- **Bid-Ask Spread:**
+
+Spread (%)=Ask−BidAsk+Bid2\\text{Spread (\\%)} = \\frac{\\text{Ask} - \\text{Bid}}{\\frac{\\text{Ask} + \\text{Bid}}{2}}Spread (%)=2Ask+Bid​Ask−Bid​
+
+This value gives us an idea of transaction costs.
+
+**3\. Technical Requirements and Implementation Details**
+
+This section details how to incorporate the options math into our DQN system. The CTO should follow these steps to update the data preprocessing, model input, action space, and reward function.
+
+**3.1. Updating the State Representation**
+
+**3.1.1. Data Collection and Preprocessing**
+
+- **Input Data:**  
+    For each time step (e.g., each 5‑minute bar), combine the following:
+  - **Existing Data:**
+    - Underlying asset price SSS
+    - Historical price data, volume, etc.
+  - **New Options Data:**
+    - **Strike Price (K):** Obtain from options data.
+    - **Moneyness:** Compute using:
+
+python
+
+Copy
+
+moneyness = S / K # or (S - K) / K
+
+- - - **Time to Expiration (T):**
+
+python
+
+Copy
+
+from datetime import datetime
+
+days_to_exp = (expiration_date - current_date).days
+
+T = days_to_exp / 365.0
+
+- - - **Implied Volatility (σ):**  
+            Assume this is provided by the data feed.
+      - **Option Greeks (Delta, Theta):**  
+            Compute d1d_1d1​ using:
+
+python
+
+Copy
+
+import math
+
+import numpy as np
+
+d1 = (math.log(S / K) + (r + 0.5 \* sigma \*\* 2) \* T) / (sigma \* math.sqrt(T))
+
+Then compute Delta (for a call):
+
+python
+
+Copy
+
+from scipy.stats import norm
+
+delta_call = norm.cdf(d1)
+
+And Theta (for a call):
+
+python
+
+Copy
+
+d2 = d1 - sigma \* math.sqrt(T)
+
+theta_call = (- (S \* norm.pdf(d1) \* sigma) / (2 \* math.sqrt(T))
+
+\- r \* K \* math.exp(-r \* T) \* norm.cdf(d2)) / 365.0
+
+- - - **Bid-Ask Spread:**
+
+python
+
+Copy
+
+mid_price = (ask + bid) / 2.0
+
+spread_percent = (ask - bid) / mid_price
+
+- **Feature Vector Construction:**  
+    The new state vector for each time step might look like:
+
+python
+
+Copy
+
+state_vector = \[
+
+S, # Underlying price
+
+moneyness, # S / K or (S - K) / K
+
+T, # Time to expiration in years
+
+sigma, # Implied volatility
+
+delta_call, # Option delta (if call) or delta_put for puts
+
+theta_call, # Option theta (time decay per day)
+
+spread_percent, # Bid-ask spread percentage
+
+\# (Optionally add other features: volume, historical trends, etc.)
+
+\]
+
+_Normalization:_ Each feature should be normalized (e.g., via z-score or min-max scaling) before input to the neural network.
+
+**3.2. Redefining the Action Space**
+
+For options trading, our discrete actions might be defined as follows:
+
+- **Action 0:** Open a Long Call Option position
+- **Action 1:** Open a Long Put Option position
+- **Action 2:** Close an Existing Options Position
+
+**3.2.1. Mapping Actions to Code**
+
+- **Example Mapping:**
+
+python
+
+Copy
+
+action_mapping = {
+
+0: "open_long_call",
+
+1: "open_long_put",
+
+2: "close_position"
+
+}
+
+- **Implementation Note:**  
+    Update the output layer of the DQN so that it has three neurons—one for each discrete action. When the DQN outputs an action index, use the mapping to determine the specific trading operation.
+
+**3.3. Adjusting the Reward Function**
+
+The reward function must now reflect the nuances of options trading:
+
+- **Profit and Loss (PnL):**  
+    For an option position, the PnL is the difference between the closing and opening premiums (price paid or received), adjusted by the contract multiplier.
+
+PnL=(Option Priceclose−Option Priceopen)×Contracts×Contract Multiplier\\text{PnL} = (\\text{Option Price}\_{\\text{close}} - \\text{Option Price}\_{\\text{open}}) \\times \\text{Contracts} \\times \\text{Contract Multiplier}PnL=(Option Priceclose​−Option Priceopen​)×Contracts×Contract Multiplier
+
+- **Transaction Costs:**  
+    Include the effect of the bid-ask spread and commissions. For example:
+
+Cost=Spread Percent×Notional Value+Commission\\text{Cost} = \\text{Spread Percent} \\times \\text{Notional Value} + \\text{Commission}Cost=Spread Percent×Notional Value+Commission
+
+- **Time Decay (Theta):**  
+    Since options lose value over time:
+
+Time Decay Penalty=∣θ∣×Δt\\text{Time Decay Penalty} = |\\theta| \\times \\Delta tTime Decay Penalty=∣θ∣×Δt
+
+where Δt\\Delta tΔt is the time elapsed (in days) between trades.
+
+- **Combined Reward Function (Pseudo-Code):**
+
+python
+
+Copy
+
+def calculate_reward(option_price_open, option_price_close, contracts, contract_multiplier,
+
+spread_percent, notional_value, commission, theta, delta_time):
+
+pnl = (option_price_close - option_price_open) \* contracts \* contract_multiplier
+
+transaction_cost = spread_percent \* notional_value + commission
+
+time_decay_penalty = abs(theta) \* delta_time
+
+reward = pnl - transaction_cost - time_decay_penalty
+
+return reward
+
+_Note:_ You may need to tune the relative weight of each term through experimentation.
+
+**3.4. Updating the Neural Network Architecture**
+
+**3.4.1. Input Layer**
+
+- **Dimension Adjustment:**  
+    The input dimension must reflect the new state vector length. For example, if the original state vector had 10 features and now it has 8 options-specific features plus, say, 5 original features, the new input dimension would be 13.
+
+python
+
+Copy
+
+input_dim = len(state_vector) # e.g., 13
+
+- **Integration into the Model:**  
+    Modify the code that defines the neural network’s input layer to accept this new dimension.
+
+**3.4.2. Hidden Layers and Output Layer**
+
+- **Hidden Layers:**  
+    You may use existing LSTM layers for temporal processing. If needed, add extra fully connected layers to learn the complex relationships from the enhanced feature set.
+- **Output Layer:**  
+    Change the final dense layer to have 3 neurons (for our 3 defined actions).
+
+python
+
+Copy
+
+model.add(Dense(3, activation='linear'))
+
+**3.5. Data Preprocessing and Feature Engineering**
+
+**3.5.1. Data Pipeline**
+
+- **Data Sources:**  
+    Ensure you have access to both the underlying asset’s 5‑minute data and options data (strike, expiration, implied volatility, bid/ask, etc.).
+- **Feature Calculation Script Example (Pseudo-Code):**
+
+python
+
+Copy
+
+import math
+
+import numpy as np
+
+from datetime import datetime
+
+from scipy.stats import norm
+
+def compute_options_features(S, K, expiration_date, current_date, sigma, r, bid, ask):
+
+\# Moneyness
+
+moneyness = S / K
+
+\# Time to Expiration in years
+
+days_to_exp = (expiration_date - current_date).days
+
+T = days_to_exp / 365.0
+
+\# d1 and d2 for Black-Scholes calculations
+
+d1 = (math.log(S / K) + (r + 0.5 \* sigma \*\* 2) \* T) / (sigma \* math.sqrt(T))
+
+d2 = d1 - sigma \* math.sqrt(T)
+
+\# Option Greeks
+
+delta_call = norm.cdf(d1)
+
+theta_call = (- (S \* norm.pdf(d1) \* sigma) / (2 \* math.sqrt(T)) - r \* K \* math.exp(-r \* T) \* norm.cdf(d2)) / 365.0
+
+\# Bid-Ask Spread Percentage
+
+mid_price = (ask + bid) / 2.0
+
+spread_percent = (ask - bid) / mid_price
+
+return {
+
+'moneyness': moneyness,
+
+'T': T,
+
+'sigma': sigma,
+
+'delta_call': delta_call,
+
+'theta_call': theta_call,
+
+'spread_percent': spread_percent
+
+}
+
+- **Integration:**  
+    Combine these computed features with the historical data to form the full state vector for each time step.
+
+**3.6. Placeholder for Future HMM Integration**
+
+Even though the HMM is not yet implemented, create a placeholder so that it can be easily added later.
+
+python
+
+Copy
+
+def get_hmm_signal(market_data):
+
+"""
+
+Placeholder for the Hidden Markov Model (HMM) signal.
+
+This function should eventually process the market_data and return a confidence score.
+
+For now, it returns 0.0 (neutral signal).
+
+"""
+
+return 0.0
+
+When integrating later, simply append the HMM output to the state vector:
+
+python
+
+Copy
+
+hmm_signal = get_hmm_signal(market_data)
+
+state_vector.append(hmm_signal)
+
+**4\. Implementation Roadmap**
+
+1. **Phase 1 – Data and Feature Engineering:**
+    - Modify data preprocessing to extract options data.
+    - Compute moneyness, time to expiration, implied volatility, Delta, Theta, and bid-ask spread.
+    - Validate feature values with unit tests (e.g., check that time to expiration decreases over time).
+2. **Phase 2 – DQN Input and Action Space Update:**
+    - Update the DQN input layer to accommodate the new feature vector.
+    - Redefine the output layer to have three actions.
+    - Create and document the action mapping.
+3. **Phase 3 – Reward Function and Network Architecture:**
+    - Implement the revised reward function that calculates PnL, transaction costs, and time decay penalties.
+    - Tune hyperparameters as needed.
+4. **Phase 4 – End-to-End System Testing:**
+    - Run backtests using historical options data or simulated data.
+    - Analyze the performance, ensuring that the system is making fewer trades with better net returns.
+    - Debug and optimize where necessary.
+5. **Phase 5 – HMM Placeholder and Future Integration:**
+    - Finalize the HMM module placeholder.
+    - Plan for integrating the HMM output into the state vector in a future iteration.
+
+**5\. Summary**
+
+This document details how to mathematically translate options information into features for our DQN system. In summary, you will:
+
+- **Expand the state vector** to include options-specific features such as moneyness, time to expiration, implied volatility, and option Greeks (Delta, Theta).
+- **Redefine the action space** to have discrete actions for opening and closing option positions.
+- **Adjust the reward function** to compute rewards based on option premiums, transaction costs, and time decay.
+- **Update the neural network architecture** to accept the enhanced feature set and output the new actions.
+- **Implement data preprocessing modules** that compute these mathematical features and normalize them for the DQN.
+- **Set up a placeholder for HMM integration** for future improvement.
+
+Please review this document with the development team. If there are any questions about the mathematical formulations or the implementation details, I am available to discuss further.
