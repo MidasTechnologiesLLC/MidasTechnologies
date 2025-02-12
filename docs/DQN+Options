@@ -225,22 +225,11 @@ action_mapping = {
 The reward function must now reflect the nuances of options trading:
 
 - **Profit and Loss (PnL):**  
-    For an option position, the PnL is the difference between the closing and opening premiums (price paid or received), adjusted by the contract multiplier.
-
-PnL=(Option Priceclose−Option Priceopen)×Contracts×Contract Multiplier\\text{PnL} = (\\text{Option Price}\_{\\text{close}} - \\text{Option Price}\_{\\text{open}}) \\times \\text{Contracts} \\times \\text{Contract Multiplier}PnL=(Option Priceclose​−Option Priceopen​)×Contracts×Contract Multiplier
-
+    For an option position, the PnL is the difference between the closing and opening premiums (price paid or received), adjusted by the contract multiplier. PnL=(Option Priceclose−Option Priceopen)×Contracts×Contract Multiplier\\text{PnL} = (\\text{Option Price}\_{\\text{close}} - \\text{Option Price}\_{\\text{open}}) \\times \\text{Contracts} \\times \\text{Contract Multiplier}PnL=(Option Priceclose​−Option Priceopen​)×Contracts×Contract Multiplier
 - **Transaction Costs:**  
-    Include the effect of the bid-ask spread and commissions. For example:
-
-Cost=Spread Percent×Notional Value+Commission\\text{Cost} = \\text{Spread Percent} \\times \\text{Notional Value} + \\text{Commission}Cost=Spread Percent×Notional Value+Commission
-
+    Include the effect of the bid-ask spread and commissions. For example: Cost=Spread Percent×Notional Value+Commission\\text{Cost} = \\text{Spread Percent} \\times \\text{Notional Value} + \\text{Commission}Cost=Spread Percent×Notional Value+Commission
 - **Time Decay (Theta):**  
-    Since options lose value over time:
-
-Time Decay Penalty=∣θ∣×Δt\\text{Time Decay Penalty} = |\\theta| \\times \\Delta tTime Decay Penalty=∣θ∣×Δt
-
-where Δt\\Delta tΔt is the time elapsed (in days) between trades.
-
+    Since options lose value over time: Time Decay Penalty=∣θ∣×Δt\\text{Time Decay Penalty} = |\\theta| \\times \\Delta tTime Decay Penalty=∣θ∣×Δt where Δt\\Delta tΔt is the time elapsed (in days) between trades.
 - **Combined Reward Function (Pseudo-Code):**
 
 python
@@ -393,6 +382,51 @@ hmm_signal = get_hmm_signal(market_data)
 
 state_vector.append(hmm_signal)
 
+**3.7. Risk Management and DQN-Level Considerations**
+
+In addition to the above modifications, it is critical to integrate robust risk management practices directly into the DQN system. This ensures that the agent not only seeks to maximize returns but also controls exposure and manages potential losses. Key elements include:
+
+- **Position Sizing and Exposure Limits:**
+  - **Maximum Position Limit:**  
+        Define a maximum number of contracts (or a percentage of capital) that can be traded per position. For example, the system may enforce a rule such as "no more than 5 contracts per trade" or "total exposure must not exceed 10% of available capital."
+  - **Dynamic Position Sizing:**  
+        Implement algorithms (e.g., based on the Kelly Criterion or other risk allocation methods) that adjust the number of contracts traded based on the current volatility, account size, and risk parameters.
+- **Stop-Loss Mechanisms:**
+  - **Automated Stop-Loss Orders:**  
+        Integrate logic within the DQN system to trigger a stop-loss if the option position loses more than a predetermined percentage from its entry price. For example, if a position drops by 3–5%, the system automatically issues a command to close the position.
+- **Drawdown and Risk Penalty:**
+  - **Drawdown Monitoring:**  
+        Continuously track the portfolio’s maximum drawdown. If drawdowns exceed a certain threshold (e.g., 10% of capital), temporarily reduce trading size or halt new trades until conditions improve.
+  - **Risk-Adjusted Reward Function:**  
+        Modify the reward function to penalize actions that lead to excessive risk. For example, if a trade results in a position size that exceeds predetermined limits or if market volatility is unusually high, subtract an additional penalty from the reward:
+
+python
+
+Copy
+
+def calculate_reward(..., risk_metric):
+
+pnl = (option_price_close - option_price_open) \* contracts \* contract_multiplier
+
+transaction_cost = spread_percent \* notional_value + commission
+
+time_decay_penalty = abs(theta) \* delta_time
+
+risk_penalty = risk_metric # e.g., a function of position size and volatility
+
+reward = pnl - transaction_cost - time_decay_penalty - risk_penalty
+
+return reward
+
+- **Exploration vs. Exploitation Adjustments:**
+  - **Adaptive Epsilon Scheduling:**  
+        Incorporate a mechanism where the exploration rate (epsilon in ε‑greedy strategies) is adjusted based on recent risk metrics. If the system experiences a high drawdown or high variance in outcomes, the exploration rate might be increased to encourage more conservative actions.
+- **Logging and Alerts:**
+  - **Risk Metrics Logging:**  
+        Log key risk indicators (such as maximum drawdown, position size, and Value at Risk) alongside trading decisions.
+  - **Real-Time Alerts:**  
+        Configure the system to send alerts if risk thresholds are breached so that manual intervention or additional safeguards can be applied.
+
 **4\. Implementation Roadmap**
 
 1. **Phase 1 – Data and Feature Engineering:**
@@ -404,7 +438,7 @@ state_vector.append(hmm_signal)
     - Redefine the output layer to have three actions.
     - Create and document the action mapping.
 3. **Phase 3 – Reward Function and Network Architecture:**
-    - Implement the revised reward function that calculates PnL, transaction costs, and time decay penalties.
+    - Implement the revised reward function that calculates PnL, transaction costs, time decay penalties, and incorporates risk penalties.
     - Tune hyperparameters as needed.
 4. **Phase 4 – End-to-End System Testing:**
     - Run backtests using historical options data or simulated data.
@@ -420,9 +454,10 @@ This document details how to mathematically translate options information into f
 
 - **Expand the state vector** to include options-specific features such as moneyness, time to expiration, implied volatility, and option Greeks (Delta, Theta).
 - **Redefine the action space** to have discrete actions for opening and closing option positions.
-- **Adjust the reward function** to compute rewards based on option premiums, transaction costs, and time decay.
+- **Adjust the reward function** to compute rewards based on option premiums, transaction costs, time decay, and additional risk penalties.
 - **Update the neural network architecture** to accept the enhanced feature set and output the new actions.
 - **Implement data preprocessing modules** that compute these mathematical features and normalize them for the DQN.
+- **Integrate a risk management framework** at the DQN level, including position sizing, stop-loss mechanisms, drawdown monitoring, and dynamic adjustments in the reward function to control excessive risk.
 - **Set up a placeholder for HMM integration** for future improvement.
 
-Please review this document with the development team. If there are any questions about the mathematical formulations or the implementation details, I am available to discuss further.
+Please review this document with the development team. If there are any questions about the mathematical formulations, risk management considerations, or implementation details, I am available to discuss further.
