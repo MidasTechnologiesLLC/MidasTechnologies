@@ -1,0 +1,203 @@
+**Midas Technologies Inc.  
+Founders Agreement**
+
+**This Founders Agreement** (this “Agreement”) is made and entered into as of 2/12/2025 (the “Effective Date”) by and among the undersigned founders (each a “Founder” and collectively, the “Founders”) of Midas Technologies Inc., a Virginia corporation (the “Company”).
+
+**RECITALS**
+
+WHEREAS, the Founders have come together for the purpose of establishing and operating a fintech enterprise under the name Midas Technologies Inc. and wish to define their respective rights, duties, and obligations with respect to the Company;
+
+WHEREAS, the Founders desire to create an organizational structure, establish operational protocols, and set forth accountability mechanisms including, but not limited to, work hour requirements, meeting protocols, role assignments, intellectual property rights, confidentiality, and equity adjustments;
+
+WHEREAS, the Founders believe that a clear and detailed Founders Agreement is essential to the long-term success of the Company and to maintain harmony, transparency, and accountability among them;
+
+NOW, THEREFORE, in consideration of the mutual covenants, agreements, representations, and warranties contained herein and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Founders agree as follows:
+
+**1\. Meetings, Work Hours, and Strike Policy**
+
+**1.1 Weekly Meetings**
+
+- **Schedule and Attendance:**
+  - The Founders shall meet on a weekly basis at a time and place mutually agreed upon in advance.
+  - Each Founder is required to attend the meeting punctually and remain until its conclusion. If a Founder anticipates being unable to attend or arriving late, notice must be provided to the group at least 24 hours in advance, except in cases of emergency.
+- **Preparation and Presentation:**
+  - Each Founder shall prepare a progress update outlining work completed since the previous meeting, ongoing tasks, and any issues requiring group discussion.
+  - The first hour of each meeting is reserved for a structured presentation of individual work updates by each Founder.
+- **Accountability Measures:**
+  - Failure to attend or to be punctual, without prior notification or acceptable excuse, shall result in a penalty whereby the non-compliant Founder shall prepare and serve a non-vegan, non-vegetarian meal for the other Founders within one week of the incident.
+
+**1.2 Work Hours and Strike System**
+
+- **Minimum Work Commitment:**
+  - Each Founder shall dedicate a minimum of five (5) hours per week to Company-related tasks outside of the scheduled meetings.
+  - All work hours must be accurately logged in a mutually agreed-upon system (e.g., a shared spreadsheet or time-tracking tool) and reviewed during the weekly meeting.
+- **Strike Accumulation and Consequences:**
+  - **Strike Recording:** Failure to log or complete the required five (5) hours in any given week shall result in one (1) strike against the responsible Founder.
+  - **Progressive Penalties:**
+    - **First and Second Strikes:** The first and second instances serve as formal warnings and will be recorded.
+    - **Third Strike and Beyond:** Upon the occurrence of a third strike, any subsequent week in which the minimum required hours are not completed shall result in a reduction of that Founder’s equity by 1% per week.
+- **Excusal Procedure:**
+  - Should a Founder be unable to meet the work-hour requirement due to extenuating circumstances (e.g., illness, personal emergencies), a formal request for excusal must be submitted before the week’s end.
+  - Such a request shall be subject to a vote by the Founders and must receive the affirmative vote of at least two of the three Founders. An approved excusal shall not result in a strike.
+
+**1.3 Meeting Cancellations**
+
+- **Cancellation Criteria:**
+  - A meeting may be canceled only if all Founders (i.e., a unanimous decision) agree to such cancellation.
+  - When a cancellation is decided upon, all Founders must receive written notice at least 24 hours in advance, unless an emergency arises.
+
+**2\. Founders’ Roles and Responsibilities**
+
+**2.1 Griffin Witt – Chief AI Specialist**
+
+- **Primary Responsibilities:**
+  - **Data Management:** Collect, organize, secure, and maintain all data integral to the Company’s operations, with a specific focus on AI and trading activities.
+  - **AI Research:** Conduct research on current and emerging artificial intelligence technologies, methodologies, and trends applicable to the fintech industry.
+  - **AI Development:** Design, develop, and implement AI algorithms and models to optimize trading strategies and improve overall operational efficiency.
+- **Collaboration and Reporting:**
+  - Provide comprehensive reports and data analyses at each weekly meeting.
+  - Coordinate closely with the Chief Programmer and Technology Officer to ensure that AI initiatives are integrated seamlessly into the Company’s technology framework.
+
+**2.2 Collin Schaufle – Chief Programmer and Technology Officer**
+
+- **Primary Responsibilities:**
+  - **Software Development:** Oversee the design, development, testing, and deployment of the Company’s software systems.
+  - **Code Organization and Documentation:** Maintain high standards for code organization, documentation, and version control.
+  - **GitHub Management:** Manage the Company’s GitHub repositories, ensuring that all updates and code commits are performed in a timely and transparent manner.
+  - **AI Oversight:** Supervise and collaborate with the Chief AI Specialist to ensure that AI components are effectively integrated into the broader software architecture.
+- **Collaboration and Reporting:**
+  - Provide regular technical updates and ensure that the codebase remains accessible and well-organized for review during meetings.
+
+**2.3 Jacob Mardian – Chief Investment Officer**
+
+- **Primary Responsibilities:**
+  - **Project Oversight:** Oversee the overall direction of the project to ensure alignment with the Company’s strategic objectives and market viability.
+  - **Business Management:** Manage daily business operations, including strategic planning, administration, and operational oversight.
+  - **Market Research:** Conduct in-depth market research to evaluate industry trends, risks, and opportunities, thereby informing strategic decision-making.
+- **Collaboration and Reporting:**
+  - Present detailed updates regarding business strategy, market conditions, and project performance at each weekly meeting.
+  - Work in close collaboration with the other Founders to refine business strategies based on current market data and project progress.
+
+**3\. Task Assignments and Meeting Conduct**
+
+- **Task Allocation and Adherence:**
+  - During each weekly meeting, tasks will be assigned to each Founder in accordance with their designated roles and the needs of the Company.
+  - Founders shall execute their assigned tasks diligently and within the set deadlines. Deviations from the assigned tasks must be pre-approved by at least two of the three Founders.
+- **Accountability for Non-Compliance:**
+  - Should a Founder deviate from their assigned tasks without obtaining prior approval, that Founder shall be required to prepare and serve a non-vegan, non-vegetarian meal for the other Founders within one week.
+- **Time Management and Meeting Conduct:**
+  - All Founders are expected to utilize meeting time efficiently.
+  - If a Founder is deemed to be wasting time (e.g., by engaging in off-topic discussions or displaying a lack of preparedness), they will be required to wear a suit at the following meeting as a symbolic measure of accountability.
+
+**4\. Intellectual Property and Code Management**
+
+**4.1 Intellectual Property (IP) Assignment**
+
+- **Ownership and Rights:**
+  - All intellectual property—including but not limited to software, source code, design documents, algorithms, and research—created during Company time or committed to the Company’s GitHub repositories shall be the exclusive property of Midas Technologies Inc.
+  - Each Founder hereby irrevocably assigns to the Company any and all rights, title, and interest they may have in such intellectual property.
+- **Documentation and Records:**
+  - The Company shall maintain comprehensive records of all intellectual property contributions to ensure clear ownership and attribution.
+
+**4.2 Code Transparency and Management**
+
+- **Repository Standards:**
+  - All development work must be committed to the designated Company GitHub repository with clear commit messages and proper version control practices.
+- **Oversight:**
+  - The Chief Programmer and Technology Officer is responsible for ensuring that all Founders adhere to these standards and for maintaining the integrity and transparency of the code repository.
+
+**5\. Confidentiality and Business Ethics**
+
+**5.1 Confidentiality**
+
+- **Definition of Confidential Information:**
+  - “Confidential Information” shall include, without limitation, all technical data, business strategies, market research, trade secrets, and proprietary information related to the Company’s operations.
+- **Obligations:**
+  - Each Founder agrees to maintain the confidentiality of such information and to refrain from disclosing it to any third party without the prior written consent of the other Founders.
+  - Public disclosures shall be limited to general information regarding the Company’s long-term goals (e.g., the pursuit of artificial intelligence trading) without divulging specific proprietary details.
+
+**5.2 Separation of Social and Business Matters**
+
+- **Professional Conduct:**
+  - Business-related disagreements shall be handled strictly within the context of Company operations and shall not affect the personal relationships among the Founders.
+- **Conflict Resolution:**
+  - Any disputes arising from business operations shall be addressed in accordance with the dispute resolution procedures set forth in Section 7 of this Agreement.
+
+**6\. Equity, Performance, and Adjustments**
+
+**6.1 Performance Expectations**
+
+- **Commitment to Duties:**
+  - Each Founder is expected to execute their responsibilities diligently, complete assigned tasks within the agreed-upon timeframes, and contribute in good faith to the success of the Company.
+- **Monitoring and Accountability:**
+  - Adherence to work hours, meeting attendance, and task completion will be closely monitored and documented.
+
+**6.2 Equity Adjustments for Non-Compliance**
+
+- **Strike-Related Equity Reduction:**
+  - As detailed in Section 1.2, after two recorded strikes, any subsequent week in which a Founder fails to meet the minimum work-hour requirement shall result in a reduction of that Founder’s equity by 1% per week.
+- **Additional Equity Adjustments:**
+  - Should a Founder repeatedly fail to complete assigned tasks or engage in behavior that undermines the project, the remaining Founders may initiate an additional equity reduction process.
+  - Any decision to adjust equity outside of the strike system shall require a majority vote (at least two out of three Founders) and be documented in writing along with supporting evidence.
+
+**6.3 Initial Equity Allocation**
+
+- **Equal Allocation:**
+  - Each Founder shall initially receive 33.33% equity in Midas Technologies Inc.
+
+**6.4 Redistribution of Reduced Equity**
+
+- **Equity Redistribution:**
+  - In the event that a Founder’s equity is reduced pursuant to Section 6.2 due to non-compliance, the reduced equity percentage shall be automatically redistributed among the other Founders on a 50/50 basis.
+  - For example, if a Founder’s equity is reduced by 1% in a given week due to non-compliance, then each of the other two Founders shall receive an additional 0.5% equity.
+  - In any circumstance where only one other Founder is eligible to receive the redistributed equity, that Founder shall receive the full reduced percentage.
+
+**7\. Governing Law and Dispute Resolution**
+
+**7.1 Governing Law**
+
+- **Jurisdiction:**
+  - This Agreement shall be governed by, and construed in accordance with, the laws of \[Insert State/Country\].
+  - All legal disputes arising out of or in connection with this Agreement shall be subject to the exclusive jurisdiction of the courts in \[Insert Jurisdiction\].
+
+**7.2 Dispute Resolution Procedure**
+
+- **Mediation:**
+  - In the event of any dispute, controversy, or claim arising out of or relating to this Agreement, the Founders agree to first attempt to resolve the matter through mediation.
+- **Binding Arbitration:**
+  - Should mediation fail to resolve the dispute, the matter shall be submitted to binding arbitration administered by \[Insert Arbitration Organization\] in \[Insert Jurisdiction\].
+  - The decision of the arbitrator(s) shall be final and binding upon all parties.
+
+**8\. Miscellaneous Provisions**
+
+**8.1 Entire Agreement**
+
+- This Agreement constitutes the entire agreement among the Founders with respect to the subject matter hereof and supersedes all prior and contemporaneous agreements, understandings, negotiations, and discussions, whether oral or written.
+
+**8.2 Amendments**
+
+- No amendment, modification, or waiver of any provision of this Agreement shall be effective unless it is in writing and signed by all Founders.
+
+**8.3 Severability**
+
+- Should any provision of this Agreement be held invalid or unenforceable by a court of competent jurisdiction, the remaining provisions shall continue in full force and effect.
+
+**8.4 Counterparts**
+
+- This Agreement may be executed in one or more counterparts, each of which shall be deemed an original, but all of which together shall constitute one and the same instrument.
+
+**SIGNATURES**
+
+IN WITNESS WHEREOF, the Founders have executed this Agreement as of the Effective Date first written above.
+
+**Griffin Witt – Chief AI Specialist**  
+Signature: \_**\_**\_**\_**\_**\_**_  
+Date: \_**\_**\_**\_**\_**\_**\___\__
+
+**Collin Schaufle – Chief Programmer and Technology Officer**  
+Signature: \_**\_**\_**\_**\_**\_**_  
+Date: \_**\_**\_**\_**\_**\_**\___\__
+
+**Jacob Mardian – Chief Investment Officer**  
+Signature: \_**\_**\_**\_**\_**\_**_  
+Date: \_**\_**\_**\_**\_**\_**\___\__
